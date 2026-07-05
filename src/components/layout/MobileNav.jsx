@@ -5,6 +5,7 @@ import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getNavLabel } from "../../lib/content";
 import LanguageSwitch from "./LanguageSwitch";
+import LogoLink from "./LogoLink";
 import WechatQrModal from "../contact/WechatQrModal";
 
 const NAV_KEYS = [
@@ -41,7 +42,7 @@ export default function MobileNav({ open, onClose }) {
       <button type="button" className="mobile-nav__backdrop" aria-label="Close menu" onClick={onClose} />
       <div className="mobile-nav__panel">
         <div className="mobile-nav__head">
-          <span className="header__logo">{content.siteSettings.siteName.en}</span>
+          <LogoLink onNavigate={onClose}>{content.siteSettings.siteName.en}</LogoLink>
           <button type="button" className="header__menu-btn" aria-label="Close" onClick={onClose}>
             <X size={20} strokeWidth={1.5} />
           </button>

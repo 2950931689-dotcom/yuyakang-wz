@@ -276,8 +276,79 @@
 
 ---
 
+## 8. Round 3.1.6 — 已实现与后续建议
+
+> 更新：2026-07-05 · 本轮已实现 Hero 叠化、Logo 交互、Project File 案例模板、案例自动渲染与 IP 视觉编号。
+
+### 8.1 前端 IP 设计建议
+
+| 方向 | 状态 | 说明 |
+|---|---|---|
+| Logo 动画 | **已实现** | hover 字距 + signal line scan；active 微压；首页点击平滑回顶 |
+| Hero 视频叠化 | **已实现** | 双 layer 650ms crossfade；移动端 poster 降级；进度线 + PROJECT 01/04 |
+| Project File 案例详情 | **已实现** | 固定档案模板：FILE → OVERVIEW → CHALLENGE → ROLE → SOLUTION → RESULT → TOOLS → MEDIA |
+| Signal Flow 视觉语言 | **部分实现** | mono 编号、PROJECT/SERVICE 标签、signal line；后续可加 Patch 点位图 |
+| 设备 / 软件能力墙 | 待做 | About 页集中展示 `toolsUsed` / `profile.tools[]` |
+| 证书能力解释 | 待做 | `certificates[].capability` 1–2 行说明 |
+| 项目地图 | 第二版 | 按 `location` 聚合案例分布 |
+| 声音问题诊断器 | 第二版 | 交互式问卷 → 推荐服务类型 |
+| Before / After 音频对比 | 第二版 | 需标准化音频素材与 A/B UI |
+
+### 8.2 后台优化建议
+
+| 方向 | 适合阶段 | 说明 |
+|---|---|---|
+| 内容完整度检查 | 后台完成后 | 案例必填字段（challenge/solution/result）缺失提醒 |
+| 案例模板一键生成 | 后台完成后 | 从 `CMS_SCHEMA` 模板创建空 case |
+| 首页 Hero 使用开关 | 后台完成后 | `showInHero` + slide 关联 caseSlug |
+| 媒体使用位置追踪 | 后台完成后 | 标记 upload 被哪些 case/hero 引用 |
+| SEO 预览卡片 | 后台完成后 | 编辑 case 时预览 OG 卡片 |
+| 中英文缺失提醒 | 后台完成后 | `title.cn` 有、`title.en` 空 → 黄色提示 |
+| 保存草稿 / 发布分离 | 第二版 | `visible` 与 `draft` 分离 |
+| 版本历史 | 第二版 | jsonStore backup 列表 UI |
+| 预约 CRM 看板 | 第二版 | Booking 表单汇总（需持久化） |
+| 媒体未使用清理 | 后台完成后 | `/admin/media` 显示 orphan 文件 |
+| 案例排序 | 后台完成后 | drag sort → `sortOrder` |
+| 案例复盘模板提示 | 立即（文档） | Admin 编辑区展示 challenge/solution/result 写作提示 |
+
+### 8.3 推荐优先级
+
+**现在做（不依赖新后台）**
+
+- Hero 叠化 + 状态提示 ✅
+- Project File 案例详情 ✅
+- 案例列表 PROJECT 编号 ✅
+- Logo 品牌交互 ✅
+- SEO meta fallback（`src/lib/seo.js`）
+- 证书能力一行说明
+
+**后台完成后做**
+
+- 案例 CRUD 编辑器 + 模板字段
+- Hero slide 与 case 关联 UI
+- 媒体引用追踪 / orphan 清理
+- 内容完整度 Dashboard 卡片
+- 案例 drag 排序
+
+**第二版做**
+
+- Before/After 音频
+- 声音诊断器
+- 项目地图
+- Booking CRM / 草稿发布 / 版本历史
+
+**暂不建议做**
+
+- Strapi / 数据库迁移（当前 JSON CMS 够用）
+- 登录权限（单人站点）
+- Lenis / Magic UI / 重度动效库
+- 参考图 KANG 字样作为品牌 Logo
+
+---
+
 ## 7. 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| 1.1.0 | 2026-07-05 | Round 3.1.6：Hero 叠化、Logo 动画、Project File、IP 编号、案例模板字段 |
 | 1.0.0 | 2026-07-05 | 初版：四阶段优化建议 + 优先级总表 |

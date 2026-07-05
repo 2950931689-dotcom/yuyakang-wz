@@ -13,14 +13,16 @@ export default function ServicePreview() {
 
   return (
     <div>
-      {services.map((svc) => {
+      {services.map((svc, i) => {
         const Icon = Lucide[svc.icon] || Lucide.Circle;
+        const num = String(i + 1).padStart(2, "0");
         return (
           <div key={svc.id} className="service-preview__item">
             <div className="service-preview__icon">
               <Icon size={22} strokeWidth={1.5} />
             </div>
             <div>
+              <span className="service-preview__code">SERVICE {num}</span>
               <h3 style={{ fontSize: 16, fontWeight: 500, marginBottom: 6 }}>{t(svc.title, lang)}</h3>
               <p style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>{t(svc.summary, lang)}</p>
             </div>

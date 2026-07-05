@@ -3,16 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Headphones, Video } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getCaseCover, getCategoryLabel, t } from "../../lib/content";
+import { getCaseCover, getCategoryLabel, getCaseProjectNumber, t } from "../../lib/content";
 import Tag from "../ui/Tag";
 import MediaFallback from "../ui/MediaFallback";
 
-export default function CaseCard({ caseItem }) {
+export default function CaseCard({ caseItem, projectNumber }) {
   const { content } = useContent();
   const { lang } = useLanguage();
   const navigate = useNavigate();
   const [pressing, setPressing] = useState(false);
   const cover = getCaseCover(caseItem);
+  const projectId =
+    projectNumber ?? (content ? getCaseProjectNumber(content, caseItem) : "000");
 
   if (!content) return null;
 
@@ -69,6 +71,7 @@ export default function CaseCard({ caseItem }) {
         )}
       </div>
       <div className="case-card__body">
+        <span className="case-card__project-id">PROJECT {projectId}</span>
         <h3 className="case-card__title">{t(caseItem.title, lang)}</h3>
         <div className="case-card__meta">
           {t(caseItem.location, lang)} · {t(caseItem.role, lang)}

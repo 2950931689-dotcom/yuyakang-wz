@@ -1,8 +1,22 @@
-export function AdminFieldGroup({ title, description, children }) {
+export function AdminStatusDot({ status = "idle" }) {
+  return <span className={`admin-status-dot admin-status-dot--${status}`} aria-hidden="true" />;
+}
+
+export function AdminStatusItem({ label, status = "idle" }) {
+  return (
+    <div className={`admin-status-item admin-status-item--${status}`}>
+      <AdminStatusDot status={status} />
+      <span className="admin-status-item__label">{label}</span>
+    </div>
+  );
+}
+
+export function AdminFieldGroup({ eyebrow, title, description, children }) {
   return (
     <section className="admin-field-group">
-      {(title || description) && (
+      {(eyebrow || title || description) && (
         <header className="admin-field-group__head">
+          {eyebrow && <span className="admin-panel-eyebrow">{eyebrow}</span>}
           {title && <h2>{title}</h2>}
           {description && <p>{description}</p>}
         </header>
@@ -22,17 +36,17 @@ export function AdminField({ label, hint, children, htmlFor }) {
   );
 }
 
-export function AdminInput({ id, ...props }) {
-  return <input id={id} className="admin-input" {...props} />;
+export function AdminInput({ id, className = "", ...props }) {
+  return <input id={id} className={`admin-input ${className}`.trim()} {...props} />;
 }
 
-export function AdminTextarea({ id, rows = 4, ...props }) {
-  return <textarea id={id} className="admin-textarea" rows={rows} {...props} />;
+export function AdminTextarea({ id, className = "", rows = 4, ...props }) {
+  return <textarea id={id} className={`admin-textarea ${className}`.trim()} rows={rows} {...props} />;
 }
 
-export function AdminSelect({ id, children, ...props }) {
+export function AdminSelect({ id, className = "", children, ...props }) {
   return (
-    <select id={id} className="admin-select" {...props}>
+    <select id={id} className={`admin-select ${className}`.trim()} {...props}>
       {children}
     </select>
   );
@@ -43,15 +57,40 @@ export function AdminToggle({ id, checked, onChange, label }) {
     <label className="admin-toggle" htmlFor={id}>
       <input id={id} type="checkbox" checked={checked} onChange={onChange} />
       <span className="admin-toggle__track" aria-hidden="true" />
-      <span>{label}</span>
+      <span className="admin-toggle__label">{label}</span>
     </label>
+  );
+}
+
+export function AdminParamStepper({ label, value, min = 3, max = 10, unit = "s", onChange }) {
+  const step = (delta) => {
+    const next = Math.min(max, Math.max(min, (Number(value) || min) + delta));
+    onChange(next);
+  };
+
+  return (
+    <div className="admin-param">
+      {label && <span className="admin-param__label">{label}</span>}
+      <div className="admin-param__control">
+        <button type="button" className="admin-param__btn" onClick={() => step(-1)} disabled={value <= min} aria-label="减少">
+          −
+        </button>
+        <span className="admin-param__value admin-mono">
+          {value}
+          {unit}
+        </span>
+        <button type="button" className="admin-param__btn" onClick={() => step(1)} disabled={value >= max} aria-label="增加">
+          +
+        </button>
+      </div>
+    </div>
   );
 }
 
 export function AdminSaveBar({ saving, dirty, onSave, onReset, saveLabel = "保存" }) {
   return (
-    <div className="admin-save-bar">
-      <div className="admin-save-bar__status">
+    <div className={`admin-save-bar${dirty ? " admin-save-bar--dirty" : ""}`}>
+      <div className="admin-save-bar__status admin-mono">
         {saving ? "保存中…" : dirty ? "有未保存修改" : "已同步"}
       </div>
       <div className="admin-save-bar__actions">
@@ -73,9 +112,10 @@ export function AdminSaveBar({ saving, dirty, onSave, onReset, saveLabel = "保�
   );
 }
 
-export function AdminEmptyState({ title, description }) {
+export function AdminEmptyState({ title, description, code }) {
   return (
     <div className="admin-empty">
+      {code && <span className="admin-panel-eyebrow">{code}</span>}
       <h3>{title}</h3>
       {description && <p>{description}</p>}
     </div>
@@ -94,6 +134,7 @@ export function AdminConfirmDialog({ open, title, message, onConfirm, onCancel, 
         aria-labelledby="admin-dialog-title"
         onClick={(e) => e.stopPropagation()}
       >
+        <span className="admin-panel-eyebrow">确认操作</span>
         <h3 id="admin-dialog-title">{title}</h3>
         <p>{message}</p>
         <div className="admin-dialog__actions">

@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL =
+  import.meta.env.VITE_API_URL ??
+  (import.meta.env.DEV ? "" : "http://localhost:3001");
 
 export class ApiError extends Error {
   constructor(message, status = 500, data = null) {
@@ -39,7 +41,8 @@ async function request(path, options = {}) {
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const url = API_URL ? `${API_URL}${path}` : path;
+  const res = await fetch(url, {
     ...options,
     headers,
   });
@@ -50,7 +53,9 @@ async function request(path, options = {}) {
 export function resolveUploadUrl(url) {
   if (!url) return url;
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("/uploads/")) return `${API_URL}${url}`;
+  if (url.startsWith("/uploads/")) {
+    return API_URL ? `${API_URL}${url}` : url;
+  }
   return url;
 }
 
@@ -107,7 +112,8 @@ export async function uploadFile(file) {
   const form = new FormData();
   form.append("file", file);
 
-  const res = await fetch(`${API_URL}/api/upload`, {
+  const url = API_URL ? `${API_URL}/api/upload` : "/api/upload";
+  const res = await fetch(url, {
     method: "POST",
     body: form,
   });

@@ -1,7 +1,15 @@
-export default function SectionTitle({ eyebrow, title, className = "" }) {
+export default function SectionTitle({ sectionIndex, eyebrow, title, className = "" }) {
+  const indexLabel = sectionIndex != null ? String(sectionIndex).padStart(2, "0") : null;
+
   return (
     <div className={`section-title ${className}`.trim()}>
-      {eyebrow && <span className="section-title__eyebrow">{eyebrow}</span>}
+      {(indexLabel || eyebrow) && (
+        <span className="section-title__eyebrow">
+          {indexLabel && <span className="section-title__index">{indexLabel}</span>}
+          {indexLabel && eyebrow && <span className="section-title__sep"> / </span>}
+          {eyebrow}
+        </span>
+      )}
       <h2 className="section-title__heading">{title}</h2>
       <div className="section-title__line" />
     </div>

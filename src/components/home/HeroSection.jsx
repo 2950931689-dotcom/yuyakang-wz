@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getHeroVideo, getSafeHero, t } from "../../lib/content";
+import { getHeroSlides, getHeroVideo, getSafeHero, t } from "../../lib/content";
 import Button from "../ui/Button";
 import ExternalLinkButton from "../ui/ExternalLinkButton";
 import HeroVideoCarousel from "./HeroVideoCarousel";
@@ -73,7 +73,8 @@ export default function HeroSection() {
 
   const hero = getSafeHero(content);
   const primaryUrl = isMobile ? hero.primaryButton.mobileUrl : hero.primaryButton.desktopUrl;
-  const useCarousel = hero.mode === "caseVideoCarousel" && hero.slides?.length;
+  const carouselSlides = getHeroSlides(content, hero);
+  const useCarousel = hero.mode !== "singleVideo" && carouselSlides.length > 0;
 
   return (
     <section className="hero hero__scanlines" id="hero">
@@ -86,7 +87,10 @@ export default function HeroSection() {
         <div className="hero__overlay" />
       </div>
       <div className="hero__content fade-in">
-        <p className="hero__logo">{content.siteSettings.siteName.en}</p>
+        <p className="hero__logo">
+          <span className="hero__logo-index">01 / </span>
+          {content.siteSettings.siteName.en}
+        </p>
         <h1 className="hero__title">{t(hero.headline, lang)}</h1>
         <p className="hero__subtitle">{t(hero.subheadline, lang)}</p>
         <div className="hero__actions">

@@ -13,7 +13,8 @@ export default function AdminToast() {
           className={`admin-toast admin-toast--${toast.type}`}
           role="status"
         >
-          <span>{toast.message}</span>
+          <span className="admin-toast__prefix admin-mono">SYS</span>
+          <span className="admin-toast__message">{toast.message}</span>
           <button type="button" onClick={() => dismissToast(toast.id)} aria-label="Dismiss">
             ×
           </button>

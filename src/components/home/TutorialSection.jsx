@@ -3,7 +3,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getDouyinUrl, getUiText, isDouyinSelfLink, t } from "../../lib/content";
 import ExternalLinkButton from "../ui/ExternalLinkButton";
 
-export default function TutorialSection() {
+export default function TutorialSection({ compact = false }) {
   const { content } = useContent();
   const { lang } = useLanguage();
 
@@ -18,9 +18,10 @@ export default function TutorialSection() {
   const douyinSelf = isDouyinSelfLink(douyin);
 
   return (
-    <section className="section container tutorial-section" id="tutorials">
+    <div className={`tutorial-section${compact ? " tutorial-section--compact" : ""}`} id="tutorials">
       <div className="tutorial-section__inner">
         <div className="tutorial-section__content">
+          <span className="tutorial-section__code">TUTORIALS</span>
           <h2 className="tutorial-section__title">{t(section.title, lang)}</h2>
           <p className="tutorial-section__subtitle">{t(section.subtitle, lang)}</p>
           <p className="tutorial-section__desc">{t(section.description, lang)}</p>
@@ -48,6 +49,6 @@ export default function TutorialSection() {
           ))}
         </ul>
       )}
-    </section>
+    </div>
   );
 }

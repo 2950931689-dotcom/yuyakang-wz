@@ -4,6 +4,7 @@ import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getNavLabel } from "../../lib/content";
 import LanguageSwitch from "./LanguageSwitch";
+import LogoLink from "./LogoLink";
 
 const NAV_KEYS = [
   ["home", "/"],
@@ -23,9 +24,7 @@ export default function Header({ onMenuOpen }) {
   return (
     <header className="header">
       <div className="header__inner">
-        <Link to="/" className="header__logo">
-          {content.siteSettings.siteName.en}
-        </Link>
+        <LogoLink>{content.siteSettings.siteName.en}</LogoLink>
         <nav className="header__nav" aria-label="Main">
           {NAV_KEYS.map(([key, path]) => (
             <NavLink key={key} to={path} end={path === "/"}>

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SiteLayout from "./SiteLayout";
 import AdminLayout from "../components/admin/AdminLayout";
 import HomePage from "../pages/HomePage";
@@ -10,12 +10,18 @@ import BookingPage from "../pages/BookingPage";
 import ContactPage from "../pages/ContactPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import AdminDashboard from "../components/admin/AdminDashboard";
-import AdminPlaceholder from "../pages/admin/AdminPlaceholder";
 import AdminBookingsPage from "../pages/admin/AdminBookingsPage";
 import AdminCasesPage from "../pages/admin/AdminCasesPage";
 import AdminHeroPage from "../pages/admin/AdminHeroPage";
 import AdminLocationPage from "../pages/admin/AdminLocationPage";
 import AdminMediaPage from "../pages/admin/AdminMediaPage";
+import AdminProfilePage from "../pages/admin/AdminProfilePage";
+import AdminServicesPage from "../pages/admin/AdminServicesPage";
+import AdminCertificatesPage from "../pages/admin/AdminCertificatesPage";
+import AdminWorkPhotosPage from "../pages/admin/AdminWorkPhotosPage";
+import AdminTutorialPage from "../pages/admin/AdminTutorialPage";
+import AdminSocialPage from "../pages/admin/AdminSocialPage";
+import AdminSeoPage from "../pages/admin/AdminSeoPage";
 
 export default function AppRouter() {
   return (
@@ -35,15 +41,16 @@ export default function AppRouter() {
           <Route index element={<AdminDashboard />} />
           <Route path="hero" element={<AdminHeroPage />} />
           <Route path="location" element={<AdminLocationPage />} />
-          <Route path="profile" element={<AdminPlaceholder title="个人资料" phase="3.2" />} />
-          <Route path="services" element={<AdminPlaceholder title="服务管理" phase="3.2" />} />
+          <Route path="profile" element={<AdminProfilePage />} />
+          <Route path="services" element={<AdminServicesPage />} />
           <Route path="cases" element={<AdminCasesPage />} />
-          <Route path="certificates" element={<AdminPlaceholder title="证书管理" phase="3.3" />} />
-          <Route path="work-photos" element={<AdminPlaceholder title="工作照管理" phase="3.3" />} />
-          <Route path="tutorials" element={<AdminPlaceholder title="经验分享 / 教程" phase="3.2" />} />
+          <Route path="certificates" element={<AdminCertificatesPage />} />
+          <Route path="work-photos" element={<AdminWorkPhotosPage />} />
+          <Route path="tutorial" element={<AdminTutorialPage />} />
+          <Route path="tutorials" element={<Navigate to="/admin/tutorial" replace />} />
           <Route path="bookings" element={<AdminBookingsPage />} />
-          <Route path="social" element={<AdminPlaceholder title="社媒 / 联系方式" phase="3.2" />} />
-          <Route path="seo" element={<AdminPlaceholder title="SEO 设置" phase="3.2" />} />
+          <Route path="social" element={<AdminSocialPage />} />
+          <Route path="seo" element={<AdminSeoPage />} />
           <Route path="media" element={<AdminMediaPage />} />
         </Route>
 

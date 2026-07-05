@@ -145,8 +145,10 @@ site-content.json
 |---|---|---|
 | `id` | string | UUID |
 | `slug` | string | URL slug，唯一 |
-| `order` | number | 列表排序 |
-| `featured` | boolean | 是否首页精选 |
+| `order` | number | 列表排序（兼容字段，与 `sortOrder` 等价） |
+| `sortOrder` | number | 列表排序（优先于 `order`） |
+| `featured` / `isFeatured` | boolean | 是否首页精选 |
+| `showInHero` | boolean | 是否允许进入首页 Hero 轮播（关联 `hero.slides[].caseSlug` 时生效；默认 true） |
 | `visible` | boolean | 是否发布 |
 | `category` | enum | 见下方分类 |
 | `date` | string | 项目时间，如 `2025-06` |
@@ -169,6 +171,65 @@ site-content.json
 | `seo.title.cn/en` | string | 案例 SEO 标题 |
 | `seo.description.cn/en` | string | 案例 SEO 描述 |
 | `seo.keywords.cn/en` | string[] | 关键词 |
+
+#### 案例模板字段（V2 后台编辑器参考 · 前端已兼容）
+
+以下字段为「工程项目档案」模板的完整结构。现有 JSON 可继续使用 `order` / `equipment` / `services` / `images` 等字段，前台会自动映射。
+
+```json
+{
+  "title": { "cn": "", "en": "" },
+  "slug": "",
+  "category": "livehouse-system-tuning",
+  "location": { "cn": "", "en": "" },
+  "role": { "cn": "", "en": "" },
+  "projectDate": "2025-06",
+  "date": "2025-06",
+  "summary": { "cn": "", "en": "" },
+  "background": { "cn": "", "en": "" },
+  "challenge": { "cn": "", "en": "" },
+  "solution": { "cn": "", "en": "" },
+  "result": { "cn": "", "en": "" },
+  "services": { "cn": "", "en": "" },
+  "serviceContent": { "cn": "", "en": "" },
+  "equipment": { "cn": "", "en": "" },
+  "toolsUsed": ["Smaart", "WING Compact"],
+  "tags": ["FOH", "SYSTEM"],
+  "coverUrl": "",
+  "coverImage": "",
+  "images": [],
+  "galleryImages": [],
+  "videoUrl": null,
+  "videos": [],
+  "audioUrl": null,
+  "audio": [],
+  "featured": true,
+  "isFeatured": true,
+  "showInHero": true,
+  "visible": true,
+  "sortOrder": 1,
+  "order": 1,
+  "seo": {
+    "title": { "cn": "", "en": "" },
+    "description": { "cn": "", "en": "" },
+    "ogImage": ""
+  }
+}
+```
+
+**前台映射规则：**
+
+| 模板字段 | 现有字段兼容 |
+|---|---|
+| `projectDate` | `date` |
+| `serviceContent` | `services` |
+| `toolsUsed[]` | `equipment`（字符串） |
+| `coverImage` | `coverUrl` |
+| `galleryImages[]` | `images[]` |
+| `sortOrder` | `order` |
+| `isFeatured` | `featured` |
+
+**详情页区块顺序（Project File）：** PROJECT FILE → OVERVIEW → CHALLENGE → MY ROLE → SOLUTION → RESULT → TOOLS → MEDIA → CTA。空字段自动隐藏。
 
 #### category 枚举
 

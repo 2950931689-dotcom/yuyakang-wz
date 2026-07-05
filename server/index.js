@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { randomUUID } from "node:crypto";
+import os from "node:os";
 import path from "node:path";
 import {
   DATA_DIR,
@@ -26,6 +27,7 @@ import {
 } from "./lib/validate.js";
 
 const PORT = Number(process.env.PORT) || 3001;
+const HOST = process.env.HOST || "0.0.0.0";
 const ALLOWED_ORIGINS = (
   process.env.ALLOWED_ORIGINS ||
   "http://localhost:5173,http://127.0.0.1:5173"
@@ -33,6 +35,34 @@ const ALLOWED_ORIGINS = (
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
+
+function isPrivateLanOrigin(origin) {
+  try {
+    const { hostname, port } = new URL(origin);
+    if (hostname === "localhost" || hostname === "127.0.0.1") return true;
+    const isPrivate =
+      /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+      /^172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}$/.test(hostname);
+    if (!isPrivate) return false;
+    return !port || port === "5173" || port === "4173";
+  } catch {
+    return false;
+  }
+}
+
+function getLanAddresses() {
+  const nets = os.networkInterfaces();
+  const addrs = [];
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name] ?? []) {
+      if (net.family === "IPv4" && !net.internal) {
+        addrs.push(net.address);
+      }
+    }
+  }
+  return addrs;
+}
 
 const SITE_CONTENT_PATH = path.join(DATA_DIR, "site-content.json");
 const BOOKINGS_PATH = path.join(DATA_DIR, "bookings.json");
@@ -42,7 +72,7 @@ const app = express();
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      if (!origin || ALLOWED_ORIGINS.includes(origin) || isPrivateLanOrigin(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -280,6 +310,14 @@ app.use((err, _req, res, _next) => {
 
 await ensureDataFiles();
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
   console.log(`YU YAKANG AUDIO CMS API → http://localhost:${PORT}`);
+  const lan = getLanAddresses();
+  if (lan.length) {
+    console.log("  Network (API direct):");
+    for (const ip of lan) {
+      console.log(`    http://${ip}:${PORT}`);
+    }
+  }
+  console.log("  Dev tip: frontend proxies /api → localhost:3001 (see docs/LOCAL_NETWORK_PREVIEW.md)");
 });

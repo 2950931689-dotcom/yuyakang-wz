@@ -17,12 +17,17 @@ export default function FeaturedCases() {
   return (
     <div>
       <SectionTitle
-        eyebrow={lang === "cn" ? "Selected Works" : "Selected Works"}
+        sectionIndex={3}
+        eyebrow={lang === "cn" ? "CASES" : "CASES"}
         title={lang === "cn" ? "精选案例" : "Featured Projects"}
       />
       <div className="grid-3">
-        {featured.map((c) => (
-          <CaseCard key={c.slug} caseItem={c} />
+        {featured.map((c, i) => (
+          <CaseCard
+            key={c.slug}
+            caseItem={c}
+            projectNumber={String(i + 1).padStart(3, "0")}
+          />
         ))}
       </div>
       <div style={{ marginTop: "var(--space-xl)" }}>

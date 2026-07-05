@@ -1,11 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getMedia, resolveUploadUrl, trashMedia, uploadFile } from "../../lib/api";
+import { useContent } from "../../context/ContentContext";
 import { useAdmin } from "../../context/AdminContext";
+import { getMediaUsageLabel } from "../../lib/mediaUsage";
 import AdminTopbar from "../../components/admin/AdminTopbar";
 import {
   AdminConfirmDialog,
   AdminEmptyState,
 } from "../../components/admin/AdminForm";
+
+const TYPE_FILTERS = ["all", "image", "video", "audio", "document", "other"];
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -13,20 +17,19 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function typeLabel(type) {
-  const map = {
-    image: "图片",
-    video: "视频",
-    audio: "音频",
-    document: "文档",
-    other: "其他",
-  };
-  return map[type] ?? type;
-}
+const TYPE_LABELS = {
+  image: "IMAGE",
+  video: "VIDEO",
+  audio: "AUDIO",
+  document: "DOCUMENT",
+  other: "OTHER",
+};
 
 export default function AdminMediaPage() {
+  const { content } = useContent();
   const { showToast, apiOnline } = useAdmin();
   const [files, setFiles] = useState([]);
+  const [typeFilter, setTypeFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
@@ -39,7 +42,7 @@ export default function AdminMediaPage() {
       const result = await getMedia();
       setFiles(result.files ?? []);
     } catch (err) {
-      showToast(err.message || "读取媒体失败", "error");
+      showToast(err.message || "Failed to load media", "error");
       setFiles([]);
     } finally {
       setLoading(false);
@@ -57,10 +60,10 @@ export default function AdminMediaPage() {
     setUploading(true);
     try {
       await uploadFile(file);
-      showToast("上传成功");
+      showToast("File ingested to rack");
       await loadFiles();
     } catch (err) {
-      showToast(err.message || "上传失败", "error");
+      showToast(err.message || "Upload failed", "error");
     } finally {
       setUploading(false);
     }
@@ -69,22 +72,27 @@ export default function AdminMediaPage() {
   const copyUrl = async (url) => {
     try {
       await navigator.clipboard.writeText(url);
-      showToast("URL 已复制");
+      showToast("Path copied");
     } catch {
-      showToast("复制失败", "error");
+      showToast("Copy failed", "error");
     }
   };
+
+  const filteredFiles = useMemo(() => {
+    if (typeFilter === "all") return files;
+    return files.filter((f) => f.type === typeFilter);
+  }, [files, typeFilter]);
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
       await trashMedia(deleteTarget.filename);
-      showToast("文件已移动到 _trash");
+      showToast("Moved to _trash");
       setDeleteTarget(null);
       await loadFiles();
     } catch (err) {
-      showToast(err.message || "删除失败", "error");
+      showToast(err.message || "Delete failed", "error");
     } finally {
       setDeleting(false);
     }
@@ -93,76 +101,86 @@ export default function AdminMediaPage() {
   return (
     <>
       <AdminTopbar
-        title="媒体管理"
-        description="上传与管理 server/uploads 中的媒体文件"
-        actions={
-          <label className="admin-btn admin-btn--primary admin-btn--sm">
-            {uploading ? "上传中…" : "上传文件"}
-            <input
-              type="file"
-              hidden
-              disabled={apiOnline === false || uploading}
-              onChange={(e) => {
-                handleUpload(e.target.files);
-                e.target.value = "";
-              }}
-            />
-          </label>
-        }
+        eyebrow="Media Rack"
+        title="媒体素材机架"
+        description="SOURCE FILE · COPY PATH · MOVE TO TRASH"
       />
 
+      <div className="admin-dropzone">
+        <span className="admin-panel-eyebrow">Input Rack</span>
+        <p className="admin-dropzone__hint">Ingest image, video, audio or document to server/uploads</p>
+        <label className={`admin-btn admin-btn--primary${apiOnline === false || uploading ? " is-disabled" : ""}`}>
+          {uploading ? "Ingesting…" : "Select File"}
+          <input
+            type="file"
+            hidden
+            disabled={apiOnline === false || uploading}
+            onChange={(e) => {
+              handleUpload(e.target.files);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      </div>
+
+      <div className="admin-chip-row" style={{ marginBottom: 16 }}>
+        {TYPE_FILTERS.map((t) => (
+          <button
+            key={t}
+            type="button"
+            className={`admin-btn admin-btn--ghost admin-btn--sm admin-mono${typeFilter === t ? " is-active" : ""}`}
+            onClick={() => setTypeFilter(t)}
+          >
+            {t.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
-        <div className="admin-placeholder">Loading…</div>
-      ) : files.length === 0 ? (
-        <AdminEmptyState title="暂无上传媒体" description="点击右上角上传图片、视频或音频文件" />
+        <div className="admin-placeholder admin-mono">SCANNING RACK…</div>
+      ) : filteredFiles.length === 0 ? (
+        <AdminEmptyState code="MEDIA RACK" title="无匹配媒体" description="Try another filter or ingest a file" />
       ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>文件名</th>
-                <th>类型</th>
-                <th>大小</th>
-                <th>URL</th>
-                <th>上传时间</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {files.map((file) => {
-                const fullUrl = resolveUploadUrl(file.url);
-                return (
-                  <tr key={file.filename}>
-                    <td>{file.filename}</td>
-                    <td>{typeLabel(file.type)}</td>
-                    <td>{formatSize(file.size)}</td>
-                    <td className="admin-table__mono">{file.url}</td>
-                    <td>{new Date(file.uploadedAt).toLocaleString()}</td>
-                    <td>
-                      <div className="admin-table__actions">
-                        <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => copyUrl(fullUrl)}>
-                          复制
-                        </button>
-                        <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => setPreview(file)}>
-                          预览
-                        </button>
-                        <button type="button" className="admin-btn admin-btn--danger admin-btn--sm" onClick={() => setDeleteTarget(file)}>
-                          删除
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="admin-rack">
+          {filteredFiles.map((file) => {
+            const fullUrl = resolveUploadUrl(file.url);
+            const typeKey = TYPE_LABELS[file.type] ?? "OTHER";
+            const usage = content ? getMediaUsageLabel(content, file.url) : "—";
+
+            return (
+              <article key={file.filename} className="admin-rack__slot">
+                <div className="admin-rack__head">
+                  <span className={`admin-tag admin-tag--type admin-tag--${file.type}`}>{typeKey}</span>
+                  <span className="admin-rack__size admin-mono">{formatSize(file.size)}</span>
+                </div>
+                <h3 className="admin-rack__name admin-mono">{file.filename}</h3>
+                <p className="admin-rack__path admin-mono">{file.url}</p>
+                <p className="admin-field__hint">{usage}</p>
+                <p className="admin-rack__time admin-mono">
+                  {new Date(file.uploadedAt).toLocaleString()}
+                </p>
+                <div className="admin-rack__actions">
+                  <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => setPreview(file)}>
+                    Preview
+                  </button>
+                  <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => copyUrl(fullUrl)}>
+                    Copy Path
+                  </button>
+                  <button type="button" className="admin-btn admin-btn--danger admin-btn--sm" onClick={() => setDeleteTarget(file)}>
+                    Move to Trash
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </div>
       )}
 
       {preview && (
         <div className="admin-dialog-backdrop" role="presentation" onClick={() => setPreview(null)}>
-          <div className="admin-dialog admin-dialog--wide" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-            <h3>{preview.filename}</h3>
+          <div className="admin-dialog admin-dialog--wide admin-dialog--monitor" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <span className="admin-panel-eyebrow">Monitor</span>
+            <h3 className="admin-mono">{preview.filename}</h3>
             <div className="admin-media-preview">
               {preview.type === "image" && (
                 <img src={resolveUploadUrl(preview.url)} alt={preview.filename} />
@@ -174,12 +192,12 @@ export default function AdminMediaPage() {
                 <audio controls src={resolveUploadUrl(preview.url)} />
               )}
               {preview.type !== "image" && preview.type !== "video" && preview.type !== "audio" && (
-                <p className="admin-field__hint">此类型暂不支持预览，请复制 URL 使用。</p>
+                <p className="admin-field__hint">Preview unavailable — copy path instead.</p>
               )}
             </div>
             <div className="admin-dialog__actions">
               <button type="button" className="admin-btn admin-btn--ghost" onClick={() => setPreview(null)}>
-                关闭
+                Close
               </button>
             </div>
           </div>
@@ -188,8 +206,8 @@ export default function AdminMediaPage() {
 
       <AdminConfirmDialog
         open={Boolean(deleteTarget)}
-        title="移动到回收站"
-        message={`确定将「${deleteTarget?.filename}」移动到 _trash 吗？`}
+        title="Move to Trash"
+        message={`Move "${deleteTarget?.filename}" to _trash?`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={confirmDelete}
         confirming={deleting}

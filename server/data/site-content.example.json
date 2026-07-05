@@ -332,7 +332,7 @@
       "en": "YU YAKANG AUDIO · Yu Yakang"
     },
     "mode": "caseVideoCarousel",
-    "slideDuration": 5,
+    "slideDuration": 8,
     "fallbackPoster": "/hero/desktop/hero-poster.webp",
     "slides": [
       {

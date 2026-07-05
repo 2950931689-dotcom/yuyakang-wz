@@ -84,15 +84,297 @@ export function getCaseImages(caseItem) {
   return caseItem.images.map((img) => resolveImageUrl(img, caseItem.slug));
 }
 
+function caseSortKey(item) {
+  return item.sortOrder ?? item.order ?? 0;
+}
+
+const MIN_HERO_DURATION = 3;
+const MAX_HERO_DURATION = 15;
+const DEFAULT_SLIDE_DURATION = 8;
+
+function extractMediaUrl(value) {
+  if (!value) return null;
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed || null;
+  }
+  if (typeof value === "object") {
+    return value.src ?? value.url ?? value.desktop ?? null;
+  }
+  return null;
+}
+
+function clampHeroDuration(raw, fallback = DEFAULT_SLIDE_DURATION) {
+  const v = Number(raw ?? fallback);
+  if (Number.isNaN(v)) return DEFAULT_SLIDE_DURATION;
+  return Math.min(MAX_HERO_DURATION, Math.max(MIN_HERO_DURATION, v));
+}
+
+function slideSortKey(item) {
+  return item.sortOrder ?? item.order ?? 0;
+}
+
+function hasLocalizedText(field) {
+  if (field == null) return false;
+  if (typeof field === "string") return field.trim().length > 0;
+  return Boolean(field.cn?.trim() || field.en?.trim());
+}
+
+/** Resolve playable video from heroVideo → videos[] → videoUrl (legacy). */
+export function getCaseVideoSource(caseItem) {
+  if (!caseItem) return null;
+
+  const firstVideo = caseItem.videos?.[0];
+  const heroVideoUrl = extractMediaUrl(caseItem.heroVideo);
+  const legacyVideo = caseItem.videoUrl?.trim?.() ? caseItem.videoUrl.trim() : caseItem.videoUrl || null;
+
+  if (heroVideoUrl) {
+    const heroObj = typeof caseItem.heroVideo === "object" ? caseItem.heroVideo : null;
+    return {
+      video: heroVideoUrl,
+      mobileVideo:
+        extractMediaUrl(heroObj?.mobileSrc) ??
+        extractMediaUrl(firstVideo?.mobileSrc) ??
+        heroVideoUrl,
+      poster:
+        extractMediaUrl(caseItem.heroPoster) ??
+        extractMediaUrl(firstVideo?.poster) ??
+        null,
+      startTime: caseItem.heroStartTime ?? 0,
+      duration: caseItem.heroDuration ?? firstVideo?.duration ?? null,
+    };
+  }
+
+  if (firstVideo) {
+    const video = extractMediaUrl(firstVideo);
+    if (video) {
+      return {
+        video,
+        mobileVideo: extractMediaUrl(firstVideo.mobileSrc) ?? video,
+        poster: extractMediaUrl(firstVideo.poster) ?? null,
+        startTime: caseItem.heroStartTime ?? 0,
+        duration: caseItem.heroDuration ?? firstVideo.duration ?? null,
+      };
+    }
+  }
+
+  if (legacyVideo) {
+    return {
+      video: legacyVideo,
+      mobileVideo: legacyVideo,
+      poster: extractMediaUrl(caseItem.heroPoster) ?? null,
+      startTime: caseItem.heroStartTime ?? 0,
+      duration: caseItem.heroDuration ?? null,
+    };
+  }
+
+  return null;
+}
+
+function resolveSlideDuration(caseItem, videoSource, hero) {
+  const firstVideo = caseItem?.videos?.[0];
+  return clampHeroDuration(
+    caseItem?.heroDuration ?? firstVideo?.duration ?? videoSource?.duration ?? hero.slideDuration,
+    hero.slideDuration ?? DEFAULT_SLIDE_DURATION
+  );
+}
+
+function caseToHeroSlide(caseItem, hero, index) {
+  const source = getCaseVideoSource(caseItem);
+  if (!source?.video) return null;
+
+  return {
+    caseSlug: caseItem.slug ?? "",
+    title: caseItem.title ?? { cn: "", en: "" },
+    video: source.video,
+    mobileVideo: source.mobileVideo || source.video,
+    poster: source.poster || getCaseCover(caseItem) || "",
+    startTime: source.startTime ?? 0,
+    duration: resolveSlideDuration(caseItem, source, hero),
+    sortOrder: caseItem.sortOrder ?? caseItem.order ?? index + 1,
+    enabled: true,
+  };
+}
+
+function buildCaseVideoCarouselSlides(content, hero) {
+  return (content.cases ?? [])
+    .filter((c) => c.visible !== false && c.showInHero !== false)
+    .map((c, index) => caseToHeroSlide(c, hero, index))
+    .filter(Boolean)
+    .sort((a, b) => slideSortKey(a) - slideSortKey(b));
+}
+
+function standardizeManualSlide(slide, hero, content) {
+  if (slide?.enabled === false || !slide?.video) return null;
+  if (slide.caseSlug && content?.cases) {
+    const linked = content.cases.find((x) => x.slug === slide.caseSlug);
+    if (linked && linked.showInHero === false) return null;
+  }
+
+  return {
+    caseSlug: slide.caseSlug ?? "",
+    title: slide.title ?? { cn: "", en: "" },
+    video: slide.video,
+    mobileVideo: slide.mobileVideo ?? "",
+    poster: slide.poster ?? "",
+    startTime: slide.startTime ?? 0,
+    duration: clampHeroDuration(slide.duration ?? hero.slideDuration, hero.slideDuration ?? DEFAULT_SLIDE_DURATION),
+    sortOrder: slide.sortOrder ?? slide.order ?? 0,
+    enabled: true,
+  };
+}
+
+function buildManualSlides(content, hero) {
+  return (hero.slides ?? [])
+    .map((slide) => standardizeManualSlide(slide, hero, content))
+    .filter(Boolean)
+    .sort((a, b) => slideSortKey(a) - slideSortKey(b));
+}
+
 export function getCases(content, { featured, categoryId, visible = true } = {}) {
   let list = [...(content.cases ?? [])];
   if (visible) list = list.filter((c) => c.visible !== false);
-  if (featured) list = list.filter((c) => c.featured);
+  if (featured) list = list.filter((c) => c.featured || c.isFeatured);
   if (categoryId && categoryId !== "all") {
     const filter = CATEGORY_FILTERS.find((f) => f.id === categoryId);
     if (filter?.cms) list = list.filter((c) => c.category === filter.cms);
   }
-  return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  return list.sort((a, b) => {
+    const diff = caseSortKey(a) - caseSortKey(b);
+    if (diff !== 0) return diff;
+    return 0;
+  });
+}
+
+export function getCaseProjectNumber(content, caseItem) {
+  const all = getCases(content, { visible: true });
+  const idx = all.findIndex((c) => c.slug === caseItem.slug);
+  return idx >= 0 ? String(idx + 1).padStart(3, "0") : "000";
+}
+
+export function getCaseToolsText(caseItem, lang = "cn") {
+  if (caseItem.toolsUsed?.length) {
+    return caseItem.toolsUsed.join(" · ");
+  }
+  return t(caseItem.equipment, lang);
+}
+
+export function getHeroSlides(content, hero) {
+  const safe = hero ?? getSafeHero(content);
+
+  if (safe.mode === "manualSlides") {
+    return buildManualSlides(content, safe);
+  }
+
+  if (safe.mode === "caseVideoCarousel") {
+    const autoSlides = buildCaseVideoCarouselSlides(content, safe);
+    if (autoSlides.length) return autoSlides;
+    return buildManualSlides(content, safe);
+  }
+
+  return [];
+}
+
+/** Admin preview: all cases with hero eligibility and media status. */
+export function getHeroCasePreviewList(content, hero) {
+  const safe = hero ?? getSafeHero(content);
+  const cases = content?.cases ?? [];
+
+  return cases
+    .map((caseItem) => {
+      const videoSource = getCaseVideoSource(caseItem);
+      const hasVideo = Boolean(videoSource?.video);
+      const hasPoster = Boolean(videoSource?.poster || getCaseCover(caseItem));
+      const visible = caseItem.visible !== false;
+      const showInHero = caseItem.showInHero !== false;
+
+      return {
+        slug: caseItem.slug ?? "",
+        title: caseItem.title ?? { cn: "", en: "" },
+        projectNumber: getCaseProjectNumber(content, caseItem),
+        visible,
+        showInHero,
+        hasVideo,
+        hasPoster,
+        video: videoSource?.video ?? null,
+        mobileVideo: videoSource?.mobileVideo ?? null,
+        duration: hasVideo ? resolveSlideDuration(caseItem, videoSource, safe) : null,
+        inCarousel: visible && showInHero && hasVideo && safe.mode === "caseVideoCarousel",
+      };
+    })
+    .sort((a, b) => {
+      const caseA = cases.find((c) => c.slug === a.slug);
+      const caseB = cases.find((c) => c.slug === b.slug);
+      return caseSortKey(caseA) - caseSortKey(caseB);
+    });
+}
+
+/** Content completeness issues for admin dashboard. */
+export function getContentCompleteness(content) {
+  const issues = [];
+  if (!content) return issues;
+
+  for (const caseItem of content.cases ?? []) {
+    if (caseItem.visible === false) continue;
+    const slug = caseItem.slug ?? caseItem.id ?? "unknown";
+
+    if (!caseItem.coverUrl && !caseItem.coverImage && !getCaseCover(caseItem)) {
+      issues.push({
+        section: "cases",
+        slug,
+        field: "cover",
+        message: "案例缺少封面图",
+      });
+    }
+    if (!hasLocalizedText(caseItem.summary)) {
+      issues.push({ section: "cases", slug, field: "summary", message: "案例缺少摘要" });
+    }
+    if (!hasLocalizedText(caseItem.challenge)) {
+      issues.push({ section: "cases", slug, field: "challenge", message: "案例缺少 challenge" });
+    }
+    if (!hasLocalizedText(caseItem.solution)) {
+      issues.push({ section: "cases", slug, field: "solution", message: "案例缺少 solution" });
+    }
+    if (!hasLocalizedText(caseItem.result)) {
+      issues.push({ section: "cases", slug, field: "result", message: "案例缺少 result" });
+    }
+    if (caseItem.showInHero !== false && !getCaseVideoSource(caseItem)?.video) {
+      issues.push({
+        section: "cases",
+        slug,
+        field: "heroVideo",
+        message: "案例已开启 Hero 但缺少视频",
+      });
+    }
+  }
+
+  for (const cert of content.certificates ?? []) {
+    if (cert.visible === false) continue;
+    if (!cert.imageUrl && !cert.image) {
+      issues.push({
+        section: "certificates",
+        id: cert.id,
+        field: "image",
+        message: "证书缺少图片",
+      });
+    }
+  }
+
+  const seo = content.seo ?? {};
+  if (!seo.ogImage) {
+    issues.push({ section: "seo", field: "ogImage", message: "SEO 缺少 ogImage" });
+  }
+
+  const social = content.socialLinks ?? {};
+  if (!social.wechatQrImage && !content.siteSettings?.wechatQrUrl) {
+    issues.push({
+      section: "socialLinks",
+      field: "wechatQrImage",
+      message: "社媒缺少微信二维码",
+    });
+  }
+
+  return issues;
 }
 
 export function getCaseBySlug(content, slug) {
@@ -124,7 +406,7 @@ export function getHeroVideo(content, isMobile) {
 
 const DEFAULT_HERO = {
   mode: "caseVideoCarousel",
-  slideDuration: 5,
+  slideDuration: 8,
   slides: [],
   desktopVideoUrl: "",
   mobileVideoUrl: "",

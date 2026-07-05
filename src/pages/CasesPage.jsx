@@ -26,7 +26,10 @@ export default function CasesPage() {
 
   return (
     <div className="page container fade-in">
-      <h1 className="page-title">{lang === "cn" ? "案例作品" : "Works"}</h1>
+      <h1 className="page-title">
+        <span className="page-title__index">02 / </span>
+        {lang === "cn" ? "案例作品" : "Works"}
+      </h1>
       <p className="page-lead">
         {lang === "cn"
           ? "Livehouse 现场调音、演出系统工程、混音后期与声学模拟代表项目。"
@@ -47,8 +50,12 @@ export default function CasesPage() {
           />
         ) : (
           <div className="grid-3">
-            {cases.map((c) => (
-              <CaseCard key={c.slug} caseItem={c} />
+            {cases.map((c, i) => (
+              <CaseCard
+                key={c.slug}
+                caseItem={c}
+                projectNumber={String(i + 1).padStart(3, "0")}
+              />
             ))}
           </div>
         )}
