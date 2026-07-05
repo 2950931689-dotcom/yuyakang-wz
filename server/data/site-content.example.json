@@ -450,6 +450,39 @@
       "en": "For live sound, system tuning and mixing projects, feel free to contact me via WeChat."
     }
   },
+  "tutorialSection": {
+    "enabled": true,
+    "title": {
+      "cn": "经验分享 / 教程",
+      "en": "Experience & Tutorials"
+    },
+    "subtitle": {
+      "cn": "分享现场调音、系统工程、混音后期、设备使用与项目复盘。",
+      "en": "Sharing live sound, system tuning, mixing workflow, equipment tips and project breakdowns."
+    },
+    "description": {
+      "cn": "我会持续整理现场调音、系统调试、混音后期和项目复盘内容，帮助客户更直观了解我的工作方式和声音处理思路。",
+      "en": "I will keep sharing live sound practice, system tuning notes, mixing workflow and project breakdowns to help clients understand my working process."
+    },
+    "douyinButton": {
+      "cn": "查看抖音主页",
+      "en": "View Douyin Profile"
+    },
+    "wechatVideoButton": {
+      "cn": "观看视频号最新视频",
+      "en": "Watch Latest on WeChat Channels"
+    },
+    "douyinDraftHint": {
+      "cn": "当前抖音链接可能不是公开主页链接，后续建议替换为公开分享链接。",
+      "en": "This Douyin link may not be a public profile URL. Consider replacing it with a shared profile link later."
+    },
+    "tags": [
+      { "cn": "现场调音经验", "en": "Live Sound Tips" },
+      { "cn": "系统调试教程", "en": "System Tuning" },
+      { "cn": "混音后期思路", "en": "Mixing Workflow" },
+      { "cn": "设备与调音台使用", "en": "Console & Gear" }
+    ]
+  },
   "i18n": {
     "nav": {
       "home": { "cn": "首页", "en": "Home" },

@@ -4,6 +4,7 @@ import CredentialStrip from "../components/home/CredentialStrip";
 import ServicePreview from "../components/home/ServicePreview";
 import FeaturedCases from "../components/home/FeaturedCases";
 import WorkflowSection from "../components/home/WorkflowSection";
+import TutorialSection from "../components/home/TutorialSection";
 import SectionTitle from "../components/ui/SectionTitle";
 import Button from "../components/ui/Button";
 import { useLanguage } from "../context/LanguageContext";
@@ -50,6 +51,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <TutorialSection />
     </>
   );
 }

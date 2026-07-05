@@ -479,6 +479,109 @@
   }
 }
 
+.tutorial-section {
+  padding-bottom: calc(var(--space-xl) + 8px);
+}
+
+.tutorial-section__inner {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .tutorial-section__inner {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-xl);
+  }
+}
+
+.tutorial-section__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tutorial-section__title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-sm);
+}
+
+.tutorial-section__subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+.tutorial-section__desc {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  max-width: 52ch;
+}
+
+.tutorial-section__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .tutorial-section__actions {
+    width: auto;
+    min-width: 220px;
+    align-items: stretch;
+  }
+}
+
+.tutorial-section__actions .btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.tutorial-section__hint {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 28ch;
+}
+
+.tutorial-section__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  list-style: none;
+  margin: var(--space-md) 0 0;
+  padding: 0;
+}
+
+.tutorial-section__tag {
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 6px 14px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.tutorial-section__tag:hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text-primary);
+}
+
 .case-gallery {
   display: grid;
   gap: var(--space-sm);
