@@ -2,5 +2,9 @@ node_modules/
 dist/
 .env
 .env.*
+!.env.example
 *.local
 .DS_Store
+server/backups/*.json
+server/data/site-content.json
+server/data/bookings.json

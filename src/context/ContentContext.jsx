@@ -1,20 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getContent } from "../lib/content";
+import { getContent, getContentSource } from "../lib/content";
 
 const ContentContext = createContext(null);
 
 export function ContentProvider({ children }) {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [source, setSource] = useState(null);
 
   useEffect(() => {
     getContent()
-      .then(setContent)
+      .then((data) => {
+        setContent(data);
+        setSource(getContentSource());
+      })
       .finally(() => setLoading(false));
   }, []);
 
   return (
-    <ContentContext.Provider value={{ content, loading }}>
+    <ContentContext.Provider value={{ content, loading, source }}>
       {children}
     </ContentContext.Provider>
   );

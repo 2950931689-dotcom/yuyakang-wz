@@ -90,7 +90,7 @@ async function main() {
   // 6: booking flow
   try {
     await page.goto(`${BASE}/booking`, { waitUntil: "domcontentloaded" });
-    await page.selectOption("select", { index: 1 });
+    await page.locator(".service-pick").first().click();
     await page.click('button:has-text("下一步"), button:has-text("Next")');
     await page.fill('input[type="date"], input', { timeout: 2000 }).catch(() => {});
     const cityInput = page.locator(".form-group input").first();

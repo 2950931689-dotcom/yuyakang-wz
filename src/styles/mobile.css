@@ -1,11 +1,20 @@
 @media (max-width: 767px) {
   .hero { min-height: 85vh; }
   .hero__content { padding-block: 100px 60px; }
+
+  .case-card:active,
+  .case-card--pressing {
+    background: var(--color-surface-soft);
+  }
+
   .case-card__media img { transform: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fade-in { animation: none; }
+  .fade-in,
+  .page-transition { animation: none; }
   .case-card__media img { transition: none; }
   .btn:hover { transform: none; }
+  .modal__panel,
+  .modal__backdrop { transition: none; }
 }

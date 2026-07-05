@@ -1,11 +1,34 @@
 import mockData from "../data/site-content.mock.json";
+import { fetchContent } from "./api";
 
 /** @type {typeof mockData | null} */
 let cache = null;
+/** @type {"api" | "mock" | null} */
+let contentSource = null;
 
 export async function getContent() {
-  if (!cache) cache = mockData;
-  return cache;
+  if (cache) return cache;
+
+  try {
+    const data = await fetchContent();
+    cache = data;
+    contentSource = "api";
+    return data;
+  } catch (err) {
+    console.warn("[content] API unavailable, using mock data:", err.message);
+    cache = mockData;
+    contentSource = "mock";
+    return mockData;
+  }
+}
+
+export function getContentSource() {
+  return contentSource;
+}
+
+export function clearContentCache() {
+  cache = null;
+  contentSource = null;
 }
 
 export function t(field, lang = "cn") {
