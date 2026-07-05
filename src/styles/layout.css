@@ -26,7 +26,7 @@
 }
 
 .header__inner {
-  width: min(1100px, 100% - 40px);
+  width: min(var(--width-content), calc(100% - var(--gutter) * 2));
   margin-inline: auto;
   display: flex;
   align-items: center;
@@ -61,16 +61,35 @@
   z-index: 1;
 }
 
+.logo-link__pulse {
+  position: absolute;
+  inset: -6px -10px;
+  z-index: 0;
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 120% at 50% 50%,
+    rgba(255, 255, 255, 0.1),
+    transparent 70%
+  );
+}
+
+.logo-link__pulse--active {
+  animation: logoSignalGlow 0.52s var(--ease-out) forwards;
+}
+
 .logo-link__signal {
   position: absolute;
   left: 0;
   bottom: -4px;
   width: 100%;
   height: 1px;
+  z-index: 2;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.55) 50%,
+    var(--header-signal, rgba(255, 255, 255, 0.55)) 50%,
     transparent 100%
   );
   transform: scaleX(0);
@@ -80,21 +99,35 @@
 }
 
 .logo-link__signal--pulse {
-  animation: logoSignalPulse 0.48s var(--ease-out) forwards;
+  animation: logoSignalSweep 0.48s var(--ease-out) forwards;
 }
 
-@keyframes logoSignalPulse {
+@keyframes logoSignalSweep {
   0% {
     transform: scaleX(0);
-    opacity: 0.75;
+    opacity: 0.85;
   }
   55% {
     transform: scaleX(1);
-    opacity: 0.55;
+    opacity: 0.65;
   }
   100% {
     transform: scaleX(1);
     opacity: 0;
+  }
+}
+
+@keyframes logoSignalGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.02);
   }
 }
 
@@ -116,8 +149,9 @@
 }
 
 .logo-link:hover {
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-primary);
   letter-spacing: 0.36em;
+  filter: brightness(1.08);
 }
 
 .logo-link:hover .logo-link__signal:not(.logo-link__signal--pulse) {
@@ -126,7 +160,12 @@
   transition: transform 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
 }
 
-.logo-link:active {
+.logo-link.is-pulsing {
+  transform: translateY(1px);
+}
+
+.logo-link:active,
+.logo-link.is-pulsing:active {
   transform: translateY(1px);
   letter-spacing: 0.34em;
 }
@@ -158,6 +197,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.nav-link__label,
 .nav-link__text {
   position: relative;
   z-index: 1;
@@ -169,7 +209,7 @@
   bottom: -3px;
   width: 100%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--header-signal, rgba(255, 255, 255, 0.55));
   transform: scaleX(0);
   transform-origin: left center;
   opacity: 0;
@@ -177,22 +217,30 @@
   z-index: 2;
 }
 
-.nav-link__signal--pulse {
-  animation: navSignalSweep 0.42s var(--ease-out) forwards;
+.nav-link__signal--route {
+  animation: navSignalRoute 0.22s var(--ease-out) forwards;
 }
 
-@keyframes navSignalSweep {
-  from {
+@keyframes navSignalRoute {
+  0% {
     transform: scaleX(0);
     opacity: 0;
   }
-  40% {
+  35% {
     opacity: 1;
   }
-  to {
+  100% {
     transform: scaleX(1);
     opacity: 0;
   }
+}
+
+.nav-link.is-routing {
+  transform: translateY(1px);
+}
+
+.nav-link__signal--pulse {
+  animation: navSignalRoute 0.22s var(--ease-out) forwards;
 }
 
 .nav-link::after {
@@ -202,7 +250,7 @@
   bottom: -3px;
   width: 100%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--header-signal-soft, rgba(255, 255, 255, 0.35));
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.35s var(--ease-out);
@@ -309,7 +357,7 @@
 }
 
 .footer__inner {
-  width: min(1100px, 100% - 40px);
+  width: min(var(--width-content), calc(100% - var(--gutter) * 2));
   margin-inline: auto;
   display: flex;
   flex-direction: column;
@@ -483,4 +531,36 @@
 
 .mobile-cta__btn--primary:active {
   background: var(--color-accent-soft);
+}
+
+:root,
+[data-theme="dark"] {
+  --header-signal: rgba(255, 255, 255, 0.55);
+  --header-signal-soft: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme="light"] .header {
+  --header-signal: rgba(0, 0, 0, 0.52);
+  --header-signal-soft: rgba(0, 0, 0, 0.26);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-link__signal--pulse,
+  .logo-link__pulse--active {
+    animation: none !important;
+    opacity: 0.45;
+    transform: scaleX(1);
+  }
+
+  .nav-link__signal--route,
+  .nav-link__signal--pulse {
+    animation: none !important;
+    opacity: 0.45;
+    transform: scaleX(1);
+  }
+
+  .logo-link.is-pulsing,
+  .nav-link.is-routing {
+    transform: none;
+  }
 }

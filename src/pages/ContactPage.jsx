@@ -1,11 +1,22 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
-import { getDouyinUrl, getServiceArea, getSiteLocation, getLocationDisplay, getUiText, isDouyinSelfLink, t } from "../lib/content";
-import WechatQr from "../components/contact/WechatQr";
+import {
+  getDouyinUrl,
+  getServiceArea,
+  getSiteLocation,
+  getLocationDisplay,
+  getUiText,
+  isDouyinSelfLink,
+  t,
+} from "../lib/content";
+import ContactRoutingHero from "../components/contact/ContactRoutingHero";
+import CommunicationPatchBay from "../components/contact/CommunicationPatchBay";
+import WeChatSignalCard from "../components/contact/WeChatSignalCard";
+import ContactSignalTimeline from "../components/contact/ContactSignalTimeline";
+import ProjectMaterialChecklist from "../components/contact/ProjectMaterialChecklist";
+import ContactOutputCta from "../components/contact/ContactOutputCta";
 import WechatQrModal from "../components/contact/WechatQrModal";
-import Button from "../components/ui/Button";
 import ExternalLinkButton from "../components/ui/ExternalLinkButton";
 import LoadingState from "../components/ui/LoadingState";
 
@@ -25,30 +36,49 @@ export default function ContactPage() {
   const serviceArea = getServiceArea(content);
 
   return (
-    <div className="page container fade-in">
-      <h1 className="page-title">{t(ci.title, lang)}</h1>
-      <p className="page-lead">{t(social.contactNote, lang)}</p>
+    <div className="page contact-page fade-in">
+      <div className="contact-page__inner container">
+        <ContactRoutingHero content={content} lang={lang} t={t} />
+        <CommunicationPatchBay
+          content={content}
+          lang={lang}
+          t={t}
+          ci={ci}
+          onOpenQr={() => setQrOpen(true)}
+        />
+        <WeChatSignalCard
+          content={content}
+          lang={lang}
+          t={t}
+          ci={ci}
+          onOpenQr={() => setQrOpen(true)}
+        />
+        <ContactSignalTimeline lang={lang} />
+        <ProjectMaterialChecklist lang={lang} />
+        <ContactOutputCta lang={lang} bookLabel={t(ci.bookNow, lang)} />
 
-      <div className="contact-panel">
-        <div className="contact-panel__main">
-          <div className="prose-block">
-            <h3>{content.siteSettings.siteName.en}</h3>
-            <p>
-              {t(content.profile.name, lang)}
-              <br />
-              {t(content.profile.title, lang)}
-              {display.showOnContact && (
-                <>
-                  <br />
-                  {t(ci.location, lang)}：{t(location, lang)}
-                  <br />
-                  {t(serviceArea, lang)}
-                </>
-              )}
-            </p>
+        <section className="contact-section contact-archive" aria-label={lang === "cn" ? "补充联系信息" : "Additional contact"}>
+          <span className="contact-archive__code">AUX CHANNELS</span>
+          <div className="contact-archive__identity">
+            <span className="code-label">{content.siteSettings.siteName.en}</span>
+            <h2 className="contact-archive__name">{t(content.profile.name, lang)}</h2>
+            <p className="contact-archive__role">{t(content.profile.title, lang)}</p>
           </div>
 
-          <div className="contact-social">
+          {display.showOnContact && (
+            <dl className="contact-archive__meta">
+              <div className="contact-archive__meta-row">
+                <dt>{t(ci.location, lang)}</dt>
+                <dd>{t(location, lang)}</dd>
+              </div>
+              <div className="contact-archive__meta-row">
+                <dt>{lang === "cn" ? "服务范围" : "Service Area"}</dt>
+                <dd>{t(serviceArea, lang)}</dd>
+              </div>
+            </dl>
+          )}
+
+          <div className="contact-archive__social">
             <ExternalLinkButton href={social.wechatVideoUrl} variant="secondary" className="contact-social__btn">
               {t(ci.wechatVideo, lang)}
             </ExternalLinkButton>
@@ -60,20 +90,7 @@ export default function ContactPage() {
           {douyinSelf && (
             <p className="contact-hint">{getUiText("douyinDraftHint", lang)}</p>
           )}
-
-          <div className="contact-panel__booking">
-            <Button as={Link} to="/booking">{t(ci.bookNow, lang)}</Button>
-          </div>
-        </div>
-
-        <div className="contact-panel__qr">
-          <WechatQr
-            content={content}
-            caption={t(ci.wechatQr, lang)}
-            interactive
-            onOpen={() => setQrOpen(true)}
-          />
-        </div>
+        </section>
       </div>
 
       <WechatQrModal open={qrOpen} onClose={() => setQrOpen(false)} content={content} />

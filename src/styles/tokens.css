@@ -56,7 +56,31 @@
   --space-lg: 24px;
   --space-xl: 40px;
   --space-2xl: 64px;
-  --space-section: clamp(64px, 10vw, 120px);
+  --space-section-sm: clamp(56px, 8vw, 72px);
+  --space-section-md: clamp(72px, 9vw, 96px);
+  --space-section-lg: clamp(96px, 11vw, 140px);
+  --space-section: var(--space-section-lg);
+
+  --width-content: 1120px;
+  --width-wide: 1360px;
+  --width-narrow: 760px;
+  --gutter: clamp(20px, 4vw, 48px);
+
+  --card-padding: clamp(20px, 3vw, 28px);
+  --card-padding-lg: clamp(24px, 3.5vw, 36px);
+
+  --text-hero: clamp(56px, 8vw, 116px);
+  --text-page: clamp(44px, 6vw, 88px);
+  --text-section: clamp(30px, 4vw, 52px);
+  --text-card: clamp(20px, 2.5vw, 28px);
+  --text-body: clamp(15px, 1.5vw, 17px);
+  --text-meta: clamp(11px, 1.2vw, 13px);
+  --text-code: 10px;
+
+  --leading-body: 1.65;
+  --leading-prose: 1.75;
+  --leading-tight: 1.15;
+  --label-tracking: 0.14em;
 
   --radius-sm: 4px;
   --radius-md: 6px;

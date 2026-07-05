@@ -6,6 +6,8 @@ import { buildCaseVideoItem } from "../../lib/media";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";
 import CaseGallery from "./CaseGallery";
 import AudioPreviewPlaceholder from "./AudioPreviewPlaceholder";
+import ProjectConsole from "./ProjectConsole";
+import SystemSignalFlow from "./SystemSignalFlow";
 import Tag from "../ui/Tag";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
@@ -98,6 +100,8 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
 
   return (
     <article className="case-file fade-in">
+      <ProjectConsole caseItem={caseItem} content={content} lang={lang} />
+
       <header className="case-file__header">
         <div className="case-file__header-top">
           <span className="case-file__project-id">PROJECT {projectNum}</span>
@@ -124,6 +128,8 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
           ))}
         </div>
       )}
+
+      <SystemSignalFlow caseItem={caseItem} lang={lang} />
 
       <ProseSection
         code="01 / OVERVIEW"
@@ -216,59 +222,112 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
         </section>
       )}
 
-      <section className="case-file__section case-file__section--media">
-        <header className="case-file__section-head">
-          <span className="case-file__section-code">07 / MEDIA</span>
-          <h2 className="case-file__section-title">{labels.media}</h2>
+      <section className="case-file__section case-file__section--media media-rack">
+        <header className="media-rack__head">
+          <span className="case-file__section-code">MEDIA RACK</span>
+          <h2 className="case-file__section-title">
+            {lang === "cn" ? "项目媒体机架" : "Project Media Rack"}
+          </h2>
         </header>
 
-        <div className="case-file__media-block">
-          <p className="case-file__media-label">{lang === "cn" ? "现场图片" : "Gallery"}</p>
-          <CaseGallery caseItem={caseItem} />
+        <div className="media-rack__slot">
+          <div className="media-rack__slot-head">
+            <span className="media-rack__slot-code">01 PHOTO</span>
+            <span className="media-rack__slot-label">{lang === "cn" ? "现场图片" : "Gallery"}</span>
+          </div>
+          <div className="media-rack__slot-body">
+            <CaseGallery caseItem={caseItem} rack />
+          </div>
         </div>
 
-        <div className="case-file__media-block">
-          <p className="case-file__media-label">{lang === "cn" ? "视频" : "Video"}</p>
-          {videoItem ? (
-            <button
-              type="button"
-              className="case-video-trigger"
-              onClick={() => openLightbox([videoItem], 0)}
-              aria-label={lang === "cn" ? "播放项目视频" : "Play project video"}
-            >
-              <video
-                src={caseItem.videoUrl}
-                poster={videoItem.poster || undefined}
-                muted
-                playsInline
-                preload="metadata"
-              />
-              <span className="case-video-trigger__play">
-                <Play size={28} strokeWidth={1.5} />
-              </span>
-            </button>
-          ) : (
-            <MediaFallback label={lang === "cn" ? "暂无视频" : "No video"} compact />
-          )}
+        <div className="media-rack__slot">
+          <div className="media-rack__slot-head">
+            <span className="media-rack__slot-code">02 VIDEO</span>
+            <span className="media-rack__slot-label">{lang === "cn" ? "视频" : "Video"}</span>
+          </div>
+          <div className="media-rack__slot-body">
+            {videoItem ? (
+              <button
+                type="button"
+                className="case-video-trigger media-rack__video"
+                onClick={() => openLightbox([videoItem], 0)}
+                aria-label={lang === "cn" ? "播放项目视频" : "Play project video"}
+              >
+                <video
+                  src={caseItem.videoUrl}
+                  poster={videoItem.poster || undefined}
+                  muted
+                  playsInline
+                  preload="metadata"
+                />
+                <span className="case-video-trigger__play">
+                  <Play size={28} strokeWidth={1.5} />
+                </span>
+              </button>
+            ) : (
+              <MediaFallback label={lang === "cn" ? "暂无视频" : "No video"} compact />
+            )}
+          </div>
         </div>
 
-        <div className="case-file__media-block">
-          <p className="case-file__media-label">{lang === "cn" ? "音频试听" : "Audio Preview"}</p>
-          {caseItem.audioUrl ? (
-            <AudioPreviewPlaceholder />
-          ) : (
-            <EmptyState message={t(content.i18n?.common?.noAudio, lang) || (lang === "cn" ? "暂无音频" : "No audio")} />
-          )}
+        <div className="media-rack__slot">
+          <div className="media-rack__slot-head">
+            <span className="media-rack__slot-code">03 AUDIO</span>
+            <span className="media-rack__slot-label">{lang === "cn" ? "音频试听" : "Audio Preview"}</span>
+          </div>
+          <div className="media-rack__slot-body">
+            {caseItem.audioUrl ? (
+              <div className="media-rack__audio">
+                <div className="media-rack__waveform" aria-hidden="true">
+                  {Array.from({ length: 24 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className="media-rack__wave-bar"
+                      style={{ height: `${28 + ((i * 17) % 52)}%` }}
+                    />
+                  ))}
+                </div>
+                <AudioPreviewPlaceholder />
+              </div>
+            ) : (
+              <EmptyState message={t(content.i18n?.common?.noAudio, lang) || (lang === "cn" ? "暂无音频" : "No audio")} />
+            )}
+          </div>
+        </div>
+
+        <div className="media-rack__slot media-rack__slot--snapshot">
+          <div className="media-rack__slot-head">
+            <span className="media-rack__slot-code">04 SYSTEM SNAPSHOT</span>
+            <span className="media-rack__slot-label">
+              {lang === "cn" ? "系统快照" : "System Snapshot"}
+            </span>
+          </div>
+          <div className="media-rack__slot-body media-rack__snapshot">
+            {toolsText ? (
+              <p className="media-rack__snapshot-text">{toolsText}</p>
+            ) : (
+              <p className="media-rack__snapshot-text media-rack__snapshot-text--muted">
+                {lang === "cn" ? "系统设备与链路摘要见上方 Signal Flow。" : "See Signal Flow above for system chain summary."}
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
       <footer className="case-file__cta">
-        <Button as={Link} to="/booking">
-          {lang === "cn" ? "预约类似项目" : "Book a Similar Project"}
-        </Button>
-        <Button as={Link} to="/cases" variant="secondary">
-          {lang === "cn" ? "返回案例列表" : "Back to Works"}
-        </Button>
+        <div className="case-file__cta-main">
+          <Button as={Link} to={`/booking?case=${encodeURIComponent(caseItem.slug)}`}>
+            {lang === "cn" ? "预约类似项目" : "Book a Similar Project"}
+          </Button>
+          <Button as={Link} to="/cases" variant="secondary">
+            {lang === "cn" ? "返回案例列表" : "Back to Works"}
+          </Button>
+        </div>
+        <p className="case-file__cta-hint">
+          {lang === "cn"
+            ? "如果你正在筹备类似 Livehouse、演出系统或混音项目，可以带着该案例作为参考提交需求。"
+            : "Planning a similar livehouse, tour system or mixing project? Share this case as reference when you submit."}
+        </p>
       </footer>
     </article>
   );

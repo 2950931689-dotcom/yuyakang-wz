@@ -26,15 +26,15 @@ export default function CasesPage() {
 
   return (
     <div className="page container fade-in">
-      <h1 className="page-title">
-        <span className="page-title__index">02 / </span>
-        {lang === "cn" ? "案例作品" : "Works"}
-      </h1>
-      <p className="page-lead">
-        {lang === "cn"
-          ? "Livehouse 现场调音、演出系统工程、混音后期与声学模拟代表项目。"
-          : "Selected projects in live sound, system engineering, mixing and acoustic simulation."}
-      </p>
+      <header className="page-header">
+        <span className="page-header__eyebrow">02 / CASES</span>
+        <h1 className="page-title">{lang === "cn" ? "案例作品" : "Works"}</h1>
+        <p className="page-lead">
+          {lang === "cn"
+            ? "Livehouse 现场调音、演出系统工程、混音后期与声学模拟代表项目。"
+            : "Selected projects in live sound, system engineering, mixing and acoustic simulation."}
+        </p>
+      </header>
       <CaseFilter active={category} onChange={setCategory} />
       <div key={category} className="cases-grid fade-in">
         {cases.length === 0 ? (

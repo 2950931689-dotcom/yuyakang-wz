@@ -22,19 +22,20 @@ export default function BookingPage() {
     <div className="booking-page">
       <BookingVisualBg images={ambientImages} />
       <div className="booking-page__inner section-reveal">
-        <div className="booking-layout">
-          <div className="booking-layout__main">
-            <header className="booking-page__header">
-              <h1 className="booking-title">{t(content.i18n.booking.title, lang)}</h1>
-              <p className="booking-lead">
-                {lang === "cn"
-                  ? "填写项目信息，我会根据时间、城市与场地规模进行评估。"
-                  : "Share your project details for review."}
-              </p>
-            </header>
-            <div className="booking-page__form">
-              <BookingForm />
-            </div>
+        <div className="booking-layout booking-layout--intake">
+          <header className="booking-page__header">
+            <span className="booking-page__code">AUDIO INTAKE CONSOLE</span>
+            <h1 className="booking-title">
+              {lang === "cn" ? "音频项目接单控制台" : "Audio Intake Console"}
+            </h1>
+            <p className="booking-lead">
+              {lang === "cn"
+                ? "像提交一个音频工程项目需求一样完成预约 — 分步填写，系统接入，专业评估。"
+                : "Submit your project like an audio engineering intake — step by step, structured and professional."}
+            </p>
+          </header>
+          <div className="booking-page__form">
+            <BookingForm />
           </div>
         </div>
       </div>

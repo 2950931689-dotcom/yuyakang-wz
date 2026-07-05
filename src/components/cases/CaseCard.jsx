@@ -8,11 +8,13 @@ import { getCaseKeywordTags } from "../../lib/homeContent";
 import Tag from "../ui/Tag";
 import MediaFallback from "../ui/MediaFallback";
 
+const OPEN_DELAY_MS = 220;
+
 export default function CaseCard({ caseItem, projectNumber, featuredLayout = false }) {
   const { content } = useContent();
   const { lang } = useLanguage();
   const navigate = useNavigate();
-  const [pressing, setPressing] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
   const cover = getCaseCover(caseItem);
   const projectId =
     projectNumber ?? (content ? getCaseProjectNumber(content, caseItem) : "000");
@@ -25,21 +27,28 @@ export default function CaseCard({ caseItem, projectNumber, featuredLayout = fal
   const handleClick = useCallback(
     (e) => {
       e.preventDefault();
-      if (pressing) return;
-      setPressing(true);
+      if (isOpening) return;
+      setIsOpening(true);
       window.setTimeout(() => {
         navigate(href);
-      }, 100);
+      }, OPEN_DELAY_MS);
     },
-    [href, navigate, pressing]
+    [href, navigate, isOpening]
   );
 
   return (
     <a
       href={href}
-      className={`case-card${pressing ? " case-card--pressing" : ""}${featuredLayout ? " case-card--featured" : ""}`}
+      className={[
+        "case-card",
+        isOpening && "is-opening",
+        featuredLayout && "case-card--featured",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       onClick={handleClick}
     >
+      <span className="case-card__scanline" aria-hidden="true" />
       <div className="case-card__media">
         {cover ? (
           <img src={cover} alt={t(caseItem.title, lang)} loading="lazy" />
@@ -50,12 +59,17 @@ export default function CaseCard({ caseItem, projectNumber, featuredLayout = fal
           <span>
             {featuredLayout
               ? lang === "cn"
-                ? "查看项目档案"
-                : "Open Project File"
+                ? "OPEN PROJECT FILE"
+                : "OPEN PROJECT FILE"
               : lang === "cn"
-                ? "查看项目"
-                : "View Project"}
+                ? "OPEN PROJECT FILE"
+                : "OPEN PROJECT FILE"}
           </span>
+        </div>
+        <div className="case-card__open-meta" aria-hidden="true">
+          <span>SCAN FILE</span>
+          <span>SIGNAL VERIFIED</span>
+          <span>OPEN PROJECT FILE</span>
         </div>
         <div className="case-card__badges">
           <Tag>{getCategoryLabel(caseItem.category, lang)}</Tag>
@@ -81,6 +95,7 @@ export default function CaseCard({ caseItem, projectNumber, featuredLayout = fal
         )}
       </div>
       <div className="case-card__body">
+        <span className="case-card__project-status">PROJECT FILE</span>
         <span className="case-card__project-id">PROJECT {projectId}</span>
         <h3 className="case-card__title">{t(caseItem.title, lang)}</h3>
         <div className="case-card__meta-grid">

@@ -4,7 +4,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";
 import EmptyState from "../ui/EmptyState";
 
-export default function CaseGallery({ caseItem }) {
+export default function CaseGallery({ caseItem, rack = false }) {
   const { lang } = useLanguage();
   const { openLightbox } = useMediaLightbox();
   const images = getCaseImages(caseItem);
@@ -15,7 +15,7 @@ export default function CaseGallery({ caseItem }) {
   }
 
   return (
-    <div className="case-gallery">
+    <div className={`case-gallery${rack ? " case-gallery--rack" : ""}`}>
       {images.map((src, i) => (
         <button
           key={src}

@@ -103,7 +103,8 @@ async function main() {
     await page.click('button:has-text("下一步"), button:has-text("Next")');
     await page.locator(".form-group input").first().fill("南昌");
     await page.click('button:has-text("下一步"), button:has-text("Next")');
-    await page.locator("textarea").fill("可用性测试预约");
+    await page.locator("textarea").first().fill("可用性测试预约");
+    await page.click('button:has-text("下一步"), button:has-text("Next")');
     await page.click('button:has-text("下一步"), button:has-text("Next")');
     await page.locator('.form-group input[type="text"], .form-group input:not([type])').first().fill("测试");
     await page.click('button:has-text("提交"), button:has-text("Submit")');

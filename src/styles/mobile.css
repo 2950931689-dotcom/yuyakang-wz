@@ -1,6 +1,6 @@
 @media (max-width: 767px) {
   .hero { min-height: 85vh; }
-  .hero__content { padding-block: 100px 60px; }
+  .hero__content { padding-block: clamp(88px, 18vh, 120px) clamp(48px, 8vh, 72px); }
 
   .case-card:active,
   .case-card--pressing {
@@ -18,8 +18,8 @@
   }
 
   .booking-page__inner {
-    width: min(100% - 40px, 100%);
-    padding: 56px 0 calc(96px + env(safe-area-inset-bottom, 0px));
+    width: min(calc(100% - var(--gutter) * 2), 100%);
+    padding: var(--space-section-sm) 0 calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
   .booking-layout {

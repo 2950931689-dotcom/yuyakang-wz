@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 function isCurrentPath(to, pathname, end) {
@@ -8,10 +8,21 @@ function isCurrentPath(to, pathname, end) {
 
 export default function NavSignalLink({ to, end, children, onClick, className = "" }) {
   const location = useLocation();
-  const [pulseKey, setPulseKey] = useState(0);
+  const [isRouting, setIsRouting] = useState(false);
+
+  const triggerRoute = useCallback(() => {
+    setIsRouting(false);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setIsRouting(true));
+    });
+  }, []);
+
+  const handleRouteEnd = useCallback(() => {
+    setIsRouting(false);
+  }, []);
 
   const handleClick = (e) => {
-    setPulseKey((k) => k + 1);
+    triggerRoute();
     if (isCurrentPath(to, location.pathname, end)) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -24,15 +35,22 @@ export default function NavSignalLink({ to, end, children, onClick, className = 
       to={to}
       end={end}
       className={({ isActive }) =>
-        ["nav-link", isActive && "is-active", className].filter(Boolean).join(" ")
+        [
+          "nav-link",
+          isActive && "is-active",
+          isRouting && "is-routing",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")
       }
       onClick={handleClick}
     >
-      <span className="nav-link__text">{children}</span>
+      <span className="nav-link__label nav-link__text">{children}</span>
       <span
-        key={pulseKey}
-        className="nav-link__signal nav-link__signal--pulse"
+        className={`nav-link__signal${isRouting ? " nav-link__signal--route" : ""}`}
         aria-hidden="true"
+        onAnimationEnd={handleRouteEnd}
       />
     </NavLink>
   );

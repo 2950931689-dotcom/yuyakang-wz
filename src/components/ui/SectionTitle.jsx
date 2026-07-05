@@ -1,18 +1,37 @@
-export default function SectionTitle({ sectionIndex, eyebrow, title, subtitle, className = "" }) {
+export default function SectionTitle({
+  sectionIndex,
+  eyebrow,
+  title,
+  subtitle,
+  align = "left",
+  size = "default",
+  className = "",
+  headingLevel = "h2",
+}) {
   const indexLabel = sectionIndex != null ? String(sectionIndex).padStart(2, "0") : null;
+  const Heading = headingLevel;
+
+  const classes = [
+    "section-title",
+    align !== "left" && `section-title--${align}`,
+    size !== "default" && `section-title--${size}`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div className={`section-title ${className}`.trim()}>
+    <div className={classes}>
       {(indexLabel || eyebrow) && (
-        <span className="section-title__eyebrow">
+        <span className="section-title__eyebrow code-label">
           {indexLabel && <span className="section-title__index">{indexLabel}</span>}
           {indexLabel && eyebrow && <span className="section-title__sep"> / </span>}
           {eyebrow}
         </span>
       )}
-      <h2 className="section-title__heading">{title}</h2>
+      <Heading className="section-title__heading">{title}</Heading>
       {subtitle && <p className="section-title__subtitle">{subtitle}</p>}
-      <div className="section-title__line" />
+      <div className="section-title__line" aria-hidden="true" />
     </div>
   );
 }
