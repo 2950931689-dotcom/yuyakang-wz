@@ -1,0 +1,514 @@
+{
+  "meta": {
+    "version": "1.0.1",
+    "updatedAt": "2026-07-05T08:00:00.000Z"
+  },
+  "siteSettings": {
+    "siteName": {
+      "cn": "YU YAKANG AUDIO",
+      "en": "YU YAKANG AUDIO"
+    },
+    "tagline": {
+      "cn": "现场调音 / 系统工程 / 混音后期",
+      "en": "Live Sound / System Tuning / Mixing"
+    },
+    "wechatQrUrl": "/images/wechat-qr.jpg",
+    "contactEmail": "",
+    "contactPhone": "",
+    "defaultLanguage": "cn",
+    "processSteps": [
+      {
+        "order": 1,
+        "title": { "cn": "提交需求", "en": "Submit Inquiry" },
+        "description": {
+          "cn": "通过预约表单或微信说明项目类型、时间与场地情况。",
+          "en": "Share project type, schedule, and venue details via form or WeChat."
+        }
+      },
+      {
+        "order": 2,
+        "title": { "cn": "沟通场地 / 素材", "en": "Discuss Venue / Materials" },
+        "description": {
+          "cn": "确认现场条件、设备清单或混音素材与参考方向。",
+          "en": "Confirm venue conditions, gear list, or mix references and source files."
+        }
+      },
+      {
+        "order": 3,
+        "title": { "cn": "确认方案", "en": "Confirm Plan" },
+        "description": {
+          "cn": "明确服务内容、时间安排与交付标准。",
+          "en": "Align on scope, timeline, and deliverables."
+        }
+      },
+      {
+        "order": 4,
+        "title": { "cn": "执行调音 / 混音", "en": "Execute On-site / Mix" },
+        "description": {
+          "cn": "现场系统调试、演出混音或后期制作执行。",
+          "en": "On-site tuning, live mixing, or post-production execution."
+        }
+      },
+      {
+        "order": 5,
+        "title": { "cn": "交付与复盘", "en": "Delivery & Review" },
+        "description": {
+          "cn": "交付成果，复盘现场问题与后续优化建议。",
+          "en": "Deliver results and review outcomes with improvement notes."
+        }
+      }
+    ]
+  },
+  "profile": {
+    "name": { "cn": "余雅康", "en": "Yu Yakang" },
+    "title": {
+      "cn": "现场调音师 / 音响系统工程师 / 混音师",
+      "en": "Live Sound Engineer / System Tuning / Mixing Engineer"
+    },
+    "bio": {
+      "cn": "【待补充】个人简介：从业经历、擅长领域、代表项目概述。",
+      "en": "[TODO] Bio: experience, specialties, and representative projects."
+    },
+    "avatarUrl": "/images/about/avatar.webp",
+    "location": { "cn": "江西南昌", "en": "Nanchang, Jiangxi" },
+    "experience": [
+      {
+        "label": { "cn": "Livehouse 现场调音", "en": "Livehouse Live Sound" },
+        "value": { "cn": "【待补充】", "en": "[TODO]" }
+      },
+      {
+        "label": { "cn": "演出系统工程项目", "en": "Tour System Engineering" },
+        "value": { "cn": "【待补充】", "en": "[TODO]" }
+      },
+      {
+        "label": { "cn": "调音台经验", "en": "Console Experience" },
+        "value": { "cn": "【待补充：如 Allen & Heath / Yamaha 等】", "en": "[TODO]" }
+      }
+    ],
+    "tools": [
+      { "label": { "cn": "Smaart", "en": "Smaart" }, "value": { "cn": "系统测量与调校", "en": "System measurement & tuning" } },
+      { "label": { "cn": "EASE Focus", "en": "EASE Focus" }, "value": { "cn": "声学模拟与系统设计", "en": "Acoustic simulation & system design" } },
+      { "label": { "cn": "DAW", "en": "DAW" }, "value": { "cn": "【待补充】", "en": "[TODO]" } },
+      { "label": { "cn": "插件", "en": "Plugins" }, "value": { "cn": "【待补充】", "en": "[TODO]" } }
+    ]
+  },
+  "hero": {
+    "desktopVideoUrl": "/hero/desktop/hero-reel.mp4",
+    "mobileVideoUrl": "/hero/mobile/hero-reel-mobile.mp4",
+    "posterUrl": "/hero/desktop/hero-poster.webp",
+    "mobilePosterUrl": "/hero/mobile/hero-poster-mobile.webp",
+    "primaryButton": {
+      "cn": "观看代表视频",
+      "en": "Watch Video",
+      "mobileUrl": "https://weixin.qq.com/sph/AgeXXBTfmy",
+      "desktopUrl": "https://weixin.qq.com/sph/AgeXXBTfmy"
+    },
+    "secondaryButton": {
+      "cn": "查看案例作品",
+      "en": "View Cases",
+      "url": "/cases"
+    },
+    "headline": {
+      "cn": "现场调音 / 系统工程 / 混音后期",
+      "en": "Live Sound / System Tuning / Mixing"
+    },
+    "subheadline": {
+      "cn": "YU YAKANG AUDIO · 余雅康",
+      "en": "YU YAKANG AUDIO · Yu Yakang"
+    }
+  },
+  "certificates": [
+    {
+      "id": "cert-01",
+      "order": 1,
+      "title": { "cn": "【待补充证书名称】", "en": "[TODO Certificate Title]" },
+      "issuer": { "cn": "【待补充颁发机构】", "en": "[TODO Issuer]" },
+      "year": "",
+      "imageUrl": "/certificates/cert-01.webp",
+      "visible": true
+    },
+    {
+      "id": "cert-02",
+      "order": 2,
+      "title": { "cn": "【待补充证书名称】", "en": "[TODO Certificate Title]" },
+      "issuer": { "cn": "【待补充颁发机构】", "en": "[TODO Issuer]" },
+      "year": "",
+      "imageUrl": "/certificates/cert-02.webp",
+      "visible": true
+    },
+    {
+      "id": "cert-03",
+      "order": 3,
+      "title": { "cn": "【待补充证书名称】", "en": "[TODO Certificate Title]" },
+      "issuer": { "cn": "【待补充颁发机构】", "en": "[TODO Issuer]" },
+      "year": "",
+      "imageUrl": "/certificates/cert-03.webp",
+      "visible": true
+    }
+  ],
+  "services": [
+    {
+      "id": "svc-livehouse",
+      "order": 1,
+      "slug": "livehouse-sound",
+      "icon": "Mic2",
+      "title": { "cn": "Livehouse 现场调音", "en": "Livehouse Live Sound" },
+      "summary": {
+        "cn": "酒吧 / Livehouse 演出扩声与现场混音。",
+        "en": "Sound reinforcement and live mixing for bars and livehouses."
+      },
+      "description": {
+        "cn": "【待补充详细描述】",
+        "en": "[TODO]"
+      },
+      "visible": true
+    },
+    {
+      "id": "svc-system",
+      "order": 2,
+      "slug": "system-engineering",
+      "icon": "Settings2",
+      "title": { "cn": "演出系统工程", "en": "Tour System Engineering" },
+      "summary": {
+        "cn": "音响系统方案、安装调试与系统调校。",
+        "en": "System design, installation, tuning, and optimization."
+      },
+      "description": { "cn": "【待补充】", "en": "[TODO]" },
+      "visible": true
+    },
+    {
+      "id": "svc-mixing",
+      "order": 3,
+      "slug": "mixing-post",
+      "icon": "Headphones",
+      "title": { "cn": "混音后期", "en": "Mixing & Post-Production" },
+      "summary": {
+        "cn": "贴唱、多轨混音与成品交付。",
+        "en": "Vocal mixing, multitrack mixing, and final delivery."
+      },
+      "description": { "cn": "【待补充】", "en": "[TODO]" },
+      "visible": true
+    },
+    {
+      "id": "svc-recording",
+      "order": 4,
+      "slug": "recording-editing",
+      "icon": "Disc3",
+      "title": { "cn": "录音 / 音频编辑", "en": "Recording / Audio Editing" },
+      "summary": {
+        "cn": "录音支持、音频编辑与素材整理。",
+        "en": "Recording support, editing, and asset preparation."
+      },
+      "description": { "cn": "【待补充】", "en": "[TODO]" },
+      "visible": true
+    }
+  ],
+  "cases": [
+    {
+      "id": "case-echo-live-yunfu",
+      "slug": "echo-live-yunfu",
+      "order": 1,
+      "featured": true,
+      "visible": true,
+      "category": "livehouse-system-tuning",
+      "date": "",
+      "location": { "cn": "广东云浮", "en": "Yunfu, Guangdong" },
+      "role": { "cn": "音响系统工程 + 现场调音", "en": "System Engineering + Live Sound" },
+      "title": { "cn": "云浮 ECHO.回声 Live", "en": "ECHO Live · Yunfu" },
+      "summary": {
+        "cn": "【待补充：一句话摘要】",
+        "en": "[TODO: one-line summary]"
+      },
+      "background": { "cn": "【待补充：项目背景】", "en": "[TODO]" },
+      "services": { "cn": "【待补充：服务内容】", "en": "[TODO]" },
+      "equipment": { "cn": "【待补充：使用设备/软件】", "en": "[TODO]" },
+      "challenge": { "cn": "【待补充：现场问题/项目难点】", "en": "[TODO]" },
+      "solution": { "cn": "【待补充：解决方案】", "en": "[TODO]" },
+      "result": { "cn": "【待补充：最终效果】", "en": "[TODO]" },
+      "clientFeedback": { "cn": "", "en": "" },
+      "coverUrl": "/cases/echo-live-yunfu/gallery/gallery-01.webp",
+      "images": [
+        "/cases/echo-live-yunfu/gallery/gallery-01.webp",
+        "/cases/echo-live-yunfu/gallery/gallery-02.webp",
+        "/cases/echo-live-yunfu/gallery/gallery-03.webp",
+        "/cases/echo-live-yunfu/gallery/gallery-04.webp"
+      ],
+      "videoUrl": "/cases/echo-live-yunfu/video.mp4",
+      "audioUrl": null,
+      "externalVideoUrl": null,
+      "seo": {
+        "title": { "cn": "云浮 ECHO.回声 Live | YU YAKANG AUDIO", "en": "ECHO Live Yunfu | YU YAKANG AUDIO" },
+        "description": { "cn": "【待补充】", "en": "[TODO]" },
+        "keywords": { "cn": ["Livehouse", "现场调音", "系统工程"], "en": ["livehouse", "live sound", "system tuning"] }
+      }
+    },
+    {
+      "id": "case-wild-live-shenzhen",
+      "slug": "wild-live-shenzhen",
+      "order": 2,
+      "featured": true,
+      "visible": true,
+      "category": "livehouse-system-tuning",
+      "date": "",
+      "location": { "cn": "深圳南山", "en": "Nanshan, Shenzhen" },
+      "role": { "cn": "音响系统工程 + 现场调音", "en": "System Engineering + Live Sound" },
+      "title": { "cn": "深圳南山 Wild Live", "en": "Wild Live · Shenzhen" },
+      "summary": { "cn": "【待补充】", "en": "[TODO]" },
+      "background": { "cn": "【待补充】", "en": "[TODO]" },
+      "services": { "cn": "【待补充】", "en": "[TODO]" },
+      "equipment": { "cn": "【待补充】", "en": "[TODO]" },
+      "challenge": { "cn": "【待补充】", "en": "[TODO]" },
+      "solution": { "cn": "【待补充】", "en": "[TODO]" },
+      "result": { "cn": "【待补充】", "en": "[TODO]" },
+      "clientFeedback": { "cn": "", "en": "" },
+      "coverUrl": "/cases/wild-live-shenzhen/gallery/gallery-01.webp",
+      "images": [
+        "/cases/wild-live-shenzhen/gallery/gallery-01.webp",
+        "/cases/wild-live-shenzhen/gallery/gallery-02.webp",
+        "/cases/wild-live-shenzhen/gallery/gallery-03.webp"
+      ],
+      "videoUrl": "/cases/wild-live-shenzhen/video.mp4",
+      "audioUrl": null,
+      "externalVideoUrl": null,
+      "seo": {
+        "title": { "cn": "深圳 Wild Live | YU YAKANG AUDIO", "en": "Wild Live Shenzhen | YU YAKANG AUDIO" },
+        "description": { "cn": "【待补充】", "en": "[TODO]" },
+        "keywords": { "cn": ["Livehouse", "深圳", "调音"], "en": ["livehouse", "shenzhen", "live sound"] }
+      }
+    },
+    {
+      "id": "case-maca-live-guangning",
+      "slug": "maca-live-guangning",
+      "order": 3,
+      "featured": true,
+      "visible": true,
+      "category": "livehouse-system-tuning",
+      "date": "",
+      "location": { "cn": "肇庆广宁", "en": "Guangning, Zhaoqing" },
+      "role": { "cn": "音响系统工程 + 现场调音", "en": "System Engineering + Live Sound" },
+      "title": { "cn": "肇庆广宁 Maca 音乐客厅 Live", "en": "Maca Music Living Room · Guangning" },
+      "summary": { "cn": "【待补充】", "en": "[TODO]" },
+      "background": { "cn": "【待补充】", "en": "[TODO]" },
+      "services": { "cn": "【待补充】", "en": "[TODO]" },
+      "equipment": { "cn": "【待补充】", "en": "[TODO]" },
+      "challenge": { "cn": "【待补充】", "en": "[TODO]" },
+      "solution": { "cn": "【待补充】", "en": "[TODO]" },
+      "result": { "cn": "【待补充】", "en": "[TODO]" },
+      "clientFeedback": { "cn": "", "en": "" },
+      "coverUrl": "/cases/maca-live-guangning/gallery/gallery-01.webp",
+      "images": [
+        "/cases/maca-live-guangning/gallery/gallery-01.webp",
+        "/cases/maca-live-guangning/gallery/gallery-02.webp",
+        "/cases/maca-live-guangning/gallery/gallery-03.webp",
+        "/cases/maca-live-guangning/gallery/gallery-04.webp",
+        "/cases/maca-live-guangning/gallery/gallery-05.webp"
+      ],
+      "videoUrl": "/cases/maca-live-guangning/video.mp4",
+      "audioUrl": null,
+      "externalVideoUrl": null,
+      "seo": {
+        "title": { "cn": "Maca 音乐客厅 Live | YU YAKANG AUDIO", "en": "Maca Live Guangning | YU YAKANG AUDIO" },
+        "description": { "cn": "【待补充】", "en": "[TODO]" },
+        "keywords": { "cn": ["Livehouse", "肇庆", "系统工程"], "en": ["livehouse", "system engineering"] }
+      }
+    },
+    {
+      "id": "case-shuimuhuaya-jingdezhen",
+      "slug": "shuimuhuaya-jingdezhen-2025",
+      "order": 4,
+      "featured": true,
+      "visible": true,
+      "category": "tour-system-engineering",
+      "date": "2025",
+      "location": { "cn": "江西景德镇", "en": "Jingdezhen, Jiangxi" },
+      "role": { "cn": "音响系统工程", "en": "System Engineering" },
+      "title": {
+        "cn": "水木年华 25 周年巡回演唱会·景德镇站",
+        "en": "Shui Mu Nian Hua 25th Anniversary Tour · Jingdezhen"
+      },
+      "summary": { "cn": "【待补充】", "en": "[TODO]" },
+      "background": { "cn": "【待补充】", "en": "[TODO]" },
+      "services": { "cn": "【待补充】", "en": "[TODO]" },
+      "equipment": { "cn": "【待补充】", "en": "[TODO]" },
+      "challenge": { "cn": "【待补充】", "en": "[TODO]" },
+      "solution": { "cn": "【待补充】", "en": "[TODO]" },
+      "result": { "cn": "【待补充】", "en": "[TODO]" },
+      "clientFeedback": { "cn": "", "en": "" },
+      "coverUrl": "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-01.webp",
+      "images": [
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-01.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-02.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-03.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-04.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-05.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-06.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-07.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-08.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-09.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-10.webp",
+        "/cases/shuimuhuaya-jingdezhen-2025/gallery/gallery-11.webp"
+      ],
+      "videoUrl": "/cases/shuimuhuaya-jingdezhen-2025/video.mp4",
+      "audioUrl": null,
+      "externalVideoUrl": null,
+      "seo": {
+        "title": { "cn": "水木年华景德镇站 | YU YAKANG AUDIO", "en": "Shui Mu Nian Hua Jingdezhen | YU YAKANG AUDIO" },
+        "description": { "cn": "【待补充】", "en": "[TODO]" },
+        "keywords": { "cn": ["演唱会", "系统工程", "景德镇"], "en": ["concert", "system engineering"] }
+      }
+    },
+    {
+      "id": "case-mix-gulou-v7",
+      "slug": "mix-gulou-v7",
+      "order": 5,
+      "featured": true,
+      "visible": true,
+      "category": "mixing-post-production",
+      "date": "",
+      "location": { "cn": "后期制作", "en": "Post-Production" },
+      "role": { "cn": "混音师", "en": "Mixing Engineer" },
+      "title": { "cn": "《鼓楼》混音案例", "en": "Gulou · Mixing Case" },
+      "summary": { "cn": "【待补充】", "en": "[TODO]" },
+      "background": { "cn": "【待补充】", "en": "[TODO]" },
+      "services": { "cn": "多轨混音 / 贴唱处理", "en": "Multitrack mixing / vocal production" },
+      "equipment": { "cn": "【待补充：DAW / 插件】", "en": "[TODO]" },
+      "challenge": { "cn": "【待补充】", "en": "[TODO]" },
+      "solution": { "cn": "【待补充】", "en": "[TODO]" },
+      "result": { "cn": "【待补充】", "en": "[TODO]" },
+      "clientFeedback": { "cn": "", "en": "" },
+      "coverUrl": "",
+      "images": [],
+      "videoUrl": null,
+      "audioUrl": "/audio/mix-gulou-v7.mp3",
+      "externalVideoUrl": null,
+      "seo": {
+        "title": { "cn": "《鼓楼》混音 | YU YAKANG AUDIO", "en": "Gulou Mix | YU YAKANG AUDIO" },
+        "description": { "cn": "【待补充】", "en": "[TODO]" },
+        "keywords": { "cn": ["混音", "后期", "贴唱"], "en": ["mixing", "post-production"] }
+      }
+    },
+    {
+      "id": "case-acoustic-simulation-tavern",
+      "slug": "acoustic-simulation-tavern",
+      "order": 6,
+      "featured": true,
+      "visible": true,
+      "category": "acoustic-simulation",
+      "date": "",
+      "location": { "cn": "【待补充】", "en": "[TODO]" },
+      "role": { "cn": "声学模拟 / 系统设计", "en": "Acoustic Simulation / System Design" },
+      "title": { "cn": "声学模拟·酒馆", "en": "Acoustic Simulation · Tavern" },
+      "summary": { "cn": "【待补充】", "en": "[TODO]" },
+      "background": { "cn": "【待补充】", "en": "[TODO]" },
+      "services": { "cn": "EASE Focus 声学模拟与扩声方案设计", "en": "EASE Focus simulation and sound system design" },
+      "equipment": { "cn": "EASE Focus", "en": "EASE Focus" },
+      "challenge": { "cn": "【待补充】", "en": "[TODO]" },
+      "solution": { "cn": "【待补充】", "en": "[TODO]" },
+      "result": { "cn": "【待补充】", "en": "[TODO]" },
+      "clientFeedback": { "cn": "", "en": "" },
+      "coverUrl": "/cases/acoustic-simulation-tavern/cover.webp",
+      "images": ["/cases/acoustic-simulation-tavern/cover.webp"],
+      "videoUrl": null,
+      "audioUrl": null,
+      "externalVideoUrl": null,
+      "seo": {
+        "title": { "cn": "声学模拟·酒馆 | YU YAKANG AUDIO", "en": "Acoustic Simulation Tavern | YU YAKANG AUDIO" },
+        "description": { "cn": "【待补充】", "en": "[TODO]" },
+        "keywords": { "cn": ["声学模拟", "EASE", "系统设计"], "en": ["acoustic simulation", "EASE Focus"] }
+      }
+    }
+  ],
+  "seo": {
+    "title": {
+      "cn": "YU YAKANG AUDIO | 余雅康 · 现场调音 / 系统工程 / 混音后期",
+      "en": "YU YAKANG AUDIO | Live Sound · System Tuning · Mixing"
+    },
+    "description": {
+      "cn": "余雅康个人调音师品牌官网。Livehouse 现场调音、演出系统工程、混音后期与案例作品展示。",
+      "en": "Official portfolio of Yu Yakang — live sound, system tuning, and mixing engineering."
+    },
+    "keywords": {
+      "cn": ["现场调音", "音响工程师", "混音师", "Livehouse", "系统工程"],
+      "en": ["live sound engineer", "system tuning", "mixing engineer", "livehouse"]
+    },
+    "ogImageUrl": "/images/og-default.webp",
+    "faviconUrl": "/images/favicon.ico"
+  },
+  "socialLinks": {
+    "douyinUrl": "",
+    "douyinUrlDraft": "https://www.douyin.com/user/self?from_tab_name=main&showTab=post",
+    "wechatVideoUrl": "https://weixin.qq.com/sph/AgeXXBTfmy",
+    "wechatQrImage": "/images/wechat-qr.jpg",
+    "phone": "",
+    "email": "",
+    "location": {
+      "cn": "江西南昌",
+      "en": "Nanchang, Jiangxi"
+    },
+    "contactNote": {
+      "cn": "欢迎通过微信沟通现场调音、系统工程、混音后期等合作需求。",
+      "en": "For live sound, system tuning and mixing projects, feel free to contact me via WeChat."
+    }
+  },
+  "i18n": {
+    "nav": {
+      "home": { "cn": "首页", "en": "Home" },
+      "cases": { "cn": "案例", "en": "Works" },
+      "about": { "cn": "关于", "en": "About" },
+      "services": { "cn": "服务", "en": "Services" },
+      "booking": { "cn": "预约", "en": "Booking" },
+      "contact": { "cn": "联系", "en": "Contact" }
+    },
+    "common": {
+      "learnMore": { "cn": "了解更多", "en": "Learn More" },
+      "submit": { "cn": "提交", "en": "Submit" },
+      "loading": { "cn": "加载中…", "en": "Loading…" },
+      "error": { "cn": "出错了，请稍后重试", "en": "Something went wrong. Please try again." },
+      "audioLoadError": { "cn": "音频加载失败", "en": "Failed to load audio" },
+      "noAudio": { "cn": "暂无音频试听", "en": "No audio preview available" }
+    },
+    "booking": {
+      "title": { "cn": "预约合作", "en": "Book a Project" },
+      "clientName": { "cn": "姓名", "en": "Name" },
+      "wechat": { "cn": "微信", "en": "WeChat" },
+      "phone": { "cn": "手机", "en": "Phone" },
+      "email": { "cn": "邮箱", "en": "Email" },
+      "serviceType": { "cn": "服务类型", "en": "Service Type" },
+      "city": { "cn": "城市", "en": "City" },
+      "projectDate": { "cn": "项目日期", "en": "Project Date" },
+      "venueScale": { "cn": "场地规模", "en": "Venue Scale" },
+      "budgetRange": { "cn": "预算范围", "en": "Budget Range" },
+      "referenceUrl": { "cn": "参考链接", "en": "Reference URL" },
+      "description": { "cn": "需求描述", "en": "Project Details" },
+      "successTitle": { "cn": "需求已提交", "en": "Request Submitted" },
+      "success": {
+        "cn": "需求已提交。\n我会根据项目时间、城市、场地规模和服务内容进行评估。\n建议同时添加微信，方便发送现场图纸、音频文件或进一步沟通排期。",
+        "en": "Your request has been submitted.\nI will review the project date, city, venue scale and service scope.\nYou can also add me on WeChat for faster communication."
+      },
+      "successBackHome": { "cn": "返回首页", "en": "Back to Home" },
+      "successViewCases": { "cn": "查看案例", "en": "View Cases" },
+      "addWeChat": { "cn": "扫码添加微信", "en": "Scan to Add on WeChat" }
+    },
+    "contact": {
+      "title": { "cn": "联系方式", "en": "Contact" },
+      "wechatQr": { "cn": "微信二维码", "en": "WeChat QR Code" },
+      "wechatVideo": { "cn": "视频号", "en": "WeChat Channels" },
+      "douyin": { "cn": "抖音", "en": "Douyin" },
+      "location": { "cn": "服务城市 / 常驻地", "en": "Based in" },
+      "bookNow": { "cn": "预约合作", "en": "Book a Project" },
+      "watchVideo": { "cn": "观看代表视频", "en": "Watch Video" },
+      "douyinDraftWarning": {
+        "cn": "抖音链接待更新为公开主页链接",
+        "en": "Douyin link pending — replace with public profile URL"
+      }
+    },
+    "cases": {
+      "allCategories": { "cn": "全部", "en": "All" },
+      "challenge": { "cn": "项目难点", "en": "Challenge" },
+      "solution": { "cn": "解决方案", "en": "Solution" },
+      "result": { "cn": "最终效果", "en": "Result" },
+      "equipment": { "cn": "使用设备 / 软件", "en": "Equipment / Software" },
+      "clientFeedback": { "cn": "客户反馈", "en": "Client Feedback" }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "description": "预约表单数据独立存储，不写入 site-content.json"
+  },
+  "bookings": []
+}

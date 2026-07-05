@@ -1,0 +1,62 @@
+{
+  "mode": "dry-run",
+  "generatedAt": "2026-07-05T07:40:47.778Z",
+  "ffmpegAvailable": true,
+  "bitrate": "192k",
+  "tracks": [
+    {
+      "slug": "mix-gulou-v7",
+      "source": "E:\\卓面应用\\个人文件\\Cursor\\余\\后期混音案例\\多轨混音\\鼓楼 v7.mp3",
+      "dest": "E:\\卓面应用\\个人文件\\Cursor\\余\\软件开发\\yuyakang-audio-site\\public\\audio\\mix-gulou-v7.mp3",
+      "sourceExists": true,
+      "destExists": false,
+      "reason": "MP3 已就绪，copy-assets 直接复制即可",
+      "action": "would-copy"
+    },
+    {
+      "slug": "mix-perfect-world",
+      "source": "E:\\卓面应用\\个人文件\\Cursor\\余\\后期混音案例\\多轨混音\\水木年华 《完美世界》FindMix.wav",
+      "dest": "E:\\卓面应用\\个人文件\\Cursor\\余\\软件开发\\yuyakang-audio-site\\public\\audio\\mix-perfect-world.mp3",
+      "sourceExists": true,
+      "destExists": false,
+      "reason": "WAV 51MB → 需转 MP3",
+      "action": "would-transcode"
+    },
+    {
+      "slug": "mix-sanguolian",
+      "source": "E:\\卓面应用\\个人文件\\Cursor\\余\\后期混音案例\\贴唱\\三国恋 FindMIX.wav",
+      "dest": "E:\\卓面应用\\个人文件\\Cursor\\余\\软件开发\\yuyakang-audio-site\\public\\audio\\mix-sanguolian.mp3",
+      "sourceExists": true,
+      "destExists": false,
+      "reason": "WAV 41MB → 需转 MP3",
+      "action": "would-transcode"
+    },
+    {
+      "slug": "mix-feige",
+      "source": "E:\\卓面应用\\个人文件\\Cursor\\余\\后期混音案例\\贴唱\\飞鸽 FindMIX.wav",
+      "dest": "E:\\卓面应用\\个人文件\\Cursor\\余\\软件开发\\yuyakang-audio-site\\public\\audio\\mix-feige.mp3",
+      "sourceExists": true,
+      "destExists": false,
+      "reason": "WAV 40MB → 需转 MP3",
+      "action": "would-transcode"
+    },
+    {
+      "slug": "mix-nameless",
+      "source": "E:\\卓面应用\\个人文件\\Cursor\\余\\后期混音案例\\贴唱\\无名的人 FindMix.mp3",
+      "dest": "E:\\卓面应用\\个人文件\\Cursor\\余\\软件开发\\yuyakang-audio-site\\public\\audio\\mix-nameless.mp3",
+      "sourceExists": true,
+      "destExists": false,
+      "reason": "MP3 可选复制（非首批案例）",
+      "action": "would-copy"
+    },
+    {
+      "slug": "mix-yingxingzhe",
+      "source": "E:\\卓面应用\\个人文件\\Cursor\\余\\后期混音案例\\贴唱\\影行者FindMIX.mp3",
+      "dest": "E:\\卓面应用\\个人文件\\Cursor\\余\\软件开发\\yuyakang-audio-site\\public\\audio\\mix-yingxingzhe.mp3",
+      "sourceExists": true,
+      "destExists": false,
+      "reason": "MP3 可选复制（非首批案例）",
+      "action": "would-copy"
+    }
+  ]
+}
