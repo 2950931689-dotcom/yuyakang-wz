@@ -3,135 +3,64 @@ import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getCaseCover, getHeroSlides, t } from "../../lib/content";
 
-const FADE_MS = 700;
-const FADE_MS_REDUCED = 120;
-const TICK_MS = 50;
 const MIN_SLIDE_SEC = 3;
 const MAX_SLIDE_SEC = 15;
-const PRELOAD_AHEAD_MS = 2000;
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  return reduced;
-}
+const DEFAULT_DURATION = 8;
+const SWITCH_COOLDOWN_MS = 120;
 
 function clampSlideDurationSec(raw, heroDefault) {
-  const v = Number(raw ?? heroDefault ?? 5);
-  if (Number.isNaN(v)) return 5;
+  const v = Number(raw ?? heroDefault ?? DEFAULT_DURATION);
+  if (Number.isNaN(v)) return DEFAULT_DURATION;
   return Math.min(MAX_SLIDE_SEC, Math.max(MIN_SLIDE_SEC, v));
 }
 
-function CarouselLayer({
-  slide,
-  poster,
-  videoSrc,
-  mode,
-  fadeActive,
-  usePosterMode,
-  preload,
-  onError,
-}) {
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !slide || usePosterMode) return undefined;
-
-    const shouldPlay =
-      mode === "solo" || mode === "fade-out" || (mode === "fade-in" && fadeActive);
-
-    if (shouldPlay) {
-      const start = () => {
-        try {
-          if (mode === "fade-in") video.currentTime = slide.startTime ?? 0;
-          video.play().catch(() => {});
-        } catch {
-          /* ignore seek errors */
-        }
-      };
-      if (video.readyState >= 2) start();
-      else video.addEventListener("loadeddata", start, { once: true });
-    }
-
-    return () => {
-      if (mode !== "preload") video.pause();
-    };
-  }, [slide, usePosterMode, mode, fadeActive, videoSrc]);
-
-  if (!slide) return null;
-
-  const layerClass = [
-    "hero__carousel-layer",
-    mode === "solo" && "is-solo",
-    mode === "fade-out" && "is-fading-out",
-    mode === "fade-in" && "is-fading-in",
-    fadeActive && mode === "fade-out" && "is-fading-out-active",
-    fadeActive && mode === "fade-in" && "is-fading-in-active",
-    mode === "preload" && "is-preload",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  return (
-    <div className={layerClass}>
-      {usePosterMode ? (
-        poster ? (
-          <img src={poster} alt="" className="hero__carousel-poster" />
-        ) : (
-          <div className="hero__poster">
-            <span className="hero__poster-grid" />
-          </div>
-        )
-      ) : (
-        <video
-          ref={videoRef}
-          muted
-          playsInline
-          preload={preload}
-          poster={poster || undefined}
-          onError={onError}
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      )}
-    </div>
-  );
-}
-
-export default function HeroVideoCarousel({ hero: heroProp, isMobile }) {
+export default function HeroVideoCarousel({ hero: heroProp, isMobile, onStatusChange }) {
   const { content } = useContent();
   const { lang } = useLanguage();
-  const reducedMotion = usePrefersReducedMotion();
 
-  const hero = heroProp ?? {};
-  const slides = useMemo(() => getHeroSlides(content, hero), [content, hero]);
-  const usePosterMode = isMobile;
+  const heroMode = heroProp?.mode;
+  const heroSlideDuration = heroProp?.slideDuration ?? DEFAULT_DURATION;
 
-  const [index, setIndex] = useState(0);
-  const [crossfade, setCrossfade] = useState(null);
-  const [preloadNext, setPreloadNext] = useState(null);
+  const slides = useMemo(
+    () => getHeroSlides(content, heroProp ?? {}),
+    [content, heroMode, heroSlideDuration]
+  );
+
+  const slidesKey = useMemo(
+    () => slides.map((s) => `${s.caseSlug}:${s.video}:${s.duration}:${s.sortOrder}`).join("|"),
+    [slides]
+  );
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.debug("[HeroCarousel] slides", slides.length, slides.map((s) => s.title));
+    }
+  }, [slides]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
   const [failedIndices, setFailedIndices] = useState(() => new Set());
   const [allFailed, setAllFailed] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [mobileVideoFailed, setMobileVideoFailed] = useState(false);
 
-  const fadeMs = reducedMotion ? FADE_MS_REDUCED : FADE_MS;
-  const playTimerRef = useRef(null);
-  const fadeTimerRef = useRef(null);
-  const progressRef = useRef(null);
-  const slideStartRef = useRef(0);
+  const videoRef = useRef(null);
+  const timerRef = useRef(null);
+  const rafRef = useRef(null);
+  const progressStartRef = useRef(0);
+  const effectiveDurationSecRef = useRef(DEFAULT_DURATION);
+  const isSwitchingRef = useRef(false);
   const slidesRef = useRef(slides);
-  slidesRef.current = slides;
+  const failedRef = useRef(failedIndices);
+  const activeIndexRef = useRef(0);
+  const heroSlideDurationRef = useRef(heroSlideDuration);
 
-  const current = slides[index] ?? null;
-  const durationSec = clampSlideDurationSec(current?.duration, hero.slideDuration);
-  const durationMs = durationSec * 1000;
+  slidesRef.current = slides;
+  failedRef.current = failedIndices;
+  activeIndexRef.current = activeIndex;
+  heroSlideDurationRef.current = heroSlideDuration;
+
+  const current = slides[activeIndex] ?? null;
+  const durationSec = clampSlideDurationSec(current?.duration, heroSlideDuration);
   const total = slides.length;
 
   const resolvePoster = useCallback(
@@ -139,11 +68,13 @@ export default function HeroVideoCarousel({ hero: heroProp, isMobile }) {
       if (slide?.poster) return slide.poster;
       if (slide?.caseSlug && content) {
         const c = content.cases?.find((x) => x.slug === slide.caseSlug);
-        if (c) return getCaseCover(c) || hero.fallbackPoster;
+        if (c) return getCaseCover(c) || heroProp?.fallbackPoster;
       }
-      return isMobile ? hero.mobilePosterUrl : hero.fallbackPoster || hero.posterUrl;
+      return isMobile
+        ? heroProp?.mobilePosterUrl
+        : heroProp?.fallbackPoster || heroProp?.posterUrl;
     },
-    [content, hero, isMobile]
+    [content, heroProp, isMobile]
   );
 
   const getVideoSrc = useCallback(
@@ -153,6 +84,11 @@ export default function HeroVideoCarousel({ hero: heroProp, isMobile }) {
     },
     [isMobile]
   );
+
+  const getDurationSecForIndex = useCallback((index) => {
+    const slide = slidesRef.current[index];
+    return clampSlideDurationSec(slide?.duration, heroSlideDurationRef.current);
+  }, []);
 
   const findNextIndex = useCallback((from, failedSet) => {
     const list = slidesRef.current;
@@ -167,131 +103,246 @@ export default function HeroVideoCarousel({ hero: heroProp, isMobile }) {
     return from;
   }, []);
 
-  const beginCrossfade = useCallback(
-    (nextIndex) => {
-      if (crossfade || nextIndex === index) return;
-
-      setCrossfade({ from: index, to: nextIndex, active: false });
-      setPreloadNext(null);
-
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          setCrossfade({ from: index, to: nextIndex, active: true });
-        });
-      });
-
-      window.clearTimeout(fadeTimerRef.current);
-      fadeTimerRef.current = window.setTimeout(() => {
-        setIndex(nextIndex);
-        setCrossfade(null);
-        setProgress(0);
-        slideStartRef.current = Date.now();
-      }, fadeMs);
-    },
-    [crossfade, fadeMs, index]
-  );
-
-  const goNext = useCallback(() => {
-    const list = slidesRef.current;
-    if (list.length <= 1) return;
-    const next = findNextIndex(index, failedIndices);
-    if (failedIndices.has(next) && failedIndices.size >= list.length) {
-      setAllFailed(true);
-      return;
+  const clearSlideTimers = useCallback(() => {
+    if (timerRef.current != null) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
-    beginCrossfade(next);
-  }, [beginCrossfade, failedIndices, findNextIndex, index]);
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
 
-  const handleVideoError = useCallback(
-    (slideIdx) => {
-      const list = slidesRef.current;
-      const nextFailed = new Set(failedIndices);
-      nextFailed.add(slideIdx);
-
-      if (nextFailed.size >= list.length) {
-        setFailedIndices(nextFailed);
-        setAllFailed(true);
-        return;
+  const scheduleDurationTimer = useCallback(
+    (durationMs) => {
+      if (timerRef.current != null) {
+        window.clearTimeout(timerRef.current);
       }
-
-      setFailedIndices(nextFailed);
-      const next = findNextIndex(slideIdx, nextFailed);
-      if (next !== slideIdx) {
-        if (crossfade) {
-          window.clearTimeout(fadeTimerRef.current);
-          setCrossfade(null);
-        }
-        beginCrossfade(next);
-      } else {
-        setAllFailed(true);
-      }
-    },
-    [beginCrossfade, crossfade, failedIndices, findNextIndex]
-  );
-
-  useEffect(() => {
-    setIndex(0);
-    setCrossfade(null);
-    setPreloadNext(null);
-    setFailedIndices(new Set());
-    setAllFailed(false);
-    setProgress(0);
-    slideStartRef.current = Date.now();
-  }, [slides.length, isMobile]);
-
-  useEffect(() => {
-    if (!current || allFailed) return undefined;
-
-    window.clearTimeout(playTimerRef.current);
-    slideStartRef.current = Date.now();
-    setProgress(0);
-
-    const list = slidesRef.current;
-    const nextIdx = list.length > 1 ? findNextIndex(index, failedIndices) : null;
-    const playMs = Math.max(0, durationMs - fadeMs);
-
-    progressRef.current = window.setInterval(() => {
-      const elapsed = Date.now() - slideStartRef.current;
-      setProgress(Math.min(1, elapsed / durationMs));
-    }, TICK_MS);
-
-    const preloadTimer =
-      nextIdx != null && !reducedMotion
-        ? window.setTimeout(() => setPreloadNext(nextIdx), Math.max(0, playMs - PRELOAD_AHEAD_MS))
-        : null;
-
-    playTimerRef.current = window.setTimeout(() => {
-      if (list.length <= 1) return;
-      goNext();
-    }, playMs);
-
-    return () => {
-      window.clearTimeout(playTimerRef.current);
-      window.clearTimeout(preloadTimer);
-      window.clearInterval(progressRef.current);
-    };
-  }, [
-    allFailed,
-    current,
-    durationMs,
-    fadeMs,
-    failedIndices,
-    findNextIndex,
-    goNext,
-    index,
-    reducedMotion,
-  ]);
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(playTimerRef.current);
-      window.clearTimeout(fadeTimerRef.current);
-      window.clearInterval(progressRef.current);
+      timerRef.current = window.setTimeout(() => {
+        goToNextSlideRef.current("timer");
+      }, durationMs);
     },
     []
   );
 
+  const goToNextSlideRef = useRef(() => {});
+
+  const goToNextSlide = useCallback(
+    (reason) => {
+      if (isSwitchingRef.current) return;
+
+      const list = slidesRef.current;
+      if (!list.length) return;
+
+      if (list.length === 1) {
+        clearSlideTimers();
+        setProgress(0);
+        progressStartRef.current = performance.now();
+        const video = videoRef.current;
+        const slide = list[0];
+        if (video) {
+          try {
+            video.currentTime = slide?.startTime ?? 0;
+          } catch {
+            /* ignore */
+          }
+          video.play().catch(() => {});
+        }
+        const maxSec = getDurationSecForIndex(0);
+        effectiveDurationSecRef.current = maxSec;
+        scheduleDurationTimer(maxSec * 1000);
+        startProgressLoopRef.current();
+        return;
+      }
+
+      isSwitchingRef.current = true;
+      clearSlideTimers();
+
+      const from = activeIndexRef.current;
+      const failedSet = failedRef.current;
+      const next = findNextIndex(from, failedSet);
+
+      if (import.meta.env.DEV) {
+        console.debug("[HeroCarousel] switch", reason, from, "->", next);
+      }
+
+      if (failedSet.has(next) && failedSet.size >= list.length) {
+        setAllFailed(true);
+        window.setTimeout(() => {
+          isSwitchingRef.current = false;
+        }, SWITCH_COOLDOWN_MS);
+        return;
+      }
+
+      setProgress(0);
+      setActiveIndex(next);
+      activeIndexRef.current = next;
+
+      window.setTimeout(() => {
+        isSwitchingRef.current = false;
+      }, SWITCH_COOLDOWN_MS);
+    },
+    [clearSlideTimers, findNextIndex, getDurationSecForIndex, scheduleDurationTimer]
+  );
+
+  goToNextSlideRef.current = goToNextSlide;
+
+  const startProgressLoopRef = useRef(() => {});
+
+  const startProgressLoop = useCallback(() => {
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current);
+    }
+
+    const tick = () => {
+      const index = activeIndexRef.current;
+      const maxSec = effectiveDurationSecRef.current;
+      const maxMs = maxSec * 1000;
+      const slide = slidesRef.current[index];
+      const startTime = slide?.startTime ?? 0;
+      const video = videoRef.current;
+
+      let nextProgress = 0;
+
+      if (video && Number.isFinite(video.duration) && video.duration > 0 && !video.error) {
+        const playable = Math.max(0.01, video.duration - startTime);
+        const effectiveSec = Math.min(playable, getDurationSecForIndex(index));
+        const currentOffset = Math.max(0, video.currentTime - startTime);
+        nextProgress = Math.min(1, currentOffset / effectiveSec);
+      } else {
+        const elapsed = performance.now() - progressStartRef.current;
+        nextProgress = Math.min(1, elapsed / maxMs);
+      }
+
+      setProgress(nextProgress);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+  }, [getDurationSecForIndex]);
+
+  startProgressLoopRef.current = startProgressLoop;
+
+  const startSlidePlayback = useCallback(() => {
+    const index = activeIndexRef.current;
+    const maxSec = getDurationSecForIndex(index);
+    effectiveDurationSecRef.current = maxSec;
+
+    clearSlideTimers();
+    progressStartRef.current = performance.now();
+    setProgress(0);
+    setMobileVideoFailed(false);
+
+    scheduleDurationTimer(maxSec * 1000);
+    startProgressLoop();
+  }, [clearSlideTimers, getDurationSecForIndex, scheduleDurationTimer, startProgressLoop]);
+
+  const handleVideoError = useCallback(() => {
+    if (isMobile) {
+      setMobileVideoFailed(true);
+      return;
+    }
+
+    const slideIdx = activeIndexRef.current;
+    const list = slidesRef.current;
+    const nextFailed = new Set(failedRef.current);
+    nextFailed.add(slideIdx);
+    failedRef.current = nextFailed;
+    setFailedIndices(nextFailed);
+
+    if (nextFailed.size >= list.length) {
+      setAllFailed(true);
+      clearSlideTimers();
+      setProgress(0);
+      return;
+    }
+
+    goToNextSlide("error");
+  }, [clearSlideTimers, goToNextSlide, isMobile]);
+
+  const handleLoadedMetadata = useCallback(
+    (e) => {
+      const video = e.currentTarget;
+      const index = activeIndexRef.current;
+      const slide = slidesRef.current[index];
+      const maxSec = getDurationSecForIndex(index);
+      const startTime = slide?.startTime ?? 0;
+
+      try {
+        if (startTime > 0) video.currentTime = startTime;
+      } catch {
+        /* ignore seek errors */
+      }
+
+      video.play().catch(() => {});
+
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        const playable = Math.max(0.01, video.duration - startTime);
+        const effectiveSec = Math.min(playable, maxSec);
+        effectiveDurationSecRef.current = effectiveSec;
+        scheduleDurationTimer(effectiveSec * 1000);
+      }
+    },
+    [getDurationSecForIndex, scheduleDurationTimer]
+  );
+
+  useEffect(() => {
+    setActiveIndex(0);
+    activeIndexRef.current = 0;
+    setFailedIndices(new Set());
+    failedRef.current = new Set();
+    setAllFailed(false);
+    setMobileVideoFailed(false);
+    setProgress(0);
+    isSwitchingRef.current = false;
+  }, [slidesKey, isMobile]);
+
+  useEffect(() => {
+    if (allFailed || !slides.length) {
+      clearSlideTimers();
+      return undefined;
+    }
+
+    startSlidePlayback();
+    return clearSlideTimers;
+  }, [activeIndex, allFailed, clearSlideTimers, slides.length, slidesKey, startSlidePlayback]);
+
+  useEffect(
+    () => () => {
+      clearSlideTimers();
+    },
+    [clearSlideTimers]
+  );
+
+  const slideTitle = current?.title ? t(current.title, lang) : "";
+  const statusVisible = slides.length > 0 && !allFailed;
+
+  useEffect(() => {
+    onStatusChange?.({
+      visible: statusVisible,
+      index: activeIndex,
+      total,
+      slideTitle,
+      durationSec,
+      progress,
+    });
+  }, [activeIndex, durationSec, onStatusChange, progress, slideTitle, statusVisible, total]);
+
+  const fallbackPoster = isMobile
+    ? heroProp?.mobilePosterUrl
+    : heroProp?.fallbackPoster || heroProp?.posterUrl;
+
   if (!slides.length || allFailed) {
+    if (fallbackPoster) {
+      return (
+        <div className="hero__carousel-stack hero__media">
+          <div className="hero__carousel-layer">
+            <img src={fallbackPoster} alt="" className="hero__carousel-poster" />
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="hero__poster" aria-hidden="true">
         <span className="hero__poster-grid" />
@@ -299,88 +350,42 @@ export default function HeroVideoCarousel({ hero: heroProp, isMobile }) {
     );
   }
 
-  const padIndex = (i) => String(i + 1).padStart(2, "0");
-  const padTotal = String(total).padStart(2, "0");
-  const statusIndex = crossfade?.from ?? index;
-  const statusSlide = slides[statusIndex];
-  const slideTitle = statusSlide?.title ? t(statusSlide.title, lang) : "";
-  const statusDurationSec = clampSlideDurationSec(
-    statusSlide?.duration,
-    hero.slideDuration
-  );
-
-  const currentSlide = slides[index];
+  const poster = resolvePoster(current);
+  const videoSrc = getVideoSrc(current);
+  const showPosterOnly = isMobile && (mobileVideoFailed || !videoSrc);
+  const videoKey = `${activeIndex}:${videoSrc || poster || "slide"}`;
 
   return (
-    <>
-      <div className="hero__carousel-stack">
-        {!crossfade && (
-          <CarouselLayer
-            slide={currentSlide}
-            poster={resolvePoster(currentSlide)}
-            videoSrc={getVideoSrc(currentSlide)}
-            mode="solo"
-            usePosterMode={usePosterMode}
-            preload="auto"
-            onError={() => handleVideoError(index)}
-          />
-        )}
-
-        {crossfade && (
-          <>
-            <CarouselLayer
-              slide={slides[crossfade.from]}
-              poster={resolvePoster(slides[crossfade.from])}
-              videoSrc={getVideoSrc(slides[crossfade.from])}
-              mode="fade-out"
-              fadeActive={crossfade.active}
-              usePosterMode={usePosterMode}
-              preload="auto"
-              onError={() => handleVideoError(crossfade.from)}
-            />
-            <CarouselLayer
-              slide={slides[crossfade.to]}
-              poster={resolvePoster(slides[crossfade.to])}
-              videoSrc={getVideoSrc(slides[crossfade.to])}
-              mode="fade-in"
-              fadeActive={crossfade.active}
-              usePosterMode={usePosterMode}
-              preload="metadata"
-              onError={() => handleVideoError(crossfade.to)}
-            />
-          </>
-        )}
-
-        {!crossfade && preloadNext != null && preloadNext !== index && (
-          <CarouselLayer
-            slide={slides[preloadNext]}
-            poster={resolvePoster(slides[preloadNext])}
-            videoSrc={getVideoSrc(slides[preloadNext])}
-            mode="preload"
-            usePosterMode={usePosterMode}
+    <div className="hero__carousel-stack hero__media">
+      <div className="hero__carousel-layer">
+        {showPosterOnly ? (
+          poster ? (
+            <img src={poster} alt="" className="hero__carousel-poster" />
+          ) : (
+            <div className="hero__poster">
+              <span className="hero__poster-grid" />
+            </div>
+          )
+        ) : (
+          <video
+            key={videoKey}
+            ref={videoRef}
+            className="hero__carousel-video"
+            src={videoSrc || undefined}
+            poster={poster || undefined}
+            muted
+            playsInline
+            autoPlay
             preload="metadata"
-            onError={() => {}}
+            onLoadedMetadata={handleLoadedMetadata}
+            onCanPlay={(e) => {
+              e.currentTarget.play().catch(() => {});
+            }}
+            onEnded={() => goToNextSlide("ended")}
+            onError={handleVideoError}
           />
         )}
       </div>
-
-      <div className="hero__carousel-status" aria-live="polite">
-        <div className="hero__carousel-status-row">
-          <span className="hero__carousel-status-code">
-            PROJECT {padIndex(statusIndex)} / {padTotal}
-          </span>
-          {slideTitle && (
-            <span className="hero__carousel-status-title">{slideTitle}</span>
-          )}
-          <span className="hero__carousel-status-dur">{statusDurationSec}s</span>
-        </div>
-        <div className="hero__carousel-progress" aria-hidden="true">
-          <span
-            className="hero__carousel-progress-fill"
-            style={{ transform: `scaleX(${progress})` }}
-          />
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
