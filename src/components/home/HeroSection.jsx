@@ -5,34 +5,20 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getHeroVideo, t } from "../../lib/content";
 import Button from "../ui/Button";
 import ExternalLinkButton from "../ui/ExternalLinkButton";
+import HeroVideoCarousel from "./HeroVideoCarousel";
 
 const FALLBACK_CLIP = "/hero/source-clips/hero-source-echo-live.mp4";
 
-export default function HeroSection() {
-  const { content } = useContent();
-  const { lang } = useLanguage();
-  const [isMobile, setIsMobile] = useState(false);
+function HeroSingleVideo({ hero, isMobile, content }) {
   const [videoState, setVideoState] = useState("loading");
   const [videoSrc, setVideoSrc] = useState(FALLBACK_CLIP);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
 
   useEffect(() => {
     if (!content) return;
     setVideoSrc(getHeroVideo(content, isMobile));
     setVideoState("loading");
-  }, [content, isMobile]);
+  }, [content, hero, isMobile]);
 
-  if (!content) return null;
-
-  const hero = content.hero;
-  const primaryUrl = isMobile ? hero.primaryButton.mobileUrl : hero.primaryButton.desktopUrl;
   const showVideo = videoState !== "failed";
 
   const handleVideoError = () => {
@@ -45,27 +31,57 @@ export default function HeroSection() {
   };
 
   return (
+    <>
+      {(videoState === "loading" || videoState === "failed") && (
+        <div className="hero__poster" aria-hidden="true">
+          <span className="hero__poster-grid" />
+        </div>
+      )}
+      {showVideo && (
+        <video
+          key={videoSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={hero.posterUrl || undefined}
+          onLoadedData={() => setVideoState("ready")}
+          onError={handleVideoError}
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      )}
+    </>
+  );
+}
+
+export default function HeroSection() {
+  const { content } = useContent();
+  const { lang } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  if (!content) return null;
+
+  const hero = content.hero;
+  const primaryUrl = isMobile ? hero.primaryButton.mobileUrl : hero.primaryButton.desktopUrl;
+  const useCarousel = hero.mode === "caseVideoCarousel" && hero.slides?.length;
+
+  return (
     <section className="hero hero__scanlines" id="hero">
       <div className="hero__video-wrap">
-        {(videoState === "loading" || videoState === "failed") && (
-          <div className="hero__poster" aria-hidden="true">
-            <span className="hero__poster-grid" />
-          </div>
-        )}
-        {showVideo && (
-          <video
-            key={videoSrc}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={hero.posterUrl || undefined}
-            onLoadedData={() => setVideoState("ready")}
-            onError={handleVideoError}
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
+        {useCarousel ? (
+          <HeroVideoCarousel hero={hero} isMobile={isMobile} />
+        ) : (
+          <HeroSingleVideo hero={hero} isMobile={isMobile} content={content} />
         )}
         <div className="hero__overlay" />
       </div>

@@ -71,8 +71,8 @@ async function main() {
     await page.goto(`${BASE}/cases`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector(".case-card", { timeout: 8000 });
     const count = await page.locator(".case-card").count();
-    if (count === 6) pass("4. 案例列表 6 个", `${count} cards`);
-    else fail("4. 案例列表 6 个", `found ${count}`);
+    if (count >= 6) pass("4. 案例列表 6+ 个", `${count} cards`);
+    else fail("4. 案例列表 6+ 个", `found ${count}`);
   } catch (e) {
     fail("4. 案例列表", e.message);
   }

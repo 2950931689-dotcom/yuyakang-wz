@@ -87,6 +87,30 @@ site-content.json
 | `secondaryButton.url` | string | 按钮 2 链接，固定 `/cases` |
 | `headline.cn/en` | string | 主标题 |
 | `subheadline.cn/en` | string | 副标题 |
+| `mode` | `"singleVideo"` \| `"caseVideoCarousel"` | Hero 模式（v1.1.0+） |
+| `slideDuration` | number | 轮播默认秒数，通常 5 |
+| `fallbackPoster` | string | 全部视频失败时的 poster |
+| `slides[]` | array | 案例视频轮播项（见下） |
+
+#### hero.slides[] 项（v1.1.0+）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `caseSlug` | string | 关联案例 slug |
+| `title.cn/en` | string | 轮播角标标题 |
+| `video` | string | 视频路径 |
+| `poster` | string | 封面图 |
+| `startTime` | number | 起始秒 |
+| `duration` | number | 播放秒数（3–5） |
+| `enabled` | boolean | 是否启用 |
+
+#### profile 扩展（v1.1.0+）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `affiliation.cn/en` | string | 机构 / 会员身份一行摘要 |
+| `skillGroups[]` | array | `{ id, title, items[] }` 能力分组 |
+| `workPhotos[]` | array | `{ id, order, imageUrl, title, description }` |
 
 > **已废弃（V1.0.1）：** `douyinVideoUrl`、`douyinProfileUrl`、`videoButtonText`、`casesButtonText` — 由 `primaryButton` / `secondaryButton` 替代。
 

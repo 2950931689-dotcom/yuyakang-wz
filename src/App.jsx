@@ -1,5 +1,7 @@
 import { ContentProvider } from "./context/ContentContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { MediaLightboxProvider } from "./context/MediaLightboxContext";
+import MediaLightbox from "./components/ui/MediaLightbox";
 import AppRouter from "./app/router";
 import "./styles/tokens.css";
 import "./styles/base.css";
@@ -12,7 +14,10 @@ export default function App() {
   return (
     <LanguageProvider>
       <ContentProvider>
-        <AppRouter />
+        <MediaLightboxProvider>
+          <AppRouter />
+          <MediaLightbox />
+        </MediaLightboxProvider>
       </ContentProvider>
     </LanguageProvider>
   );

@@ -1,12 +1,17 @@
 import { Link, useParams } from "react-router-dom";
+import { Play } from "lucide-react";
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
 import { getCaseBySlug, getCategoryLabel, t } from "../lib/content";
+import { buildCaseVideoItem } from "../lib/media";
+import { useMediaLightbox } from "../context/MediaLightboxContext";
 import CaseGallery from "../components/cases/CaseGallery";
 import AudioPreviewPlaceholder from "../components/cases/AudioPreviewPlaceholder";
 import Tag from "../components/ui/Tag";
 import Button from "../components/ui/Button";
 import EmptyState from "../components/ui/EmptyState";
+import LoadingState from "../components/ui/LoadingState";
+import MediaFallback from "../components/ui/MediaFallback";
 
 function DetailBlock({ title, children }) {
   if (!children) return null;
@@ -22,8 +27,9 @@ export default function CaseDetailPage() {
   const { slug } = useParams();
   const { content, loading } = useContent();
   const { lang } = useLanguage();
+  const { openLightbox } = useMediaLightbox();
 
-  if (loading || !content) return <div className="loading-screen">Loading…</div>;
+  if (loading || !content) return <LoadingState />;
 
   const caseItem = getCaseBySlug(content, slug);
 
@@ -37,6 +43,7 @@ export default function CaseDetailPage() {
   }
 
   const ci = content.i18n.cases;
+  const videoItem = buildCaseVideoItem(caseItem, lang);
 
   return (
     <article className="page container fade-in">
@@ -49,6 +56,7 @@ export default function CaseDetailPage() {
         {[t(caseItem.location, lang), caseItem.date, t(caseItem.role, lang)].filter(Boolean).join(" · ")}
       </p>
 
+      <DetailBlock title={lang === "cn" ? "项目摘要" : "Summary"}>{t(caseItem.summary, lang)}</DetailBlock>
       <DetailBlock title={lang === "cn" ? "项目背景" : "Background"}>{t(caseItem.background, lang)}</DetailBlock>
       <DetailBlock title={t(ci.challenge, lang)}>{t(caseItem.challenge, lang)}</DetailBlock>
       <DetailBlock title={t(ci.solution, lang)}>{t(caseItem.solution, lang)}</DetailBlock>
@@ -65,10 +73,26 @@ export default function CaseDetailPage() {
 
       <div className="prose-block">
         <h3>{lang === "cn" ? "视频" : "Video"}</h3>
-        {caseItem.videoUrl ? (
-          <video src={caseItem.videoUrl} controls playsInline preload="metadata" style={{ width: "100%", maxWidth: 800 }} />
+        {videoItem ? (
+          <button
+            type="button"
+            className="case-video-trigger"
+            onClick={() => openLightbox([videoItem], 0)}
+            aria-label={lang === "cn" ? "播放项目视频" : "Play project video"}
+          >
+            <video
+              src={caseItem.videoUrl}
+              poster={videoItem.poster || undefined}
+              muted
+              playsInline
+              preload="metadata"
+            />
+            <span className="case-video-trigger__play">
+              <Play size={28} strokeWidth={1.5} />
+            </span>
+          </button>
         ) : (
-          <EmptyState message={lang === "cn" ? "暂无视频" : "No video"} />
+          <MediaFallback label={lang === "cn" ? "暂无视频" : "No video"} compact />
         )}
       </div>
 

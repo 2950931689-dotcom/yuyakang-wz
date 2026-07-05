@@ -138,6 +138,20 @@ export function getVisibleCertificates(content) {
     }));
 }
 
+export function getWorkPhotos(content) {
+  const fromProfile = content.profile?.workPhotos;
+  if (fromProfile?.length) {
+    return [...fromProfile].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+  return [1, 2, 3, 4, 5, 6].map((n, i) => ({
+    id: `wp-${n}`,
+    order: i + 1,
+    imageUrl: `/images/about/work-${String(n).padStart(2, "0")}.jpg`,
+    title: { cn: "工作照", en: "On-site photo" },
+    description: { cn: "项目现场工作记录", en: "On-site working record" },
+  }));
+}
+
 export function getNavLabel(content, key, lang) {
   return t(content.i18n?.nav?.[key], lang);
 }
