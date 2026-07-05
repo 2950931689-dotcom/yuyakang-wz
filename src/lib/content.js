@@ -141,3 +141,35 @@ export function getVisibleCertificates(content) {
 export function getNavLabel(content, key, lang) {
   return t(content.i18n?.nav?.[key], lang);
 }
+
+const UI_TEXT = {
+  loading: { cn: "加载中…", en: "Loading…" },
+  emptyDefault: { cn: "暂无内容", en: "Nothing here yet" },
+  emptyCases: {
+    cn: "暂无对应案例，建议查看全部项目",
+    en: "No matching cases. Try viewing all projects.",
+  },
+  errorDefault: { cn: "加载失败，请稍后重试", en: "Failed to load. Please try again." },
+  noMedia: { cn: "暂无媒体", en: "No Media" },
+  notConfigured: { cn: "暂未配置", en: "Not configured" },
+  douyinDraftHint: {
+    cn: "当前抖音链接可能不是公开主页链接，后续建议替换为公开分享链接。",
+    en: "This Douyin link may not be a public profile URL. Consider replacing it with a shared profile link later.",
+  },
+};
+
+export function getUiText(key, lang = "cn") {
+  const field = UI_TEXT[key];
+  if (!field) return key;
+  return t(field, lang);
+}
+
+export function getCategoryCounts(content) {
+  const all = getCases(content);
+  const counts = { all: all.length };
+  for (const f of CATEGORY_FILTERS) {
+    if (f.id === "all") continue;
+    counts[f.id] = all.filter((c) => c.category === f.cms).length;
+  }
+  return counts;
+}

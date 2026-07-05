@@ -8,6 +8,14 @@
   }
 
   .case-card__media img { transform: none !important; }
+
+  .contact-social__btn {
+    width: 100%;
+  }
+
+  .page {
+    padding-bottom: calc(var(--space-section) + 16px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -17,4 +25,5 @@
   .btn:hover { transform: none; }
   .modal__panel,
   .modal__backdrop { transition: none; }
+  .skeleton { animation: none; }
 }

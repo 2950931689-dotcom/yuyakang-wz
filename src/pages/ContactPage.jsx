@@ -1,16 +1,20 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ExternalLink } from "lucide-react";
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
-import { getDouyinUrl, isDouyinSelfLink, t } from "../lib/content";
+import { getDouyinUrl, getUiText, isDouyinSelfLink, t } from "../lib/content";
 import WechatQr from "../components/contact/WechatQr";
+import WechatQrModal from "../components/contact/WechatQrModal";
 import Button from "../components/ui/Button";
+import ExternalLinkButton from "../components/ui/ExternalLinkButton";
+import LoadingState from "../components/ui/LoadingState";
 
 export default function ContactPage() {
   const { content, loading } = useContent();
   const { lang } = useLanguage();
+  const [qrOpen, setQrOpen] = useState(false);
 
-  if (loading || !content) return <div className="loading-screen">Loading…</div>;
+  if (loading || !content) return <LoadingState />;
 
   const ci = content.i18n.contact;
   const social = content.socialLinks;
@@ -22,8 +26,8 @@ export default function ContactPage() {
       <h1 className="page-title">{t(ci.title, lang)}</h1>
       <p className="page-lead">{t(social.contactNote, lang)}</p>
 
-      <div className="contact-grid">
-        <div>
+      <div className="contact-panel">
+        <div className="contact-panel__main">
           <div className="prose-block">
             <h3>{content.siteSettings.siteName.en}</h3>
             <p>
@@ -35,36 +39,35 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="contact-links">
-            <a href={social.wechatVideoUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink size={16} strokeWidth={1.5} />
+          <div className="contact-social">
+            <ExternalLinkButton href={social.wechatVideoUrl} variant="secondary" className="contact-social__btn">
               {t(ci.wechatVideo, lang)}
-            </a>
-            {douyin && (
-              <a href={douyin} target="_blank" rel="noopener noreferrer">
-                <ExternalLink size={16} strokeWidth={1.5} />
-                {t(ci.douyin, lang)}
-              </a>
-            )}
+            </ExternalLinkButton>
+            <ExternalLinkButton href={douyin} variant="secondary" className="contact-social__btn">
+              {t(ci.douyin, lang)}
+            </ExternalLinkButton>
           </div>
 
           {douyinSelf && (
-            <div className="alert alert--warn" style={{ marginTop: 16 }}>
-              {lang === "cn"
-                ? "当前抖音链接可能不是公开主页链接，后续建议替换。"
-                : "Current Douyin link may not be a public profile URL. Please replace with a shared profile link."}
-            </div>
+            <p className="contact-hint">{getUiText("douyinDraftHint", lang)}</p>
           )}
 
-          <div style={{ marginTop: 24 }}>
+          <div className="contact-panel__booking">
             <Button as={Link} to="/booking">{t(ci.bookNow, lang)}</Button>
           </div>
         </div>
 
-        <div>
-          <WechatQr content={content} caption={t(ci.wechatQr, lang)} />
+        <div className="contact-panel__qr">
+          <WechatQr
+            content={content}
+            caption={t(ci.wechatQr, lang)}
+            interactive
+            onOpen={() => setQrOpen(true)}
+          />
         </div>
       </div>
+
+      <WechatQrModal open={qrOpen} onClose={() => setQrOpen(false)} content={content} />
     </div>
   );
 }

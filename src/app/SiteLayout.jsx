@@ -4,6 +4,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileNav, { MobileCta } from "../components/layout/MobileNav";
 import PageTransition from "../components/ui/PageTransition";
+import LoadingState from "../components/ui/LoadingState";
 import { useContent } from "../context/ContentContext";
 
 export default function SiteLayout() {
@@ -11,7 +12,7 @@ export default function SiteLayout() {
   const { loading } = useContent();
 
   if (loading) {
-    return <div className="loading-screen">Loading…</div>;
+    return <LoadingState />;
   }
 
   return (

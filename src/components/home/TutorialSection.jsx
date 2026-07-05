@@ -1,7 +1,7 @@
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getDouyinUrl, isDouyinSelfLink, t } from "../../lib/content";
-import Button from "../ui/Button";
+import { getDouyinUrl, getUiText, isDouyinSelfLink, t } from "../../lib/content";
+import ExternalLinkButton from "../ui/ExternalLinkButton";
 
 export default function TutorialSection() {
   const { content } = useContent();
@@ -27,29 +27,14 @@ export default function TutorialSection() {
         </div>
 
         <div className="tutorial-section__actions">
-          {douyin && (
-            <Button
-              as="a"
-              href={douyin}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t(section.douyinButton, lang)}
-            </Button>
-          )}
-          {wechatVideo && (
-            <Button
-              as="a"
-              href={wechatVideo}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="secondary"
-            >
-              {t(section.wechatVideoButton, lang)}
-            </Button>
-          )}
+          <ExternalLinkButton href={douyin}>
+            {t(section.douyinButton, lang)}
+          </ExternalLinkButton>
+          <ExternalLinkButton href={wechatVideo} variant="secondary">
+            {t(section.wechatVideoButton, lang)}
+          </ExternalLinkButton>
           {douyinSelf && (
-            <p className="tutorial-section__hint">{t(section.douyinDraftHint, lang)}</p>
+            <p className="tutorial-section__hint">{getUiText("douyinDraftHint", lang)}</p>
           )}
         </div>
       </div>
