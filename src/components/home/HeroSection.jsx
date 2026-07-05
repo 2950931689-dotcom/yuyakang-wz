@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getHeroVideo, t } from "../../lib/content";
+import { getHeroVideo, getSafeHero, t } from "../../lib/content";
 import Button from "../ui/Button";
 import ExternalLinkButton from "../ui/ExternalLinkButton";
 import HeroVideoCarousel from "./HeroVideoCarousel";
@@ -71,7 +71,7 @@ export default function HeroSection() {
 
   if (!content) return null;
 
-  const hero = content.hero;
+  const hero = getSafeHero(content);
   const primaryUrl = isMobile ? hero.primaryButton.mobileUrl : hero.primaryButton.desktopUrl;
   const useCarousel = hero.mode === "caseVideoCarousel" && hero.slides?.length;
 

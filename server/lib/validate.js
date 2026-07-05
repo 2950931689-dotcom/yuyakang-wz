@@ -7,6 +7,20 @@ const BOOKING_STATUSES = new Set([
   "cancelled",
 ]);
 
+export const ALLOWED_SECTION_KEYS = new Set([
+  "hero",
+  "profile",
+  "location",
+  "serviceArea",
+  "display",
+  "services",
+  "cases",
+  "certificates",
+  "socialLinks",
+  "seo",
+  "tutorialSection",
+]);
+
 export function validateSiteContent(body) {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return { ok: false, error: "Body must be a JSON object" };
@@ -100,6 +114,25 @@ export function validateBookingPatch(body) {
   }
 
   return { ok: true, data: patch };
+}
+
+export function validateSectionPatch(sectionKey, body) {
+  if (!ALLOWED_SECTION_KEYS.has(sectionKey)) {
+    return {
+      ok: false,
+      error: `Invalid sectionKey. Allowed: ${[...ALLOWED_SECTION_KEYS].join(", ")}`,
+    };
+  }
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return { ok: false, error: "Body must be a JSON object" };
+  }
+
+  if (body.data === undefined) {
+    return { ok: false, error: "Missing required field: data" };
+  }
+
+  return { ok: true, data: body.data };
 }
 
 export { BOOKING_STATUSES };

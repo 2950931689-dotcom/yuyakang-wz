@@ -13,6 +13,9 @@ import AdminDashboard from "../components/admin/AdminDashboard";
 import AdminPlaceholder from "../pages/admin/AdminPlaceholder";
 import AdminBookingsPage from "../pages/admin/AdminBookingsPage";
 import AdminCasesPage from "../pages/admin/AdminCasesPage";
+import AdminHeroPage from "../pages/admin/AdminHeroPage";
+import AdminLocationPage from "../pages/admin/AdminLocationPage";
+import AdminMediaPage from "../pages/admin/AdminMediaPage";
 
 export default function AppRouter() {
   return (
@@ -30,14 +33,18 @@ export default function AppRouter() {
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
-          <Route path="hero" element={<AdminPlaceholder title="首页视频" />} />
-          <Route path="profile" element={<AdminPlaceholder title="个人资料" />} />
-          <Route path="certificates" element={<AdminPlaceholder title="证书管理" />} />
-          <Route path="services" element={<AdminPlaceholder title="服务管理" />} />
+          <Route path="hero" element={<AdminHeroPage />} />
+          <Route path="location" element={<AdminLocationPage />} />
+          <Route path="profile" element={<AdminPlaceholder title="个人资料" phase="3.2" />} />
+          <Route path="services" element={<AdminPlaceholder title="服务管理" phase="3.2" />} />
           <Route path="cases" element={<AdminCasesPage />} />
+          <Route path="certificates" element={<AdminPlaceholder title="证书管理" phase="3.3" />} />
+          <Route path="work-photos" element={<AdminPlaceholder title="工作照管理" phase="3.3" />} />
+          <Route path="tutorials" element={<AdminPlaceholder title="经验分享 / 教程" phase="3.2" />} />
           <Route path="bookings" element={<AdminBookingsPage />} />
-          <Route path="social" element={<AdminPlaceholder title="社媒管理" />} />
-          <Route path="seo" element={<AdminPlaceholder title="SEO 管理" />} />
+          <Route path="social" element={<AdminPlaceholder title="社媒 / 联系方式" phase="3.2" />} />
+          <Route path="seo" element={<AdminPlaceholder title="SEO 设置" phase="3.2" />} />
+          <Route path="media" element={<AdminMediaPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

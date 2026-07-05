@@ -1,4 +1,4 @@
-import { getVisibleCertificates, t } from "../../lib/content";
+import { t } from "../../lib/content";
 import { buildCertificateItems } from "../../lib/media";
 import { useLanguage } from "../../context/LanguageContext";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";

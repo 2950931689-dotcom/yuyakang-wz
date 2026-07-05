@@ -117,9 +117,46 @@ export function getWechatQr(content) {
 }
 
 export function getHeroVideo(content, isMobile) {
-  const hero = content.hero;
+  const hero = getSafeHero(content);
   const primary = isMobile ? hero.mobileVideoUrl : hero.desktopVideoUrl;
   return primary || "/hero/source-clips/hero-source-echo-live.mp4";
+}
+
+const DEFAULT_HERO = {
+  mode: "caseVideoCarousel",
+  slideDuration: 5,
+  slides: [],
+  desktopVideoUrl: "",
+  mobileVideoUrl: "",
+  posterUrl: "",
+  mobilePosterUrl: "",
+  fallbackPoster: "",
+  headline: { cn: "现场调音 / 系统工程 / 混音后期", en: "Live Sound / System Tuning / Mixing" },
+  subheadline: { cn: "YU YAKANG AUDIO", en: "YU YAKANG AUDIO" },
+  primaryButton: {
+    cn: "观看代表视频",
+    en: "Watch Video",
+    mobileUrl: "#",
+    desktopUrl: "#",
+  },
+  secondaryButton: {
+    cn: "查看案例作品",
+    en: "View Cases",
+    url: "/cases",
+  },
+};
+
+export function getSafeHero(content) {
+  const hero = content?.hero ?? {};
+  return {
+    ...DEFAULT_HERO,
+    ...hero,
+    slides: Array.isArray(hero.slides) ? hero.slides : DEFAULT_HERO.slides,
+    primaryButton: { ...DEFAULT_HERO.primaryButton, ...(hero.primaryButton ?? {}) },
+    secondaryButton: { ...DEFAULT_HERO.secondaryButton, ...(hero.secondaryButton ?? {}) },
+    headline: { ...DEFAULT_HERO.headline, ...(hero.headline ?? {}) },
+    subheadline: { ...DEFAULT_HERO.subheadline, ...(hero.subheadline ?? {}) },
+  };
 }
 
 export function getVisibleServices(content) {
@@ -150,6 +187,36 @@ export function getWorkPhotos(content) {
     title: { cn: "工作照", en: "On-site photo" },
     description: { cn: "项目现场工作记录", en: "On-site working record" },
   }));
+}
+
+const DEFAULT_LOCATION = { cn: "江西南昌", en: "Nanchang, Jiangxi" };
+
+const DEFAULT_SERVICE_AREA = {
+  cn: "常驻江西南昌，可承接 Livehouse、演出系统工程、会议年会、混音后期等项目。",
+  en: "Based in Nanchang, available for livehouse, system tuning, corporate events and mixing projects.",
+};
+
+const DEFAULT_LOCATION_DISPLAY = {
+  showOnHome: true,
+  showOnContact: true,
+  showOnFooter: true,
+};
+
+export function getSiteLocation(content) {
+  return (
+    content?.location ??
+    content?.socialLinks?.location ??
+    content?.profile?.location ??
+    DEFAULT_LOCATION
+  );
+}
+
+export function getServiceArea(content) {
+  return content?.serviceArea ?? DEFAULT_SERVICE_AREA;
+}
+
+export function getLocationDisplay(content) {
+  return { ...DEFAULT_LOCATION_DISPLAY, ...(content?.display ?? {}) };
 }
 
 export function getNavLabel(content, key, lang) {

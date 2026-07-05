@@ -3,19 +3,21 @@ import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getCaseCover, t } from "../../lib/content";
 
-export default function HeroVideoCarousel({ hero, isMobile }) {
+export default function HeroVideoCarousel({ hero: heroProp, isMobile }) {
   const { content } = useContent();
   const { lang } = useLanguage();
   const videoRef = useRef(null);
   const timerRef = useRef(null);
 
-  const slides = (hero.slides ?? []).filter((s) => s.enabled !== false && s.video);
+  const hero = heroProp ?? {};
+  const slides = (hero.slides ?? []).filter((s) => s?.enabled !== false && s?.video);
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const [failed, setFailed] = useState(false);
 
   const current = slides[index];
   const durationMs = (current?.duration ?? hero.slideDuration ?? 5) * 1000;
+  const videoSrc = isMobile && current?.mobileVideo ? current.mobileVideo : current?.video;
 
   const resolvePoster = useCallback(
     (slide) => {
@@ -101,7 +103,7 @@ export default function HeroVideoCarousel({ hero, isMobile }) {
       <div className={`hero__carousel-video${visible ? " is-visible" : ""}`}>
         <video
           ref={videoRef}
-          key={`${index}-${current.video}`}
+          key={`${index}-${videoSrc}`}
           autoPlay
           muted
           playsInline
@@ -109,7 +111,7 @@ export default function HeroVideoCarousel({ hero, isMobile }) {
           poster={poster || undefined}
           onError={handleError}
         >
-          <source src={current.video} type="video/mp4" />
+          <source src={videoSrc} type="video/mp4" />
         </video>
       </div>
       {current.title && (

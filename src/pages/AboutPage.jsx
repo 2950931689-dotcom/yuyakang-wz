@@ -1,6 +1,6 @@
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
-import { getWorkPhotos, t } from "../lib/content";
+import { getVisibleCertificates, getWorkPhotos, t } from "../lib/content";
 import { buildWorkPhotoItems } from "../lib/media";
 import { useMediaLightbox } from "../context/MediaLightboxContext";
 import CertificateGallery from "../components/about/CertificateGallery";
@@ -14,7 +14,11 @@ export default function AboutPage() {
 
   if (loading || !content) return <LoadingState />;
 
-  const profile = content.profile;
+  const profile = content.profile ?? {
+    name: { cn: "余雅康", en: "Yu Yakang" },
+    title: { cn: "", en: "" },
+    bio: { cn: "", en: "" },
+  };
   const certs = getVisibleCertificates(content);
   const workPhotos = getWorkPhotos(content);
   const workItems = buildWorkPhotoItems(workPhotos, lang);

@@ -1,6 +1,6 @@
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getCases, getVisibleCertificates, getVisibleServices, t } from "../../lib/content";
+import { getCases, getVisibleCertificates, getVisibleServices, getSiteLocation, getLocationDisplay, t } from "../../lib/content";
 
 export default function CredentialStrip() {
   const { content } = useContent();
@@ -11,13 +11,22 @@ export default function CredentialStrip() {
   const cases = getCases(content);
   const certs = getVisibleCertificates(content);
   const services = getVisibleServices(content);
+  const display = getLocationDisplay(content);
+  const location = getSiteLocation(content);
 
   const items = [
     { num: certs.length, label: lang === "cn" ? "专业证书" : "Certificates" },
     { num: cases.length, label: lang === "cn" ? "代表案例" : "Projects" },
     { num: services.length, label: lang === "cn" ? "服务方向" : "Services" },
-    { num: "NC", label: lang === "cn" ? "常驻地" : "Based in", sub: t(content.socialLinks.location, lang) },
   ];
+
+  if (display.showOnHome) {
+    items.push({
+      num: "NC",
+      label: lang === "cn" ? "常驻地" : "Based in",
+      sub: t(location, lang),
+    });
+  }
 
   return (
     <div className="credential-strip">

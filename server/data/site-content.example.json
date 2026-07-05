@@ -385,6 +385,19 @@
       }
     ]
   },
+  "location": {
+    "cn": "江西南昌",
+    "en": "Nanchang, Jiangxi"
+  },
+  "serviceArea": {
+    "cn": "常驻江西南昌，可承接 Livehouse、演出系统工程、会议年会、混音后期等项目。",
+    "en": "Based in Nanchang, available for livehouse, system tuning, corporate events and mixing projects."
+  },
+  "display": {
+    "showOnHome": true,
+    "showOnContact": true,
+    "showOnFooter": true
+  },
   "certificates": [
     {
       "id": "cert-01",

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
-import { getDouyinUrl, getUiText, isDouyinSelfLink, t } from "../lib/content";
+import { getDouyinUrl, getServiceArea, getSiteLocation, getLocationDisplay, getUiText, isDouyinSelfLink, t } from "../lib/content";
 import WechatQr from "../components/contact/WechatQr";
 import WechatQrModal from "../components/contact/WechatQrModal";
 import Button from "../components/ui/Button";
@@ -20,6 +20,9 @@ export default function ContactPage() {
   const social = content.socialLinks;
   const douyin = getDouyinUrl(social);
   const douyinSelf = isDouyinSelfLink(douyin);
+  const display = getLocationDisplay(content);
+  const location = getSiteLocation(content);
+  const serviceArea = getServiceArea(content);
 
   return (
     <div className="page container fade-in">
@@ -34,8 +37,14 @@ export default function ContactPage() {
               {t(content.profile.name, lang)}
               <br />
               {t(content.profile.title, lang)}
-              <br />
-              {t(ci.location, lang)}：{t(social.location, lang)}
+              {display.showOnContact && (
+                <>
+                  <br />
+                  {t(ci.location, lang)}：{t(location, lang)}
+                  <br />
+                  {t(serviceArea, lang)}
+                </>
+              )}
             </p>
           </div>
 

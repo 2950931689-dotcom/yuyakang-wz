@@ -4,14 +4,25 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import {
   DATA_DIR,
+  UPLOADS_DIR,
   ensureDataFiles,
   readJson,
+  updateJsonSection,
   writeJson,
+  writeJsonSafe,
+  backupJson,
 } from "./lib/jsonStore.js";
+import { listMediaFiles, moveUploadToTrash } from "./lib/mediaStore.js";
+import {
+  uploadMiddleware,
+  validateUploadedFile,
+  buildUploadResponse,
+} from "./lib/upload.js";
 import {
   validateBookingCreate,
   validateBookingPatch,
   validateSiteContent,
+  validateSectionPatch,
 } from "./lib/validate.js";
 
 const PORT = Number(process.env.PORT) || 3001;
@@ -41,10 +52,11 @@ app.use(
 );
 
 app.use(express.json({ limit: "2mb" }));
+app.use("/uploads", express.static(UPLOADS_DIR));
 
 app.use((err, _req, res, next) => {
   if (err?.message === "Not allowed by CORS") {
-    return res.status(403).json({ error: "CORS not allowed" });
+    return res.status(403).json({ ok: false, error: "CORS not allowed" });
   }
   return next(err);
 });
@@ -63,7 +75,7 @@ app.get("/api/content", async (_req, res) => {
     res.json(content);
   } catch (err) {
     console.error("GET /api/content", err);
-    res.status(500).json({ error: "Failed to read site content" });
+    res.status(500).json({ ok: false, error: "Failed to read site content" });
   }
 });
 
@@ -71,7 +83,7 @@ app.put("/api/content", async (req, res) => {
   try {
     const validation = validateSiteContent(req.body);
     if (!validation.ok) {
-      return res.status(400).json({ error: validation.error });
+      return res.status(400).json({ ok: false, error: validation.error });
     }
 
     const nextContent = {
@@ -82,11 +94,90 @@ app.put("/api/content", async (req, res) => {
       },
     };
 
-    await writeJson(SITE_CONTENT_PATH, nextContent, { backup: true });
+    await backupJson(SITE_CONTENT_PATH);
+    await writeJsonSafe(SITE_CONTENT_PATH, nextContent);
     res.json(nextContent);
   } catch (err) {
     console.error("PUT /api/content", err);
-    res.status(500).json({ error: "Failed to save site content" });
+    res.status(500).json({ ok: false, error: "Failed to save site content" });
+  }
+});
+
+app.patch("/api/content/section/:sectionKey", async (req, res) => {
+  try {
+    const { sectionKey } = req.params;
+    const validation = validateSectionPatch(sectionKey, req.body);
+
+    if (!validation.ok) {
+      return res.status(400).json({ ok: false, error: validation.error });
+    }
+
+    const { section, updatedAt } = await updateJsonSection(
+      SITE_CONTENT_PATH,
+      sectionKey,
+      validation.data
+    );
+
+    res.json({
+      ok: true,
+      sectionKey,
+      data: section,
+      updatedAt,
+    });
+  } catch (err) {
+    console.error("PATCH /api/content/section/:sectionKey", err);
+    res.status(500).json({ ok: false, error: "Failed to save section" });
+  }
+});
+
+app.post("/api/upload", (req, res) => {
+  uploadMiddleware.single("file")(req, res, (err) => {
+    if (err) {
+      console.error("POST /api/upload", err);
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.status(400).json({ ok: false, error: "File too large" });
+      }
+      if (err.code === "UNSUPPORTED_TYPE") {
+        return res.status(400).json({ ok: false, error: err.message });
+      }
+      return res.status(400).json({ ok: false, error: err.message || "Upload failed" });
+    }
+
+    try {
+      const validation = validateUploadedFile(req.file);
+      if (!validation.ok) {
+        return res.status(validation.status).json({ ok: false, error: validation.error });
+      }
+
+      res.status(201).json(buildUploadResponse(req.file));
+    } catch (uploadErr) {
+      console.error("POST /api/upload response", uploadErr);
+      res.status(500).json({ ok: false, error: "Upload failed" });
+    }
+  });
+});
+
+app.get("/api/media", async (_req, res) => {
+  try {
+    const files = await listMediaFiles();
+    res.json({ ok: true, files });
+  } catch (err) {
+    console.error("GET /api/media", err);
+    res.status(500).json({ ok: false, error: "Failed to list media" });
+  }
+});
+
+app.delete("/api/media/:filename", async (req, res) => {
+  try {
+    await moveUploadToTrash(req.params.filename);
+    res.json({ ok: true, message: "文件已移动到 _trash" });
+  } catch (err) {
+    console.error("DELETE /api/media/:filename", err);
+    const status = err.message?.includes("Invalid") ? 400 : 500;
+    res.status(status).json({
+      ok: false,
+      error: err.message || "Failed to move file to trash",
+    });
   }
 });
 
@@ -115,7 +206,7 @@ app.get("/api/bookings", async (req, res) => {
     res.json(list);
   } catch (err) {
     console.error("GET /api/bookings", err);
-    res.status(500).json({ error: "Failed to read bookings" });
+    res.status(500).json({ ok: false, error: "Failed to read bookings" });
   }
 });
 
@@ -123,7 +214,7 @@ app.post("/api/bookings", async (req, res) => {
   try {
     const validation = validateBookingCreate(req.body);
     if (!validation.ok) {
-      return res.status(400).json({ error: validation.error });
+      return res.status(400).json({ ok: false, error: validation.error });
     }
 
     const list = await readJson(BOOKINGS_PATH, []);
@@ -144,7 +235,7 @@ app.post("/api/bookings", async (req, res) => {
     res.status(201).json(booking);
   } catch (err) {
     console.error("POST /api/bookings", err);
-    res.status(500).json({ error: "Failed to create booking" });
+    res.status(500).json({ ok: false, error: "Failed to create booking" });
   }
 });
 
@@ -152,14 +243,14 @@ app.patch("/api/bookings/:id", async (req, res) => {
   try {
     const validation = validateBookingPatch(req.body);
     if (!validation.ok) {
-      return res.status(400).json({ error: validation.error });
+      return res.status(400).json({ ok: false, error: validation.error });
     }
 
     const list = await readJson(BOOKINGS_PATH, []);
     const index = list.findIndex((b) => b.id === req.params.id);
 
     if (index === -1) {
-      return res.status(404).json({ error: "Booking not found" });
+      return res.status(404).json({ ok: false, error: "Booking not found" });
     }
 
     const updated = {
@@ -174,17 +265,17 @@ app.patch("/api/bookings/:id", async (req, res) => {
     res.json(updated);
   } catch (err) {
     console.error("PATCH /api/bookings/:id", err);
-    res.status(500).json({ error: "Failed to update booking" });
+    res.status(500).json({ ok: false, error: "Failed to update booking" });
   }
 });
 
 app.use((_req, res) => {
-  res.status(404).json({ error: "Not found" });
+  res.status(404).json({ ok: false, error: "Not found" });
 });
 
 app.use((err, _req, res, _next) => {
   console.error("Unhandled error", err);
-  res.status(500).json({ error: "Internal server error" });
+  res.status(500).json({ ok: false, error: "Internal server error" });
 });
 
 await ensureDataFiles();

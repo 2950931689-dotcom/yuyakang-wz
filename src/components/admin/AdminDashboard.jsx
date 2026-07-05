@@ -1,19 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
-import { checkHealth, fetchBookings } from "../../lib/api";
-import { getCases } from "../../lib/content";
+import { fetchBookings } from "../../lib/api";
+import { getCases, getWorkPhotos } from "../../lib/content";
+import AdminTopbar from "./AdminTopbar";
 
 export default function AdminDashboard() {
   const { content, loading, source } = useContent();
-  const [apiOnline, setApiOnline] = useState(false);
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
-    checkHealth()
-      .then(() => setApiOnline(true))
-      .catch(() => setApiOnline(false));
-
     fetchBookings()
       .then(setBookings)
       .catch(() => setBookings([]));
@@ -26,68 +22,79 @@ export default function AdminDashboard() {
   const cases = getCases(content, { visible: false });
   const certs = content.certificates ?? [];
   const services = content.services ?? [];
+  const workPhotos = getWorkPhotos(content);
+  const heroSlides = (content.hero?.slides ?? []).filter((s) => s.enabled !== false);
   const newCount = bookings.filter((b) => b.status === "new").length;
-  const heroConfigured = Boolean(
-    content.hero?.desktopVideoUrl || content.hero?.mobileVideoUrl
-  );
+  const heroMode = content.hero?.mode ?? "singleVideo";
   const recent = bookings.slice(0, 5);
 
   return (
     <>
-      <div className="admin-topbar">
-        <h1>Admin Dashboard</h1>
-        <p>
-          JSON CMS · 内容来源：{source === "api" ? "API" : "Mock fallback"} · API{" "}
-          {apiOnline ? "online" : "offline"}
-        </p>
-      </div>
+      <AdminTopbar
+        title="仪表盘"
+        description={`JSON CMS · 内容来源：${source === "api" ? "API" : "Mock fallback"}`}
+      />
 
       <div className="admin-stats">
         <div className="admin-stat">
-          <div className="admin-stat__label">Cases</div>
+          <div className="admin-stat__label">案例</div>
           <div className="admin-stat__value">{cases.length}</div>
         </div>
         <div className="admin-stat">
-          <div className="admin-stat__label">Certificates</div>
+          <div className="admin-stat__label">证书</div>
           <div className="admin-stat__value">{certs.length}</div>
         </div>
         <div className="admin-stat">
-          <div className="admin-stat__label">Services</div>
+          <div className="admin-stat__label">服务</div>
           <div className="admin-stat__value">{services.length}</div>
         </div>
         <div className="admin-stat">
-          <div className="admin-stat__label">Bookings</div>
+          <div className="admin-stat__label">工作照</div>
+          <div className="admin-stat__value">{workPhotos.length}</div>
+        </div>
+        <div className="admin-stat">
+          <div className="admin-stat__label">Hero 视频</div>
+          <div className="admin-stat__value">{heroSlides.length}</div>
+        </div>
+        <div className="admin-stat">
+          <div className="admin-stat__label">预约</div>
           <div className="admin-stat__value">{bookings.length}</div>
         </div>
         <div className="admin-stat">
-          <div className="admin-stat__label">New Requests</div>
+          <div className="admin-stat__label">新需求</div>
           <div className="admin-stat__value">{newCount}</div>
         </div>
         <div className="admin-stat">
-          <div className="admin-stat__label">Hero Video</div>
-          <div className="admin-stat__value" style={{ fontSize: 16 }}>
-            {heroConfigured ? "Configured" : "Pending"}
+          <div className="admin-stat__label">Hero 模式</div>
+          <div className="admin-stat__value admin-stat__value--sm">
+            {heroMode === "caseVideoCarousel" ? "案例轮播" : "单视频"}
           </div>
         </div>
       </div>
 
-      <div className="admin-placeholder" style={{ marginBottom: 24 }}>
-        最近更新：{content.meta?.updatedAt} · Schema v{content.meta?.version}
+      <div className="admin-meta-line">
+        最近更新：{content.meta?.updatedAt ?? "—"} · Schema v{content.meta?.version ?? "—"}
       </div>
 
-      <h2 style={{ fontSize: 16, marginBottom: 12 }}>Recent Bookings</h2>
+      <div className="admin-quick-links">
+        <Link to="/admin/hero">编辑 Hero 视频 →</Link>
+        <Link to="/admin/location">编辑所在地 →</Link>
+        <Link to="/admin/media">媒体管理 →</Link>
+      </div>
+
+      <h2 className="admin-section-title">最近预约</h2>
       {recent.length === 0 ? (
-        <div className="admin-placeholder">No bookings yet</div>
+        <div className="admin-placeholder">暂无预约</div>
       ) : (
         <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Service</th>
-                <th>City</th>
-                <th>Status</th>
-                <th>Created</th>
+                <th>姓名</th>
+                <th>服务</th>
+                <th>城市</th>
+                <th>状态</th>
+                <th>时间</th>
               </tr>
             </thead>
             <tbody>
@@ -105,8 +112,8 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      <p style={{ marginTop: 16 }}>
-        <Link to="/admin/bookings">View all bookings →</Link>
+      <p className="admin-inline-link">
+        <Link to="/admin/bookings">查看全部预约 →</Link>
       </p>
     </>
   );

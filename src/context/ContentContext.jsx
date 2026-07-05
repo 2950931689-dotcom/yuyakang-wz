@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { getContent, getContentSource } from "../lib/content";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { getContent, getContentSource, clearContentCache } from "../lib/content";
 
 const ContentContext = createContext(null);
 
@@ -8,17 +8,25 @@ export function ContentProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [source, setSource] = useState(null);
 
-  useEffect(() => {
-    getContent()
-      .then((data) => {
-        setContent(data);
-        setSource(getContentSource());
-      })
-      .finally(() => setLoading(false));
+  const reloadContent = useCallback(async () => {
+    clearContentCache();
+    try {
+      const data = await getContent();
+      setContent(data);
+      setSource(getContentSource());
+      return data;
+    } catch (err) {
+      console.warn("[content] reload failed:", err.message);
+      return null;
+    }
   }, []);
 
+  useEffect(() => {
+    reloadContent().finally(() => setLoading(false));
+  }, [reloadContent]);
+
   return (
-    <ContentContext.Provider value={{ content, loading, source }}>
+    <ContentContext.Provider value={{ content, loading, source, reloadContent }}>
       {children}
     </ContentContext.Provider>
   );
