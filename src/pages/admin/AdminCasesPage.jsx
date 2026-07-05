@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { useContent } from "../../context/ContentContext";
 import { useAdmin } from "../../context/AdminContext";
+import { commonActionText } from "../../lib/adminUi";
 import { saveContentSection } from "../../lib/api";
 import { useArraySectionEditor } from "../../hooks/useSectionEditor";
 import { createEmptyCase, normalizeCaseForSave } from "../../lib/caseAdmin";
@@ -45,7 +46,7 @@ export default function AdminCasesPage() {
 
   const handleSave = async () => {
     if (!cases || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return;
     }
     const payload = cases.map((c, i) =>
@@ -56,9 +57,9 @@ export default function AdminCasesPage() {
       await saveContentSection("cases", payload);
       await reloadContent();
       reset();
-      showToast("保存成功");
+      showToast(commonActionText.saved);
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
     } finally {
       setLocalSaving(false);
     }
@@ -75,7 +76,7 @@ export default function AdminCasesPage() {
       <AdminTopbar
         eyebrow="项目"
         title="案例管理"
-        description="列表 · 编辑 · Hero · SEO"
+        description="列表 · 编辑 · 首页展示 · SEO"
       />
       <AdminUnsavedGuard when={dirty} />
 
@@ -92,8 +93,8 @@ export default function AdminCasesPage() {
                       <th>#</th>
                       <th>标题</th>
                       <th>分类</th>
-                      <th>Hero</th>
-                      <th>精选</th>
+                      <th>首页视频</th>
+                      <th>首页精选</th>
                       <th>操作</th>
                     </tr>
                   </thead>
@@ -171,7 +172,7 @@ export default function AdminCasesPage() {
       <AdminConfirmDialog
         open={deleteIndex !== null}
         title="删除案例"
-        message={`确认删除「${deleteIndex !== null ? t(cases[deleteIndex]?.title, "cn") : ""}」？`}
+        message={`${commonActionText.deleteConfirm}「${deleteIndex !== null ? t(cases[deleteIndex]?.title, "cn") : ""}」将从页面中移除案例数据。`}
         onCancel={() => setDeleteIndex(null)}
         onConfirm={() => {
           removeItem(deleteIndex);

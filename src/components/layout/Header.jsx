@@ -1,10 +1,11 @@
-import { Link, NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getNavLabel } from "../../lib/content";
 import LanguageSwitch from "./LanguageSwitch";
+import ThemeSwitch from "./ThemeSwitch";
 import LogoLink from "./LogoLink";
+import NavSignalLink from "./NavSignalLink";
 
 const NAV_KEYS = [
   ["home", "/"],
@@ -25,19 +26,20 @@ export default function Header({ onMenuOpen }) {
     <header className="header">
       <div className="header__inner">
         <LogoLink>{content.siteSettings.siteName.en}</LogoLink>
-        <nav className="header__nav" aria-label="Main">
+        <nav className="header__nav" aria-label="主导航">
           {NAV_KEYS.map(([key, path]) => (
-            <NavLink key={key} to={path} end={path === "/"}>
+            <NavSignalLink key={key} to={path} end={path === "/"}>
               {getNavLabel(content, key, lang)}
-            </NavLink>
+            </NavSignalLink>
           ))}
         </nav>
         <div className="header__actions">
           <LanguageSwitch />
+          <ThemeSwitch />
           <button
             type="button"
             className="header__menu-btn"
-            aria-label="Open menu"
+            aria-label="打开菜单"
             onClick={onMenuOpen}
           >
             <Menu size={20} strokeWidth={1.5} />

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Link } from "react-router-dom";
 
-import { CASE_CATEGORIES } from "../../lib/caseAdmin";
+import { CASE_CATEGORIES, buildCaseVideoEntry } from "../../lib/caseAdmin";
 
 import {
 
@@ -32,11 +32,11 @@ const TABS = [
 
   ["copy", "项目文案"],
 
-  ["media", "媒体"],
+  ["media", "项目媒体"],
 
-  ["hero", "Hero 设置"],
+  ["hero", "首页展示"],
 
-  ["seo", "SEO"],
+  ["seo", "SEO 设置"],
 
 ];
 
@@ -120,9 +120,26 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
 
 
-  const videoSrc = caseItem.videoUrl ?? caseItem.videos?.[0]?.src ?? "";
+  const videoSrc = caseItem.videos?.[0]?.src ?? caseItem.videoUrl ?? "";
 
   const videoPoster = caseItem.videos?.[0]?.poster ?? caseItem.heroPoster ?? "";
+
+  const upsertPrimaryVideo = (src, patch = {}) => {
+    const duration = patch.duration ?? caseItem.videos?.[0]?.duration ?? caseItem.heroDuration ?? 8;
+    const entry = buildCaseVideoEntry(src, {
+      poster: patch.poster ?? videoPoster,
+      duration,
+      mobileSrc: patch.mobileSrc ?? caseItem.videos?.[0]?.mobileSrc ?? "",
+    });
+    if (!entry) {
+      return { videoUrl: null, videos: [], heroDuration: caseItem.heroDuration ?? 8 };
+    }
+    return {
+      videoUrl: src,
+      videos: [{ ...entry, ...patch, src, type: "video", duration }],
+      heroDuration: duration,
+    };
+  };
 
 
 
@@ -180,7 +197,7 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
             </AdminField>
 
-            <AdminField label="Slug">
+            <AdminField label="案例别名 / slug">
 
               <AdminInput className="admin-mono" value={caseItem.slug ?? ""} onChange={(e) => update({ slug: e.target.value })} />
 
@@ -202,7 +219,7 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
             </AdminField>
 
-            <AdminField label="项目日期">
+            <AdminField label="项目时间">
 
               <AdminInput value={caseItem.projectDate ?? caseItem.date ?? ""} onChange={(e) => update({ projectDate: e.target.value, date: e.target.value })} />
 
@@ -264,7 +281,7 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
               onChange={(e) => update({ featured: e.target.checked, isFeatured: e.target.checked })}
 
-              label="精选"
+              label="首页精选"
 
             />
 
@@ -276,7 +293,7 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
               onChange={(e) => update({ showInHero: e.target.checked })}
 
-              label="显示在 Hero"
+              label="首页视频展示"
 
             />
 
@@ -316,9 +333,9 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
       {tab === "media" && (
 
-        <AdminFieldGroup eyebrow="媒体" title="图片与音频">
+        <AdminFieldGroup eyebrow="项目媒体" title="案例图片与音视频">
 
-          <AdminMediaField label="封面" value={caseItem.coverUrl ?? caseItem.coverImage ?? ""} onChange={(v) => update({ coverUrl: v, coverImage: v })} />
+          <AdminMediaField label="封面图" value={caseItem.coverUrl ?? caseItem.coverImage ?? ""} onChange={(v) => update({ coverUrl: v, coverImage: v })} />
 
           <AdminField label="图库图片 (每行一个路径)">
 
@@ -354,15 +371,17 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
           </AdminField>
 
-        </AdminFieldGroup>
+          <AdminMediaField
 
-      )}
+            label="案例视频 (首页轮播)"
 
+            value={videoSrc}
 
+            onChange={(v) => update(upsertPrimaryVideo(v))}
 
-      {tab === "hero" && (
+            accept="video/mp4,video/webm"
 
-        <AdminFieldGroup eyebrow="Hero 视频" title="Hero 视频设置">
+          />
 
           <AdminField label="视频 URL">
 
@@ -372,19 +391,89 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
               value={videoSrc}
 
+              onChange={(e) => update(upsertPrimaryVideo(e.target.value))}
+
+              placeholder="/uploads/... 或外部链接"
+
+            />
+
+          </AdminField>
+
+          <AdminMediaField
+
+            label="视频封面"
+
+            value={videoPoster}
+
+            onChange={(v) => {
+
+              const videos = [...(caseItem.videos ?? [])];
+
+              if (videos.length) {
+
+                videos[0] = { ...videos[0], poster: v };
+
+              } else if (videoSrc) {
+
+                videos.push(buildCaseVideoEntry(videoSrc, { poster: v, duration: caseItem.heroDuration ?? 8 }));
+
+              }
+
+              update({ heroPoster: v, videos });
+
+            }}
+
+            accept="image/*"
+
+          />
+
+          <AdminField label="播放秒数 (首页轮播)">
+
+            <AdminInput
+
+              type="number"
+
+              min={3}
+
+              max={15}
+
+              value={caseItem.videos?.[0]?.duration ?? caseItem.heroDuration ?? 8}
+
               onChange={(e) => {
 
-                const url = e.target.value;
+                const duration = Number(e.target.value) || 8;
 
-                update({
+                const videos = [...(caseItem.videos ?? [])];
 
-                  videoUrl: url || null,
+                if (videos.length) videos[0] = { ...videos[0], duration };
 
-                  videos: url ? [{ type: "video", src: url, poster: videoPoster, duration: caseItem.heroDuration ?? 8 }] : [],
-
-                });
+                update({ heroDuration: duration, videos: videos.length ? videos : caseItem.videos });
 
               }}
+
+            />
+
+          </AdminField>
+
+        </AdminFieldGroup>
+
+      )}
+
+
+
+      {tab === "hero" && (
+
+        <AdminFieldGroup eyebrow="首页展示" title="首页视频轮播设置">
+
+          <AdminField label="视频 URL">
+
+            <AdminInput
+
+              className="admin-mono"
+
+              value={videoSrc}
+
+              onChange={(e) => update(upsertPrimaryVideo(e.target.value))}
 
             />
 
@@ -402,7 +491,9 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
               if (videos.length) videos[0] = { ...videos[0], poster: v };
 
-              update({ heroPoster: v, videos: videos.length ? videos : caseItem.videos });
+              else if (videoSrc) videos.push(buildCaseVideoEntry(videoSrc, { poster: v, duration: caseItem.heroDuration ?? 8 }));
+
+              update({ heroPoster: v, videos });
 
             }}
 
@@ -416,17 +507,7 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
             value={videoSrc}
 
-            onChange={(v) =>
-
-              update({
-
-                videoUrl: v,
-
-                videos: [{ type: "video", src: v, poster: videoPoster, duration: caseItem.heroDuration ?? 8 }],
-
-              })
-
-            }
+            onChange={(v) => update(upsertPrimaryVideo(v))}
 
             accept="video/mp4,video/webm"
 

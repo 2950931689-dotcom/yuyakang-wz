@@ -1,3 +1,5 @@
+import { mediaUsageText } from "./adminUi.js";
+
 export function isMediaUrlUsed(content, url) {
   if (!content || !url) return false;
   return JSON.stringify(content).includes(url);
@@ -9,5 +11,5 @@ export function getMediaUsageLabel(content, fileUrl) {
   const used =
     isMediaUrlUsed(content, fileUrl) ||
     (filename && isMediaUrlUsed(content, filename));
-  return used ? "已被 CMS 使用" : "未使用";
+  return used ? mediaUsageText.inUse : mediaUsageText.unused;
 }

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useAdmin } from "../../context/AdminContext";
 import { saveContentSection } from "../../lib/api";
+import { commonActionText } from "../../lib/adminUi";
 import { getDouyinUrl, isDouyinSelfLink } from "../../lib/content";
 import AdminTopbar from "../../components/admin/AdminTopbar";
 import AdminUnsavedGuard from "../../components/admin/AdminUnsavedGuard";
@@ -55,7 +56,7 @@ export default function AdminTutorialPage() {
 
   const handleSave = async () => {
     if (!section || !social || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return;
     }
     setSaving(true);
@@ -68,9 +69,9 @@ export default function AdminTutorialPage() {
       });
       await reloadContent();
       setBaseline(current);
-      showToast("保存成功");
+      showToast(commonActionText.saved);
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
     } finally {
       setSaving(false);
     }

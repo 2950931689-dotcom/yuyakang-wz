@@ -1,3 +1,5 @@
+import { commonActionText } from "../../lib/adminUi";
+
 export function AdminStatusDot({ status = "idle" }) {
   return <span className={`admin-status-dot admin-status-dot--${status}`} aria-hidden="true" />;
 }
@@ -87,16 +89,16 @@ export function AdminParamStepper({ label, value, min = 3, max = 10, unit = "s",
   );
 }
 
-export function AdminSaveBar({ saving, dirty, onSave, onReset, saveLabel = "保存" }) {
+export function AdminSaveBar({ saving, dirty, onSave, onReset, saveLabel = commonActionText.save }) {
   return (
     <div className={`admin-save-bar${dirty ? " admin-save-bar--dirty" : ""}`}>
       <div className="admin-save-bar__status admin-mono">
-        {saving ? "保存中…" : dirty ? "有未保存修改" : "已同步"}
+        {saving ? commonActionText.saving : dirty ? commonActionText.unsaved : commonActionText.synced}
       </div>
       <div className="admin-save-bar__actions">
         {onReset && (
           <button type="button" className="admin-btn admin-btn--ghost" onClick={onReset} disabled={saving}>
-            恢复
+            {commonActionText.revert}
           </button>
         )}
         <button
@@ -105,14 +107,14 @@ export function AdminSaveBar({ saving, dirty, onSave, onReset, saveLabel = "保�
           onClick={onSave}
           disabled={saving || !dirty}
         >
-          {saving ? "保存中…" : saveLabel}
+          {saving ? commonActionText.saving : saveLabel}
         </button>
       </div>
     </div>
   );
 }
 
-export function AdminEmptyState({ title, description, code }) {
+export function AdminEmptyState({ title = commonActionText.empty, description, code }) {
   return (
     <div className="admin-empty">
       {code && <span className="admin-panel-eyebrow">{code}</span>}
@@ -139,13 +141,21 @@ export function AdminConfirmDialog({ open, title, message, onConfirm, onCancel, 
         <p>{message}</p>
         <div className="admin-dialog__actions">
           <button type="button" className="admin-btn admin-btn--ghost" onClick={onCancel} disabled={confirming}>
-            取消
+            {commonActionText.cancel}
           </button>
           <button type="button" className="admin-btn admin-btn--danger" onClick={onConfirm} disabled={confirming}>
-            {confirming ? "处理中…" : "确认"}
+            {confirming ? commonActionText.processing : commonActionText.confirm}
           </button>
         </div>
       </div>
     </div>
   );
+}
+
+export function AdminLoadingState({ message = commonActionText.loading }) {
+  return <div className="admin-placeholder admin-mono">{message}</div>;
+}
+
+export function AdminErrorState({ message }) {
+  return <div className="admin-unsaved-banner">{message}</div>;
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { commonActionText } from "../../lib/adminUi";
 import { resolveUploadUrl, uploadFile } from "../../lib/api";
 import { AdminField, AdminInput } from "./AdminForm";
 
@@ -31,12 +32,12 @@ export function AdminMediaField({ label, value, onChange, accept = "image/*", hi
           <video src={previewUrl} className="admin-media-field__preview" controls muted />
         )}
         <label className="admin-btn admin-btn--ghost admin-btn--sm">
-          {uploading ? "上传中…" : "上传替换"}
+          {uploading ? commonActionText.uploading : "上传替换"}
           <input type="file" accept={accept} hidden onChange={(e) => handleUpload(e.target.files?.[0])} />
         </label>
         {previewUrl && (
           <a href={previewUrl} target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost admin-btn--sm">
-            预览
+            {commonActionText.preview}
           </a>
         )}
       </div>

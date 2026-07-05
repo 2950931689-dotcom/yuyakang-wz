@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -60,6 +60,11 @@ export default function HeroSection() {
   const { content } = useContent();
   const { lang } = useLanguage();
   const [isMobile, setIsMobile] = useState(false);
+  const [carouselStatus, setCarouselStatus] = useState(null);
+
+  const handleCarouselStatus = useCallback((status) => {
+    setCarouselStatus(status);
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -80,7 +85,11 @@ export default function HeroSection() {
     <section className="hero hero__scanlines" id="hero">
       <div className="hero__video-wrap">
         {useCarousel ? (
-          <HeroVideoCarousel hero={hero} isMobile={isMobile} />
+          <HeroVideoCarousel
+            hero={hero}
+            isMobile={isMobile}
+            onStatusChange={handleCarouselStatus}
+          />
         ) : (
           <HeroSingleVideo hero={hero} isMobile={isMobile} content={content} />
         )}
@@ -102,6 +111,26 @@ export default function HeroSection() {
           </Button>
         </div>
       </div>
+      {carouselStatus?.visible && (
+        <div className="hero__carousel-status" aria-live="polite">
+          <div className="hero__carousel-status-row">
+            <span className="hero__carousel-status-code">
+              PROJECT {String(carouselStatus.index + 1).padStart(2, "0")} /{" "}
+              {String(carouselStatus.total).padStart(2, "0")}
+            </span>
+            {carouselStatus.slideTitle && (
+              <span className="hero__carousel-status-title">{carouselStatus.slideTitle}</span>
+            )}
+            <span className="hero__carousel-status-dur">{carouselStatus.durationSec}s</span>
+          </div>
+          <div className="hero__carousel-progress" aria-hidden="true">
+            <span
+              className="hero__carousel-progress-fill"
+              style={{ transform: `scaleX(${carouselStatus.progress})` }}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -79,7 +79,7 @@ export default function AdminSeoPage() {
         </div>
       </AdminFieldGroup>
 
-      <AdminFieldGroup eyebrow="Meta" title="Meta 标签">
+      <AdminFieldGroup eyebrow="元数据" title="Meta 标签">
         <AdminBilingualInput
           label="标题"
           value={seo.title}

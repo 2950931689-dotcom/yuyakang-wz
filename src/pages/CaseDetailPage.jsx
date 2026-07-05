@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
 import { getCaseBySlug } from "../lib/content";
+import CaseDetailHero from "../components/cases/CaseDetailHero";
 import CaseProjectFile from "../components/cases/CaseProjectFile";
 import Button from "../components/ui/Button";
 import LoadingState from "../components/ui/LoadingState";
@@ -25,8 +26,11 @@ export default function CaseDetailPage() {
   }
 
   return (
-    <div className="page container">
-      <CaseProjectFile caseItem={caseItem} content={content} lang={lang} />
+    <div className="case-detail-page">
+      <CaseDetailHero caseItem={caseItem} />
+      <div className="page container case-detail-page__content section-reveal">
+        <CaseProjectFile caseItem={caseItem} content={content} lang={lang} />
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ export default function Button({
   const isDisabled = disabled || loading;
   const classes = [
     "btn",
+    "signal-button",
     `btn--${variant}`,
     loading && "btn--loading",
     isDisabled && !loading && "btn--disabled",

@@ -20,6 +20,7 @@ import {
 } from "../../components/admin/AdminForm";
 import { AdminBilingualInput } from "../../components/admin/AdminBilingualField";
 import { AdminMediaField } from "../../components/admin/AdminMediaField";
+import { commonActionText } from "../../lib/adminUi";
 
 function normalizeService(svc, index) {
   const order = svc.sortOrder ?? svc.order ?? index + 1;
@@ -82,7 +83,7 @@ export default function AdminServicesPage() {
 
   const handleSave = async () => {
     if (!services || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return;
     }
     const payload = services.map((svc, i) => {
@@ -101,9 +102,9 @@ export default function AdminServicesPage() {
       await saveContentSection("services", payload);
       await reloadContent();
       reset();
-      showToast("保存成功");
+      showToast(commonActionText.saved);
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
     } finally {
       setLocalSaving(false);
     }
@@ -208,7 +209,7 @@ export default function AdminServicesPage() {
             <AdminField label="Slug">
               <AdminInput className="admin-mono" value={editing.slug ?? ""} onChange={(e) => updateItem(editIndex, { slug: e.target.value })} />
             </AdminField>
-            <AdminField label="Icon">
+            <AdminField label="图标">
               <AdminInput value={editing.icon ?? ""} onChange={(e) => updateItem(editIndex, { icon: e.target.value })} />
             </AdminField>
             <AdminField label="排序">

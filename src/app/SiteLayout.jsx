@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { ThemeProvider } from "../context/ThemeContext";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileNav, { MobileCta } from "../components/layout/MobileNav";
@@ -16,16 +17,18 @@ export default function SiteLayout() {
   }
 
   return (
-    <div className="site-layout">
-      <Header onMenuOpen={() => setMenuOpen(true)} />
-      <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <main className="site-main">
-        <PageTransition>
-          <Outlet />
-        </PageTransition>
-      </main>
-      <Footer />
-      <MobileCta />
-    </div>
+    <ThemeProvider>
+      <div className="site-layout">
+        <Header onMenuOpen={() => setMenuOpen(true)} />
+        <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
+        <main className="site-main">
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
+        </main>
+        <Footer />
+        <MobileCta />
+      </div>
+    </ThemeProvider>
   );
 }

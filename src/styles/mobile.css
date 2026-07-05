@@ -16,6 +16,40 @@
   .page {
     padding-bottom: calc(var(--space-section) + 16px);
   }
+
+  .booking-page__inner {
+    width: min(100% - 40px, 100%);
+    padding: 56px 0 calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-title {
+    font-size: clamp(32px, 12vw, 52px);
+    line-height: 1.05;
+  }
+
+  .booking-lead {
+    font-size: 14px;
+  }
+
+  .booking-page {
+    --booking-bg-opacity: 0.2;
+  }
+
+  [data-theme="light"] .booking-page {
+    --booking-bg-opacity: 0.1;
+  }
+
+  .booking-form .form-steps {
+    gap: 8px 12px;
+  }
+
+  .booking-form .form-actions {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

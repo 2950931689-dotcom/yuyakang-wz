@@ -15,6 +15,7 @@ import {
 } from "../../components/admin/AdminForm";
 import { AdminBilingualInput } from "../../components/admin/AdminBilingualField";
 import { AdminMediaField } from "../../components/admin/AdminMediaField";
+import { commonActionText } from "../../lib/adminUi";
 
 function getInitialProfile(content) {
   const profile = JSON.parse(JSON.stringify(content?.profile ?? {}));
@@ -51,7 +52,7 @@ export default function AdminProfilePage() {
 
   const handleSave = async () => {
     if (!profile || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return;
     }
     let payload = { ...profile };
@@ -69,9 +70,9 @@ export default function AdminProfilePage() {
       await saveContentSection("profile", payload);
       await reloadContent();
       reset();
-      showToast("保存成功");
+      showToast(commonActionText.saved);
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
     } finally {
       setLocalSaving(false);
     }

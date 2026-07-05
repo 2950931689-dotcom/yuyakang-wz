@@ -10,7 +10,7 @@ import { useAdmin } from "../../context/AdminContext";
 
 import { resolveUploadUrl, saveContentSection, uploadFile } from "../../lib/api";
 
-import { HERO_MODE_LABELS, heroModeLabel } from "../../lib/adminUi";
+import { commonActionText, heroModeText, heroModeLabel } from "../../lib/adminUi";
 
 import AdminTopbar from "../../components/admin/AdminTopbar";
 
@@ -104,7 +104,7 @@ function createEmptySlide(order) {
 
 
 
-const MODE_OPTIONS = Object.entries(HERO_MODE_LABELS);
+const MODE_OPTIONS = Object.entries(heroModeText);
 
 
 
@@ -171,6 +171,8 @@ export default function AdminHeroPage() {
 
 
   const carouselCases = casePreview.filter((c) => c.inCarousel);
+
+  const heroEligibleCases = casePreview.filter((c) => c.visible !== false);
 
   const heroWarnings = casePreview.filter((c) => c.showInHero && !c.hasVideo);
 
@@ -262,7 +264,7 @@ export default function AdminHeroPage() {
 
     } catch (err) {
 
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
 
     } finally {
 
@@ -288,11 +290,11 @@ export default function AdminHeroPage() {
 
       updateSlide(index, { [field]: result.file.url });
 
-      showToast("上传成功");
+      showToast(commonActionText.uploadSuccess);
 
     } catch (err) {
 
-      showToast(err.message || "上传失败", "error");
+      showToast(err.message || commonActionText.uploadFailed, "error");
 
     } finally {
 
@@ -308,7 +310,7 @@ export default function AdminHeroPage() {
 
     if (!hero || apiOnline === false) {
 
-      showToast("API 离线", "error");
+      showToast(commonActionText.apiOffline, "error");
 
       return;
 
@@ -334,11 +336,11 @@ export default function AdminHeroPage() {
 
       setBaseline(JSON.stringify(payload));
 
-      showToast("保存成功");
+      showToast(commonActionText.saved);
 
     } catch (err) {
 
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
 
     } finally {
 
@@ -388,7 +390,7 @@ export default function AdminHeroPage() {
 
   if (!hero) {
 
-    return <div className="admin-placeholder admin-mono">加载中…</div>;
+    return <div className="admin-placeholder admin-mono">{commonActionText.loading}</div>;
 
   }
 
@@ -406,9 +408,9 @@ export default function AdminHeroPage() {
 
       <AdminTopbar
 
-        eyebrow="首页播放"
+        eyebrow="首页视频"
 
-        title="首页 Hero 轮播"
+        title="首页视频管理"
 
         description="案例视频自动轮播 · 手动轮播 · 单视频模式"
 
@@ -418,11 +420,11 @@ export default function AdminHeroPage() {
 
 
 
-      <AdminFieldGroup eyebrow="播放模式" title="播放模式" description="自动模式从 cases 读取视频，不重复存储">
+      <AdminFieldGroup eyebrow="轮播模式" title="轮播模式" description="自动案例视频轮播会从案例管理中读取已开启首页展示的视频。">
 
         <div className="admin-form-grid">
 
-          <AdminField label="Hero 模式">
+          <AdminField label="轮播模式">
 
             <AdminSelect value={mode} onChange={(e) => updateHero({ mode: e.target.value })}>
 
@@ -442,7 +444,7 @@ export default function AdminHeroPage() {
 
         <div className="admin-duration-panel">
 
-          <span className="admin-param__label">全局时长 · 默认 8s</span>
+          <span className="admin-param__label">默认播放秒数 · 默认 8s</span>
 
           <div className="admin-chip-row">
 
@@ -486,7 +488,7 @@ export default function AdminHeroPage() {
 
             <button type="button" className="admin-btn admin-btn--primary admin-btn--sm" onClick={() => applyDurationToAll(globalDuration)}>
 
-              应用到手动片段
+              应用到全部视频
 
             </button>
 
@@ -502,7 +504,21 @@ export default function AdminHeroPage() {
 
             >
 
-              {applyingDuration ? "应用中…" : "一键应用到所有案例视频"}
+              {applyingDuration ? commonActionText.processing : "一键应用到所有案例视频"}
+
+            </button>
+
+            <button
+
+              type="button"
+
+              className="admin-btn admin-btn--ghost admin-btn--sm"
+
+              onClick={() => applyDurationToAll(8)}
+
+            >
+
+              恢复默认 8 秒
 
             </button>
 
@@ -518,11 +534,11 @@ export default function AdminHeroPage() {
 
         <AdminFieldGroup
 
-          eyebrow="自动轮播"
+          eyebrow="案例视频自动轮播"
 
-          title={`案例视频预览 · ${carouselCases.length} 条进入轮播`}
+          title={`案例视频列表 · ${carouselCases.length} 条进入轮播`}
 
-          description="数据来自 content.cases，保存案例后自动生效"
+          description="数据来自案例管理，保存案例后自动生效。无需在此重复添加案例视频。"
 
         >
 
@@ -534,53 +550,69 @@ export default function AdminHeroPage() {
 
               title="暂无可用于首页轮播的案例视频"
 
-              description="请为案例添加 videoUrl 或 videos[]，并开启 showInHero"
+              description="请在案例管理中添加视频，并开启「首页视频展示」"
 
             />
 
-          ) : (
+          ) : null}
+
+
+
+          {heroEligibleCases.length > 0 && (
 
             <div className="admin-cue-list">
 
-              {carouselCases.map((item, index) => (
+              {heroEligibleCases.map((item) => {
 
-                <article key={item.slug} className="admin-cue-card admin-cue-card--compact">
+                const projectLabel = `PROJECT ${String(item.projectNumber ?? 0).padStart(3, "0")}`;
 
-                  <div className="admin-cue-card__header">
+                return (
 
-                    <span className="admin-cue-card__num admin-mono">
+                  <article key={item.slug} className="admin-cue-card admin-cue-card--compact">
 
-                      项目 {String(index + 1).padStart(2, "0")}
+                    <div className="admin-cue-card__header">
 
-                    </span>
+                      <span className="admin-cue-card__num admin-mono">{projectLabel}</span>
 
-                    <span className="admin-cue-card__name">{t(item.title, "cn")}</span>
+                      <span className="admin-cue-card__name">{t(item.title, "cn") || item.slug || "未命名"}</span>
 
-                    <span className="admin-mono">{item.duration}s</span>
+                      {item.inCarousel && (
 
-                  </div>
+                        <span className="admin-mono">{item.duration}s</span>
 
-                  <div className="admin-cue-card__signals">
+                      )}
 
-                    <AdminStatusDot status={item.hasVideo ? "ok" : "idle"} />
+                    </div>
 
-                    视频
+                    <div className="admin-cue-card__signals">
 
-                    <AdminStatusDot status={item.hasPoster ? "ok" : "idle"} />
+                      <span>视频状态：{item.hasVideo ? "已配置" : "未配置"}</span>
 
-                    封面
+                      <span>首页展示：{item.showInHero ? "开启" : "关闭"}</span>
 
-                    <AdminStatusDot status={item.showInHero ? "ok" : "idle"} />
+                      {item.hasVideo && <span>播放秒数：{item.duration}s</span>}
 
-                    showInHero
+                      {item.inCarousel && <AdminStatusDot status="ok" />}
 
-                  </div>
+                    </div>
 
-                  <Link to="/admin/cases" className="admin-inline-link">编辑案例 →</Link>
+                    {item.showInHero && !item.hasVideo && (
 
-                </article>
+                      <p className="admin-meta-line" style={{ marginTop: 8 }}>
 
-              ))}
+                        该案例暂无视频，不会进入首页轮播。
+
+                      </p>
+
+                    )}
+
+                    <Link to="/admin/cases" className="admin-inline-link">编辑案例 →</Link>
+
+                  </article>
+
+                );
+
+              })}
 
             </div>
 
@@ -592,7 +624,7 @@ export default function AdminHeroPage() {
 
             <div className="admin-alert admin-alert--warn" style={{ marginTop: 16 }}>
 
-              {heroWarnings.length} 个案例开启了 showInHero 但暂无视频，不会进入轮播。
+              {heroWarnings.length} 个案例已开启首页视频展示但暂无视频，不会进入轮播。
 
             </div>
 
@@ -606,11 +638,11 @@ export default function AdminHeroPage() {
 
       {mode === "manualSlides" && (
 
-        <AdminFieldGroup eyebrow="手动轮播" title="手动片段列表" description={`${hero.slides?.length ?? 0} 个片段`}>
+        <AdminFieldGroup eyebrow="手动视频轮播" title="手动轮播列表" description={`${hero.slides?.length ?? 0} 个片段`}>
 
           {(hero.slides ?? []).length === 0 ? (
 
-            <AdminEmptyState code="无信号" title="暂无手动片段" description="在下方添加片段" />
+            <AdminEmptyState code="无信号" title="暂无手动片段" description="在下方添加视频" />
 
           ) : (
 
@@ -636,7 +668,7 @@ export default function AdminHeroPage() {
 
                       {posterSrc && <img src={posterSrc} alt="" className="admin-cue-card__poster" />}
 
-                      <AdminParamStepper label="时长" value={slide.duration ?? globalDuration} min={3} max={15} onChange={(v) => updateSlide(index, { duration: v })} />
+                      <AdminParamStepper label="播放秒数" value={slide.duration ?? globalDuration} min={3} max={15} onChange={(v) => updateSlide(index, { duration: v })} />
 
                       <AdminField label="视频">
 
@@ -650,17 +682,17 @@ export default function AdminHeroPage() {
 
                       <label className="admin-btn admin-btn--ghost admin-btn--sm">
 
-                        {uploadingKey === `${index}-video` ? "上传中…" : "替换视频"}
+                        {uploadingKey === `${index}-video` ? commonActionText.uploading : "替换视频"}
 
                         <input type="file" accept="video/*" hidden onChange={(e) => handleUpload(index, "video", e.target.files?.[0])} />
 
                       </label>
 
-                      <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => moveSlide(index, -1)} disabled={index === 0}>上移</button>
+                      <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => moveSlide(index, -1)} disabled={index === 0}>{commonActionText.moveUp}</button>
 
-                      <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => moveSlide(index, 1)} disabled={index === hero.slides.length - 1}>下移</button>
+                      <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => moveSlide(index, 1)} disabled={index === hero.slides.length - 1}>{commonActionText.moveDown}</button>
 
-                      <button type="button" className="admin-btn admin-btn--danger admin-btn--sm" onClick={() => setDeleteIndex(index)}>删除</button>
+                      <button type="button" className="admin-btn admin-btn--danger admin-btn--sm" onClick={() => setDeleteIndex(index)}>{commonActionText.delete}</button>
 
                     </div>
 
@@ -676,7 +708,7 @@ export default function AdminHeroPage() {
 
           <button type="button" className="admin-btn admin-btn--ghost" onClick={() => setHero((p) => ({ ...p, slides: [...(p.slides ?? []), createEmptySlide((p.slides?.length ?? 0) + 1)] }))}>
 
-            + 添加片段
+            + 添加视频
 
           </button>
 
@@ -688,7 +720,7 @@ export default function AdminHeroPage() {
 
       {mode === "singleVideo" && (
 
-        <AdminFieldGroup eyebrow="单视频" title="单视频模式">
+        <AdminFieldGroup eyebrow="单视频模式" title="单视频模式">
 
           <AdminField label="桌面端视频">
 
@@ -722,7 +754,7 @@ export default function AdminHeroPage() {
 
 
 
-      <AdminSaveBar saving={saving} dirty={dirty} onSave={handleSave} onReset={handleReset} saveLabel="保存 Hero" />
+      <AdminSaveBar saving={saving} dirty={dirty} onSave={handleSave} onReset={handleReset} saveLabel="保存首页视频设置" />
 
 
 
@@ -730,7 +762,7 @@ export default function AdminHeroPage() {
 
         open={deleteIndex !== null}
 
-        title="删除片段"
+        title="删除视频"
 
         message="确定移除此手动片段？"
 
@@ -745,5 +777,4 @@ export default function AdminHeroPage() {
   );
 
 }
-
 

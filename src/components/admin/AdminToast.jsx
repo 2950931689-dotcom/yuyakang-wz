@@ -15,7 +15,7 @@ export default function AdminToast() {
         >
           <span className="admin-toast__prefix admin-mono">SYS</span>
           <span className="admin-toast__message">{toast.message}</span>
-          <button type="button" onClick={() => dismissToast(toast.id)} aria-label="Dismiss">
+          <button type="button" onClick={() => dismissToast(toast.id)} aria-label="关闭">
             ×
           </button>
         </div>

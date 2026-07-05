@@ -3,10 +3,12 @@ import { getMedia, resolveUploadUrl, trashMedia, uploadFile } from "../../lib/ap
 import { useContent } from "../../context/ContentContext";
 import { useAdmin } from "../../context/AdminContext";
 import { getMediaUsageLabel } from "../../lib/mediaUsage";
+import { commonActionText, mediaTypeText } from "../../lib/adminUi";
 import AdminTopbar from "../../components/admin/AdminTopbar";
 import {
   AdminConfirmDialog,
   AdminEmptyState,
+  AdminLoadingState,
 } from "../../components/admin/AdminForm";
 
 const TYPE_FILTERS = ["all", "image", "video", "audio", "document", "other"];
@@ -16,14 +18,6 @@ function formatSize(bytes) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
-
-const TYPE_LABELS = {
-  image: "IMAGE",
-  video: "VIDEO",
-  audio: "AUDIO",
-  document: "DOCUMENT",
-  other: "OTHER",
-};
 
 export default function AdminMediaPage() {
   const { content } = useContent();
@@ -42,7 +36,7 @@ export default function AdminMediaPage() {
       const result = await getMedia();
       setFiles(result.files ?? []);
     } catch (err) {
-      showToast(err.message || "Failed to load media", "error");
+      showToast(err.message || commonActionText.loadFailed, "error");
       setFiles([]);
     } finally {
       setLoading(false);
@@ -60,10 +54,10 @@ export default function AdminMediaPage() {
     setUploading(true);
     try {
       await uploadFile(file);
-      showToast("File ingested to rack");
+      showToast(commonActionText.uploadSuccess);
       await loadFiles();
     } catch (err) {
-      showToast(err.message || "Upload failed", "error");
+      showToast(err.message || commonActionText.uploadFailed, "error");
     } finally {
       setUploading(false);
     }
@@ -72,9 +66,9 @@ export default function AdminMediaPage() {
   const copyUrl = async (url) => {
     try {
       await navigator.clipboard.writeText(url);
-      showToast("Path copied");
+      showToast(commonActionText.copied);
     } catch {
-      showToast("Copy failed", "error");
+      showToast(commonActionText.copyFailed, "error");
     }
   };
 
@@ -88,11 +82,11 @@ export default function AdminMediaPage() {
     setDeleting(true);
     try {
       await trashMedia(deleteTarget.filename);
-      showToast("Moved to _trash");
+      showToast(commonActionText.trashMoved);
       setDeleteTarget(null);
       await loadFiles();
     } catch (err) {
-      showToast(err.message || "Delete failed", "error");
+      showToast(err.message || commonActionText.deleteFailed, "error");
     } finally {
       setDeleting(false);
     }
@@ -101,16 +95,16 @@ export default function AdminMediaPage() {
   return (
     <>
       <AdminTopbar
-        eyebrow="Media Rack"
-        title="媒体素材机架"
-        description="SOURCE FILE · COPY PATH · MOVE TO TRASH"
+        eyebrow="媒体管理"
+        title="媒体管理"
+        description="上传 · 复制路径 · 移入回收站"
       />
 
       <div className="admin-dropzone">
-        <span className="admin-panel-eyebrow">Input Rack</span>
-        <p className="admin-dropzone__hint">Ingest image, video, audio or document to server/uploads</p>
+        <span className="admin-panel-eyebrow">上传区域</span>
+        <p className="admin-dropzone__hint">支持图片、视频、音频或文档，上传至 server/uploads</p>
         <label className={`admin-btn admin-btn--primary${apiOnline === false || uploading ? " is-disabled" : ""}`}>
-          {uploading ? "Ingesting…" : "Select File"}
+          {uploading ? commonActionText.uploading : "选择文件"}
           <input
             type="file"
             hidden
@@ -131,26 +125,26 @@ export default function AdminMediaPage() {
             className={`admin-btn admin-btn--ghost admin-btn--sm admin-mono${typeFilter === t ? " is-active" : ""}`}
             onClick={() => setTypeFilter(t)}
           >
-            {t.toUpperCase()}
+            {mediaTypeText[t] ?? t}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="admin-placeholder admin-mono">SCANNING RACK…</div>
+        <AdminLoadingState message="正在扫描媒体库..." />
       ) : filteredFiles.length === 0 ? (
-        <AdminEmptyState code="MEDIA RACK" title="无匹配媒体" description="Try another filter or ingest a file" />
+        <AdminEmptyState code="媒体库" title="无匹配媒体" description="尝试切换筛选条件或上传文件" />
       ) : (
         <div className="admin-rack">
           {filteredFiles.map((file) => {
             const fullUrl = resolveUploadUrl(file.url);
-            const typeKey = TYPE_LABELS[file.type] ?? "OTHER";
+            const typeLabel = mediaTypeText[file.type] ?? file.type;
             const usage = content ? getMediaUsageLabel(content, file.url) : "—";
 
             return (
               <article key={file.filename} className="admin-rack__slot">
                 <div className="admin-rack__head">
-                  <span className={`admin-tag admin-tag--type admin-tag--${file.type}`}>{typeKey}</span>
+                  <span className={`admin-tag admin-tag--type admin-tag--${file.type}`}>{typeLabel}</span>
                   <span className="admin-rack__size admin-mono">{formatSize(file.size)}</span>
                 </div>
                 <h3 className="admin-rack__name admin-mono">{file.filename}</h3>
@@ -161,13 +155,13 @@ export default function AdminMediaPage() {
                 </p>
                 <div className="admin-rack__actions">
                   <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => setPreview(file)}>
-                    Preview
+                    {commonActionText.preview}
                   </button>
                   <button type="button" className="admin-btn admin-btn--ghost admin-btn--sm" onClick={() => copyUrl(fullUrl)}>
-                    Copy Path
+                    复制路径
                   </button>
                   <button type="button" className="admin-btn admin-btn--danger admin-btn--sm" onClick={() => setDeleteTarget(file)}>
-                    Move to Trash
+                    移入回收站
                   </button>
                 </div>
               </article>
@@ -179,7 +173,7 @@ export default function AdminMediaPage() {
       {preview && (
         <div className="admin-dialog-backdrop" role="presentation" onClick={() => setPreview(null)}>
           <div className="admin-dialog admin-dialog--wide admin-dialog--monitor" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-            <span className="admin-panel-eyebrow">Monitor</span>
+            <span className="admin-panel-eyebrow">视频预览</span>
             <h3 className="admin-mono">{preview.filename}</h3>
             <div className="admin-media-preview">
               {preview.type === "image" && (
@@ -192,12 +186,12 @@ export default function AdminMediaPage() {
                 <audio controls src={resolveUploadUrl(preview.url)} />
               )}
               {preview.type !== "image" && preview.type !== "video" && preview.type !== "audio" && (
-                <p className="admin-field__hint">Preview unavailable — copy path instead.</p>
+                <p className="admin-field__hint">此类型无法预览，请复制路径使用。</p>
               )}
             </div>
             <div className="admin-dialog__actions">
               <button type="button" className="admin-btn admin-btn--ghost" onClick={() => setPreview(null)}>
-                Close
+                {commonActionText.close}
               </button>
             </div>
           </div>
@@ -206,8 +200,8 @@ export default function AdminMediaPage() {
 
       <AdminConfirmDialog
         open={Boolean(deleteTarget)}
-        title="Move to Trash"
-        message={`Move "${deleteTarget?.filename}" to _trash?`}
+        title="移入回收站"
+        message={`确认将「${deleteTarget?.filename}」移入 _trash？`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={confirmDelete}
         confirming={deleting}

@@ -126,10 +126,10 @@ async function main() {
   try {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(BASE, { waitUntil: "domcontentloaded" });
-    await page.click('button[aria-label="Open menu"]');
+    await page.click(".header__menu-btn");
     await page.waitForSelector(".mobile-nav.open", { timeout: 3000 });
     pass("手机端菜单", "390px");
-    await page.click('button[aria-label="Close"]');
+    await page.locator(".mobile-nav__head .header__menu-btn").click();
   } catch (e) {
     fail("手机端菜单", e.message);
   }

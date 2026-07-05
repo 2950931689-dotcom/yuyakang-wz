@@ -18,6 +18,7 @@ import {
 } from "../../components/admin/AdminForm";
 import { AdminBilingualInput } from "../../components/admin/AdminBilingualField";
 import { AdminMediaField } from "../../components/admin/AdminMediaField";
+import { commonActionText } from "../../lib/adminUi";
 
 function normalizeCert(cert, index) {
   const order = cert.sortOrder ?? cert.order ?? index + 1;
@@ -69,7 +70,7 @@ export default function AdminCertificatesPage() {
 
   const handleSave = async () => {
     if (!certs || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return;
     }
     const payload = certs.map((c, i) => {
@@ -89,9 +90,9 @@ export default function AdminCertificatesPage() {
       await saveContentSection("certificates", payload);
       await reloadContent();
       reset();
-      showToast("保存成功");
+      showToast(commonActionText.saved);
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
     } finally {
       setLocalSaving(false);
     }

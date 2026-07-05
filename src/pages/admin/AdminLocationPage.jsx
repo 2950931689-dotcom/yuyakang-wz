@@ -7,6 +7,7 @@ import { useContent } from "../../context/ContentContext";
 import { useAdmin } from "../../context/AdminContext";
 
 import { saveContentSection } from "../../lib/api";
+import { commonActionText } from "../../lib/adminUi";
 
 import {
 
@@ -122,7 +123,7 @@ export default function AdminLocationPage() {
 
     if (apiOnline === false) {
 
-      showToast("API 离线", "error");
+      showToast(commonActionText.apiOffline, "error");
 
       return;
 
@@ -144,11 +145,10 @@ export default function AdminLocationPage() {
 
       setBaseline(current);
 
-      showToast("保存成功");
-
+      showToast(commonActionText.saved);
     } catch (err) {
 
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
 
     } finally {
 

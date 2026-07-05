@@ -1,5 +1,19 @@
 /* —— YU YAKANG Admin Console — Audio Control Desk —— */
 
+/* Admin stays dark regardless of frontend theme */
+html[data-theme="light"] .admin-layout {
+  --color-bg: #080808;
+  --color-surface: #0c0c0c;
+  --color-surface-soft: #151515;
+  --color-line: rgba(255, 255, 255, 0.12);
+  --color-line-strong: rgba(255, 255, 255, 0.24);
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #a7a7a7;
+  --color-text-muted: #6f6f6f;
+  --color-accent: #ffffff;
+  --color-accent-soft: rgba(255, 255, 255, 0.72);
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -510,6 +524,7 @@
 
 /* —— Buttons —— */
 .admin-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -521,12 +536,45 @@
   background: transparent;
   color: var(--color-text-primary);
   cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    transform 0.1s ease;
+}
+
+.admin-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 45%,
+    transparent 90%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.admin-btn:active:not(:disabled):not(.is-disabled)::after {
+  animation: buttonSignalPulse 0.35s ease-out;
 }
 
 .admin-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.22);
+}
+
+.admin-btn:active:not(:disabled):not(.is-disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+
+.admin-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  outline-offset: 2px;
 }
 
 .admin-btn:disabled,
@@ -563,6 +611,20 @@
 .admin-btn--sm {
   padding: 6px 10px;
   font-size: 11px;
+}
+
+@keyframes buttonSignalPulse {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
 }
 
 .admin-chip-row,

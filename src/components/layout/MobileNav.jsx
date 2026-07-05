@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getNavLabel } from "../../lib/content";
 import LanguageSwitch from "./LanguageSwitch";
+import ThemeSwitch from "./ThemeSwitch";
 import LogoLink from "./LogoLink";
+import NavSignalLink from "./NavSignalLink";
 import WechatQrModal from "../contact/WechatQrModal";
 
 const NAV_KEYS = [
@@ -39,20 +41,21 @@ export default function MobileNav({ open, onClose }) {
 
   return (
     <div className={`mobile-nav ${open ? "open" : ""}`} aria-hidden={!open}>
-      <button type="button" className="mobile-nav__backdrop" aria-label="Close menu" onClick={onClose} />
+      <button type="button" className="mobile-nav__backdrop" aria-label="关闭菜单" onClick={onClose} />
       <div className="mobile-nav__panel">
         <div className="mobile-nav__head">
           <LogoLink onNavigate={onClose}>{content.siteSettings.siteName.en}</LogoLink>
-          <button type="button" className="header__menu-btn" aria-label="Close" onClick={onClose}>
+          <button type="button" className="header__menu-btn" aria-label="关闭" onClick={onClose}>
             <X size={20} strokeWidth={1.5} />
           </button>
         </div>
         <LanguageSwitch />
-        <nav className="mobile-nav__links" aria-label="Mobile">
+        <ThemeSwitch className="theme-switch--mobile" />
+        <nav className="mobile-nav__links" aria-label="手机导航">
           {NAV_KEYS.map(([key, path]) => (
-            <NavLink key={key} to={path} end={path === "/"} onClick={onClose}>
+            <NavSignalLink key={key} to={path} end={path === "/"} onClick={onClose}>
               {getNavLabel(content, key, lang)}
-            </NavLink>
+            </NavSignalLink>
           ))}
         </nav>
       </div>

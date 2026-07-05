@@ -5,6 +5,11 @@
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {
@@ -14,6 +19,21 @@ body {
   line-height: 1.7;
   color: var(--color-text-primary);
   background: var(--color-bg);
+  transition:
+    background-color var(--dur-theme) var(--ease-out),
+    color var(--dur-theme) var(--ease-out);
+}
+
+.site-layout {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    var(--color-bg);
+  background-size: 48px 48px, 48px 48px, auto;
 }
 
 img, video { max-width: 100%; height: auto; display: block; }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useContent } from "../context/ContentContext";
 import { useAdmin } from "../context/AdminContext";
 import { saveContentSection } from "../lib/api";
+import { commonActionText } from "../lib/adminUi";
 
 export function useSectionEditor(sectionKey, getInitial, { validate } = {}) {
   const { content, reloadContent } = useContent();
@@ -37,13 +38,13 @@ export function useSectionEditor(sectionKey, getInitial, { validate } = {}) {
 
   const save = useCallback(async () => {
     if (data == null || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return false;
     }
     if (validate) {
       const result = validate(data);
       if (!result.ok) {
-        showToast(result.error || "校验失败", "error");
+        showToast(result.error || commonActionText.validateFailed, "error");
         return false;
       }
     }
@@ -52,10 +53,10 @@ export function useSectionEditor(sectionKey, getInitial, { validate } = {}) {
       await saveContentSection(sectionKey, data);
       await reloadContent();
       setBaseline(JSON.stringify(data));
-      showToast("保存成功");
+      showToast(commonActionText.saved);
       return true;
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
       return false;
     } finally {
       setSaving(false);

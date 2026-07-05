@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <section className="section container" id="credentials">
+      <section className="section container section-reveal" id="credentials">
         <SectionTitle
           sectionIndex={1}
           eyebrow="CREDENTIALS"
@@ -22,7 +22,7 @@ export default function HomePage() {
         />
         <CredentialStrip />
       </section>
-      <section className="section container" id="services">
+      <section className="section container section-reveal" id="services">
         <SectionTitle
           sectionIndex={2}
           eyebrow="SERVICES"
@@ -30,7 +30,7 @@ export default function HomePage() {
         />
         <ServicePreview />
       </section>
-      <section className="section container" id="featured-cases">
+      <section className="section container section-reveal" id="featured-cases">
         <FeaturedCases />
       </section>
       <section className="section section--tight container" id="process">

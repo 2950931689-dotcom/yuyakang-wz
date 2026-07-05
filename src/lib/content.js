@@ -120,13 +120,42 @@ function hasLocalizedText(field) {
   return Boolean(field.cn?.trim() || field.en?.trim());
 }
 
-/** Resolve playable video from heroVideo → videos[] → videoUrl (legacy). */
+/** Resolve playable video: videos[0] → videoUrl → heroVideo → coverVideo. */
 export function getCaseVideoSource(caseItem) {
   if (!caseItem) return null;
 
   const firstVideo = caseItem.videos?.[0];
+  const firstVideoUrl = firstVideo ? extractMediaUrl(firstVideo) : null;
+  const legacyVideo =
+    typeof caseItem.videoUrl === "string" && caseItem.videoUrl.trim()
+      ? caseItem.videoUrl.trim()
+      : caseItem.videoUrl || null;
   const heroVideoUrl = extractMediaUrl(caseItem.heroVideo);
-  const legacyVideo = caseItem.videoUrl?.trim?.() ? caseItem.videoUrl.trim() : caseItem.videoUrl || null;
+  const coverVideoUrl = extractMediaUrl(caseItem.coverVideo);
+
+  const startTime = caseItem.heroStartTime ?? 0;
+
+  if (firstVideoUrl) {
+    return {
+      video: firstVideoUrl,
+      mobileVideo: extractMediaUrl(firstVideo.mobileSrc) ?? firstVideoUrl,
+      poster: extractMediaUrl(firstVideo.poster),
+      startTime,
+      duration: firstVideo.duration ?? null,
+      source: "videos",
+    };
+  }
+
+  if (legacyVideo) {
+    return {
+      video: legacyVideo,
+      mobileVideo: legacyVideo,
+      poster: extractMediaUrl(caseItem.heroPoster),
+      startTime,
+      duration: caseItem.heroDuration ?? null,
+      source: "videoUrl",
+    };
+  }
 
   if (heroVideoUrl) {
     const heroObj = typeof caseItem.heroVideo === "object" ? caseItem.heroVideo : null;
@@ -136,45 +165,46 @@ export function getCaseVideoSource(caseItem) {
         extractMediaUrl(heroObj?.mobileSrc) ??
         extractMediaUrl(firstVideo?.mobileSrc) ??
         heroVideoUrl,
-      poster:
-        extractMediaUrl(caseItem.heroPoster) ??
-        extractMediaUrl(firstVideo?.poster) ??
-        null,
-      startTime: caseItem.heroStartTime ?? 0,
+      poster: extractMediaUrl(caseItem.heroPoster) ?? extractMediaUrl(firstVideo?.poster),
+      startTime,
       duration: caseItem.heroDuration ?? firstVideo?.duration ?? null,
+      source: "heroVideo",
     };
   }
 
-  if (firstVideo) {
-    const video = extractMediaUrl(firstVideo);
-    if (video) {
-      return {
-        video,
-        mobileVideo: extractMediaUrl(firstVideo.mobileSrc) ?? video,
-        poster: extractMediaUrl(firstVideo.poster) ?? null,
-        startTime: caseItem.heroStartTime ?? 0,
-        duration: caseItem.heroDuration ?? firstVideo.duration ?? null,
-      };
-    }
-  }
-
-  if (legacyVideo) {
+  if (coverVideoUrl) {
     return {
-      video: legacyVideo,
-      mobileVideo: legacyVideo,
-      poster: extractMediaUrl(caseItem.heroPoster) ?? null,
-      startTime: caseItem.heroStartTime ?? 0,
+      video: coverVideoUrl,
+      mobileVideo: coverVideoUrl,
+      poster: extractMediaUrl(caseItem.heroPoster),
+      startTime,
       duration: caseItem.heroDuration ?? null,
+      source: "coverVideo",
     };
   }
 
   return null;
 }
 
+function resolveCaseVideoPoster(caseItem, videoSource, hero) {
+  const firstVideo = caseItem?.videos?.[0];
+  return (
+    videoSource?.poster ??
+    extractMediaUrl(firstVideo?.poster) ??
+    extractMediaUrl(caseItem?.poster) ??
+    caseItem?.coverImage ??
+    caseItem?.coverUrl ??
+    getCaseCover(caseItem) ??
+    hero?.fallbackPoster ??
+    hero?.posterUrl ??
+    null
+  );
+}
+
 function resolveSlideDuration(caseItem, videoSource, hero) {
   const firstVideo = caseItem?.videos?.[0];
   return clampHeroDuration(
-    caseItem?.heroDuration ?? firstVideo?.duration ?? videoSource?.duration ?? hero.slideDuration,
+    firstVideo?.duration ?? caseItem?.heroDuration ?? videoSource?.duration ?? hero.slideDuration,
     hero.slideDuration ?? DEFAULT_SLIDE_DURATION
   );
 }
@@ -188,11 +218,12 @@ function caseToHeroSlide(caseItem, hero, index) {
     title: caseItem.title ?? { cn: "", en: "" },
     video: source.video,
     mobileVideo: source.mobileVideo || source.video,
-    poster: source.poster || getCaseCover(caseItem) || "",
+    poster: resolveCaseVideoPoster(caseItem, source, hero) || "",
     startTime: source.startTime ?? 0,
     duration: resolveSlideDuration(caseItem, source, hero),
     sortOrder: caseItem.sortOrder ?? caseItem.order ?? index + 1,
     enabled: true,
+    source: "case",
   };
 }
 

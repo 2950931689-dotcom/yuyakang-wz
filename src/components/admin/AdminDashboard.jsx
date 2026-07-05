@@ -8,7 +8,7 @@ import { useAdmin } from "../../context/AdminContext";
 
 import { fetchBookings } from "../../lib/api";
 
-import { bookingStatusLabel, heroModeLabel } from "../../lib/adminUi";
+import { bookingStatusLabel, dashboardText, heroModeLabel } from "../../lib/adminUi";
 
 import {
 
@@ -28,7 +28,7 @@ import {
 
 import AdminTopbar from "./AdminTopbar";
 
-import { AdminStatusItem } from "./AdminForm";
+import { AdminLoadingState, AdminStatusItem } from "./AdminForm";
 
 
 
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
 
   if (loading || !content) {
 
-    return <div className="admin-placeholder admin-mono">初始化中…</div>;
+    return <AdminLoadingState message="初始化中…" />;
 
   }
 
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
 
   const cmsStatus = source === "api" ? "ok" : "warn";
 
-  const heroStatus = heroVideoCount > 0 ? "ok" : "idle";
+  const heroStatus = heroVideoCount > 0 ? "ok" : heroMissingVideo > 0 ? "warn" : "idle";
 
   const bookingStatus = newCount > 0 ? "warn" : bookings.length > 0 ? "ok" : "idle";
 
@@ -102,25 +102,25 @@ export default function AdminDashboard() {
 
   const stats = [
 
-    { label: "案例数量", value: cases.length },
+    { label: dashboardText.caseCount, value: cases.length },
 
-    { label: "Hero 视频数", value: heroVideoCount },
+    { label: dashboardText.certCount, value: certs.length },
 
-    { label: "Hero 警告", value: heroMissingVideo },
+    { label: dashboardText.serviceCount, value: services.length },
 
-    { label: "证书数量", value: certs.length },
+    { label: dashboardText.workPhotoCount, value: workPhotos.length },
 
-    { label: "工作照数量", value: workPhotos.length },
+    { label: dashboardText.heroVideoCount, value: heroVideoCount },
 
-    { label: "服务数量", value: services.length },
+    { label: dashboardText.bookingTotal, value: bookings.length },
 
-    { label: "预约数量", value: bookings.length },
+    { label: dashboardText.newRequestCount, value: newCount },
 
-    { label: "新需求数量", value: newCount },
+    { label: dashboardText.seoScore, value: `${seoScore}%`, small: true },
 
-    { label: "SEO 得分", value: `${seoScore}%`, small: true },
+    { label: dashboardText.missingHeroVideo, value: heroMissingVideo },
 
-    { label: "待修复项", value: issues.length },
+    { label: dashboardText.pendingIssues, value: issues.length },
 
   ];
 
@@ -132,9 +132,9 @@ export default function AdminDashboard() {
 
       <AdminTopbar
 
-        eyebrow="后台控制台"
+        eyebrow={dashboardText.title}
 
-        title="系统状态面板"
+        title={dashboardText.title}
 
         description="YU YAKANG AUDIO · JSON CMS 控制台"
 
@@ -142,15 +142,17 @@ export default function AdminDashboard() {
 
 
 
-      <section className="admin-status-bar" aria-label="系统状态">
+      <section className="admin-status-bar" aria-label={dashboardText.systemStatus}>
 
-        <AdminStatusItem label="API 在线" status={apiStatus} />
+        <AdminStatusItem label={dashboardText.apiOnline} status={apiStatus} />
 
-        <AdminStatusItem label="CMS 就绪" status={cmsStatus} />
+        <AdminStatusItem label={dashboardText.cmsSynced} status={cmsStatus} />
 
-        <AdminStatusItem label="Hero 活跃" status={heroStatus} />
+        <AdminStatusItem label={dashboardText.heroStatus} status={heroStatus} />
 
-        <AdminStatusItem label="预约输入" status={bookingStatus} />
+        <AdminStatusItem label={dashboardText.mediaStatus} status={cmsStatus} />
+
+        <AdminStatusItem label={dashboardText.bookingStatus} status={bookingStatus} />
 
       </section>
 
@@ -162,7 +164,7 @@ export default function AdminDashboard() {
 
           <div key={item.label} className="admin-stat">
 
-            <span className="admin-panel-eyebrow">内容信号</span>
+            <span className="admin-panel-eyebrow">{dashboardText.contentStats}</span>
 
             <div className="admin-stat__label">{item.label}</div>
 
@@ -182,7 +184,7 @@ export default function AdminDashboard() {
 
       <div className="admin-meta-line admin-mono">
 
-        最近同步 · {content.meta?.updatedAt ?? "—"} · 模式 · {heroModeLabel(hero.mode ?? "caseVideoCarousel")} · 默认 · {hero.slideDuration ?? 8}s
+        {dashboardText.recentSync} · {content.meta?.updatedAt ?? "—"} · 模式 · {heroModeLabel(hero.mode ?? "caseVideoCarousel")} · 默认 · {hero.slideDuration ?? 8}s
 
       </div>
 
@@ -204,15 +206,15 @@ export default function AdminDashboard() {
 
       <h2 className="admin-section-title">
 
-        <span className="admin-panel-eyebrow">完整度</span>
+        <span className="admin-panel-eyebrow">{dashboardText.contentStats}</span>
 
-        内容完整度检查
+        {dashboardText.completeness}
 
       </h2>
 
       {issues.length === 0 ? (
 
-        <div className="admin-placeholder admin-mono">全部检查通过</div>
+        <div className="admin-placeholder admin-mono">{dashboardText.allChecksPass}</div>
 
       ) : (
 
@@ -262,15 +264,15 @@ export default function AdminDashboard() {
 
       <h2 className="admin-section-title">
 
-        <span className="admin-panel-eyebrow">预约输入</span>
+        <span className="admin-panel-eyebrow">{dashboardText.bookingOverview}</span>
 
-        最近预约
+        {dashboardText.recentBookings}
 
       </h2>
 
       {recent.length === 0 ? (
 
-        <div className="admin-placeholder admin-mono">暂无预约</div>
+        <div className="admin-placeholder admin-mono">{dashboardText.noBookings}</div>
 
       ) : (
 
@@ -325,5 +327,4 @@ export default function AdminDashboard() {
   );
 
 }
-
 

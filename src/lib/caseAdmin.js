@@ -9,6 +9,19 @@ export const CASE_CATEGORIES = [
   ["acoustic-simulation", "声学模拟"],
 ];
 
+export function buildCaseVideoEntry(src, { poster = "", duration = 8, mobileSrc = "" } = {}) {
+  if (!src) return null;
+  return {
+    type: "video",
+    src,
+    mobileSrc,
+    poster,
+    title: { cn: "", en: "" },
+    description: { cn: "", en: "" },
+    duration,
+  };
+}
+
 export function createEmptyCase(sortOrder = 999) {
   return {
     id: randomUUID(),
@@ -40,7 +53,7 @@ export function createEmptyCase(sortOrder = 999) {
     isFeatured: false,
     showInHero: true,
     visible: true,
-    heroDuration: null,
+    heroDuration: 8,
     sortOrder,
     order: sortOrder,
     clientFeedback: { cn: "", en: "" },
@@ -49,6 +62,21 @@ export function createEmptyCase(sortOrder = 999) {
       description: { cn: "", en: "" },
       ogImage: "",
     },
+  };
+}
+
+function normalizeVideoEntry(video, caseItem) {
+  const src = typeof video === "string" ? video : video?.src ?? video?.url ?? "";
+  if (!src) return null;
+  const duration = video?.duration ?? caseItem.heroDuration ?? 8;
+  return {
+    type: "video",
+    src,
+    mobileSrc: video?.mobileSrc ?? "",
+    poster: video?.poster ?? "",
+    title: video?.title ?? { cn: "", en: "" },
+    description: video?.description ?? { cn: "", en: "" },
+    duration,
   };
 }
 
@@ -62,8 +90,25 @@ export function normalizeCaseForSave(caseItem) {
   if (c.isFeatured != null) c.featured = c.isFeatured;
   if (c.featured != null) c.isFeatured = c.featured;
   if (c.sortOrder != null) c.order = c.sortOrder;
-  if (c.videoUrl && !c.videos?.length) {
-    c.videos = [{ type: "video", src: c.videoUrl, duration: c.heroDuration ?? 8 }];
+
+  if (c.videos?.length) {
+    c.videos = c.videos.map((v) => normalizeVideoEntry(v, c)).filter(Boolean);
+  } else if (c.videoUrl) {
+    c.videos = [
+      buildCaseVideoEntry(c.videoUrl, {
+        poster: c.heroPoster ?? "",
+        duration: c.heroDuration ?? 8,
+      }),
+    ];
   }
+
+  if (c.videos?.length && !c.videoUrl) {
+    c.videoUrl = c.videos[0].src;
+  }
+
+  if (c.heroDuration == null && c.videos?.[0]?.duration) {
+    c.heroDuration = c.videos[0].duration;
+  }
+
   return c;
 }

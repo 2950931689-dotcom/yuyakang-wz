@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { AdminStatusDot } from "./AdminForm";
 
-export default function AdminUnsavedGuard({ when, message = "你有未保存的修改，确定离开吗？" }) {
+import { commonActionText } from "../../lib/adminUi";
+
+export default function AdminUnsavedGuard({ when, message = commonActionText.leaveConfirm }) {
   useEffect(() => {
     if (!when) return undefined;
 
@@ -19,8 +21,8 @@ export default function AdminUnsavedGuard({ when, message = "你有未保存的�
   return (
     <div className="admin-unsaved-banner" role="status">
       <AdminStatusDot status="warn" />
-      <span className="admin-mono">有未保存修改</span>
-      <span>— 离开页面前请确认是否保存</span>
+      <span className="admin-mono">{commonActionText.unsaved}</span>
+      <span>— {commonActionText.leaveConfirm}</span>
     </div>
   );
 }

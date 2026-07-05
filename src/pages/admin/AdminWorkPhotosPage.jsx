@@ -5,6 +5,7 @@ import { useAdmin } from "../../context/AdminContext";
 import { saveContentSection } from "../../lib/api";
 import { randomUUID } from "../../lib/id";
 import { t } from "../../lib/content";
+import { commonActionText } from "../../lib/adminUi";
 import AdminTopbar from "../../components/admin/AdminTopbar";
 import AdminUnsavedGuard from "../../components/admin/AdminUnsavedGuard";
 import {
@@ -68,7 +69,7 @@ export default function AdminWorkPhotosPage() {
 
   const handleSave = async () => {
     if (!profile || apiOnline === false) {
-      showToast("API 离线，无法保存", "error");
+      showToast(commonActionText.apiOffline, "error");
       return;
     }
     setSaving(true);
@@ -80,9 +81,9 @@ export default function AdminWorkPhotosPage() {
       await saveContentSection("profile", payload);
       await reloadContent();
       setBaseline(JSON.stringify(payload));
-      showToast("保存成功");
+      showToast(commonActionText.saved);
     } catch (err) {
-      showToast(err.message || "保存失败", "error");
+      showToast(err.message || commonActionText.saveFailed, "error");
     } finally {
       setSaving(false);
     }
@@ -106,7 +107,7 @@ export default function AdminWorkPhotosPage() {
       <AdminTopbar
         eyebrow="工作照"
         title="工作照管理"
-        description="profile.workPhotos · 保存至 profile 区块"
+        description="工作照保存在 profile 区块"
         actions={
           <Link to="/about" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost admin-btn--sm admin-mono">
             预览关于页 ↗
