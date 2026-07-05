@@ -4,10 +4,11 @@ import { Headphones, Video } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getCaseCover, getCategoryLabel, getCaseProjectNumber, t } from "../../lib/content";
+import { getCaseKeywordTags } from "../../lib/homeContent";
 import Tag from "../ui/Tag";
 import MediaFallback from "../ui/MediaFallback";
 
-export default function CaseCard({ caseItem, projectNumber }) {
+export default function CaseCard({ caseItem, projectNumber, featuredLayout = false }) {
   const { content } = useContent();
   const { lang } = useLanguage();
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function CaseCard({ caseItem, projectNumber }) {
   const cover = getCaseCover(caseItem);
   const projectId =
     projectNumber ?? (content ? getCaseProjectNumber(content, caseItem) : "000");
+  const keywordTags = getCaseKeywordTags(caseItem, lang);
 
   if (!content) return null;
 
@@ -35,7 +37,7 @@ export default function CaseCard({ caseItem, projectNumber }) {
   return (
     <a
       href={href}
-      className={`case-card${pressing ? " case-card--pressing" : ""}`}
+      className={`case-card${pressing ? " case-card--pressing" : ""}${featuredLayout ? " case-card--featured" : ""}`}
       onClick={handleClick}
     >
       <div className="case-card__media">
@@ -45,7 +47,15 @@ export default function CaseCard({ caseItem, projectNumber }) {
           <MediaFallback label={lang === "cn" ? "暂无封面" : "No Cover"} />
         )}
         <div className="case-card__overlay" aria-hidden="true">
-          <span>{lang === "cn" ? "查看项目" : "View Project"}</span>
+          <span>
+            {featuredLayout
+              ? lang === "cn"
+                ? "查看项目档案"
+                : "Open Project File"
+              : lang === "cn"
+                ? "查看项目"
+                : "View Project"}
+          </span>
         </div>
         <div className="case-card__badges">
           <Tag>{getCategoryLabel(caseItem.category, lang)}</Tag>
@@ -73,10 +83,33 @@ export default function CaseCard({ caseItem, projectNumber }) {
       <div className="case-card__body">
         <span className="case-card__project-id">PROJECT {projectId}</span>
         <h3 className="case-card__title">{t(caseItem.title, lang)}</h3>
-        <div className="case-card__meta">
-          {t(caseItem.location, lang)} · {t(caseItem.role, lang)}
+        <div className="case-card__meta-grid">
+          <span className="case-card__meta-item">
+            <span className="case-card__meta-label">{lang === "cn" ? "地点" : "Location"}</span>
+            {t(caseItem.location, lang)}
+          </span>
+          <span className="case-card__meta-item">
+            <span className="case-card__meta-label">{lang === "cn" ? "角色" : "Role"}</span>
+            {t(caseItem.role, lang)}
+          </span>
         </div>
-        <p className="case-card__summary">{t(caseItem.summary, lang)}</p>
+        {keywordTags.length > 0 && (
+          <div className="case-card__keywords">
+            {keywordTags.map((tag) => (
+              <span key={tag} className="case-card__keyword">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        {!featuredLayout && (
+          <p className="case-card__summary">{t(caseItem.summary, lang)}</p>
+        )}
+        {featuredLayout && (
+          <span className="case-card__archive-link">
+            {lang === "cn" ? "查看项目档案" : "Open Project File"}
+          </span>
+        )}
       </div>
     </a>
   );

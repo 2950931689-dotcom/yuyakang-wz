@@ -1,8 +1,9 @@
 import HeroSection from "../components/home/HeroSection";
-import CredentialStrip from "../components/home/CredentialStrip";
+import CredentialsSection from "../components/home/CredentialsSection";
 import ServicePreview from "../components/home/ServicePreview";
 import FeaturedCases from "../components/home/FeaturedCases";
 import WorkflowSection from "../components/home/WorkflowSection";
+import SoundIssueSection from "../components/home/SoundIssueSection";
 import TutorialSection from "../components/home/TutorialSection";
 import BookingCTA from "../components/home/BookingCTA";
 import SectionTitle from "../components/ui/SectionTitle";
@@ -15,28 +16,31 @@ export default function HomePage() {
     <>
       <HeroSection />
       <section className="section container section-reveal" id="credentials">
-        <SectionTitle
-          sectionIndex={1}
-          eyebrow="CREDENTIALS"
-          title={lang === "cn" ? "专业背书" : "Credentials"}
-        />
-        <CredentialStrip />
+        <CredentialsSection />
       </section>
       <section className="section container section-reveal" id="services">
         <SectionTitle
           sectionIndex={2}
           eyebrow="SERVICES"
-          title={lang === "cn" ? "服务方向" : "Services"}
+          title={lang === "cn" ? "声音解决方案" : "Sound Solutions"}
+          subtitle={
+            lang === "cn"
+              ? "按项目类型定位问题，提供可落地的现场与后期支持。"
+              : "Problem-focused support for live sound, systems and post-production."
+          }
         />
         <ServicePreview />
+      </section>
+      <section className="section section--tight container section-reveal" id="process">
+        <WorkflowSection />
       </section>
       <section className="section container section-reveal" id="featured-cases">
         <FeaturedCases />
       </section>
-      <section className="section section--tight container" id="process">
-        <WorkflowSection />
+      <section className="section container section-reveal" id="sound-check">
+        <SoundIssueSection />
       </section>
-      <section className="home-conversion-zone container" id="conversion">
+      <section className="home-conversion-zone container section-reveal" id="conversion">
         <BookingCTA compact />
         <TutorialSection compact />
       </section>

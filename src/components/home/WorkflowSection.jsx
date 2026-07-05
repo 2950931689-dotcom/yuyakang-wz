@@ -1,31 +1,41 @@
-import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { t } from "../../lib/content";
+import { HOME_WORKFLOW_STEPS } from "../../lib/homeContent";
 import SectionTitle from "../ui/SectionTitle";
 
 export default function WorkflowSection() {
-  const { content } = useContent();
   const { lang } = useLanguage();
 
-  if (!content) return null;
-
-  const steps = [...content.siteSettings.processSteps].sort((a, b) => a.order - b.order);
+  const steps = HOME_WORKFLOW_STEPS;
 
   return (
-    <div>
+    <div className="workflow-section">
       <SectionTitle
-        eyebrow="Process"
-        title={lang === "cn" ? "工作流程" : "Workflow"}
+        sectionIndex={4}
+        eyebrow="WORKFLOW"
+        title={lang === "cn" ? "合作流程" : "Workflow"}
+        subtitle={
+          lang === "cn"
+            ? "从需求对接到现场调试与交付复盘的标准协作路径。"
+            : "Standard path from briefing through on-site tuning to delivery review."
+        }
       />
-      <div className="workflow">
-        {steps.map((step) => (
-          <div key={step.order} className="workflow__step">
-            <div className="workflow__num">{String(step.order).padStart(2, "0")}</div>
-            <div className="workflow__title">{t(step.title, lang)}</div>
-            <div className="workflow__desc">{t(step.description, lang)}</div>
-          </div>
+      <ol className="workflow-cue">
+        {steps.map((step, index) => (
+          <li key={step.order} className="workflow-cue__item">
+            <div className="workflow-cue__num-col">
+              <span className="workflow-cue__num">{String(step.order).padStart(2, "0")}</span>
+              {index < steps.length - 1 && (
+                <span className="workflow-cue__line" aria-hidden="true" />
+              )}
+            </div>
+            <div className="workflow-cue__content">
+              <h3 className="workflow-cue__title">{t(step.title, lang)}</h3>
+              <p className="workflow-cue__desc">{t(step.description, lang)}</p>
+            </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </div>
   );
 }

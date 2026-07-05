@@ -15,11 +15,16 @@ export default function FeaturedCases() {
   const featured = getCases(content, { featured: true }).slice(0, 6);
 
   return (
-    <div>
+    <div className="featured-cases">
       <SectionTitle
-        sectionIndex={3}
-        eyebrow={lang === "cn" ? "CASES" : "CASES"}
+        sectionIndex={5}
+        eyebrow="CASES"
         title={lang === "cn" ? "精选案例" : "Featured Projects"}
+        subtitle={
+          lang === "cn"
+            ? "项目档案摘要 — 点击进入查看完整 Project File。"
+            : "Project archive summaries — open for full Project File details."
+        }
       />
       <div className="grid-3">
         {featured.map((c, i) => (
@@ -27,6 +32,7 @@ export default function FeaturedCases() {
             key={c.slug}
             caseItem={c}
             projectNumber={String(i + 1).padStart(3, "0")}
+            featuredLayout
           />
         ))}
       </div>

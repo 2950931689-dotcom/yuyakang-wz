@@ -1,4 +1,4 @@
-export default function SectionTitle({ sectionIndex, eyebrow, title, className = "" }) {
+export default function SectionTitle({ sectionIndex, eyebrow, title, subtitle, className = "" }) {
   const indexLabel = sectionIndex != null ? String(sectionIndex).padStart(2, "0") : null;
 
   return (
@@ -11,6 +11,7 @@ export default function SectionTitle({ sectionIndex, eyebrow, title, className =
         </span>
       )}
       <h2 className="section-title__heading">{title}</h2>
+      {subtitle && <p className="section-title__subtitle">{subtitle}</p>}
       <div className="section-title__line" />
     </div>
   );

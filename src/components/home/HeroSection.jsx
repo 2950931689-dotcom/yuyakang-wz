@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getHeroSlides, getHeroVideo, getSafeHero, t } from "../../lib/content";
+import { HERO_LEAD } from "../../lib/homeContent";
 import Button from "../ui/Button";
-import ExternalLinkButton from "../ui/ExternalLinkButton";
 import HeroVideoCarousel from "./HeroVideoCarousel";
 
 const FALLBACK_CLIP = "/hero/source-clips/hero-source-echo-live.mp4";
@@ -102,14 +102,25 @@ export default function HeroSection() {
         </p>
         <h1 className="hero__title">{t(hero.headline, lang)}</h1>
         <p className="hero__subtitle">{t(hero.subheadline, lang)}</p>
+        <p className="hero__lead">{HERO_LEAD[lang]}</p>
         <div className="hero__actions">
-          <ExternalLinkButton href={primaryUrl}>
-            {t(hero.primaryButton, lang)}
-          </ExternalLinkButton>
-          <Button as={Link} to={hero.secondaryButton.url} variant="secondary">
-            {t(hero.secondaryButton, lang)}
+          <Button as={Link} to="/cases">
+            {lang === "cn" ? "查看代表案例" : "Featured Projects"}
+          </Button>
+          <Button as={Link} to="/booking" variant="secondary">
+            {lang === "cn" ? "预约项目评估" : "Book Assessment"}
           </Button>
         </div>
+        {primaryUrl && (
+          <a
+            className="hero__video-link"
+            href={primaryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {lang === "cn" ? "观看代表视频" : "Watch Reel"}
+          </a>
+        )}
       </div>
       {carouselStatus?.visible && (
         <div className="hero__carousel-status" aria-live="polite">
