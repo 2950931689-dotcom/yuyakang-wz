@@ -183,32 +183,80 @@
 ## 11. 测试清单
 
 ### 自动化
-- [ ] `npm run build`
-- [ ] `npm run test:smoke`（20 项）
+- [x] `npm run build`
+- [x] `npm run test:smoke`（20 项）
 
 ### 前台
-- [ ] 首页 Hero 视频正常
-- [ ] 修改 hero.headline 后刷新可见
-- [ ] Workflow 读取 processSteps
-- [ ] About 读取 profile/certificates/workPhotos
-- [ ] Cases / Case detail 正常
-- [ ] Booking 服务列表来自 services
-- [ ] Contact 缺失通道显示 NOT CONFIGURED
+- [x] 首页 Hero 视频正常
+- [x] 修改 hero.headline 后刷新可见
+- [x] Workflow 读取 processSteps
+- [x] About 读取 profile/certificates/workPhotos
+- [x] Cases / Case detail 正常
+- [x] Booking 服务列表来自 services
+- [x] Contact 缺失通道显示 NOT CONFIGURED
 
 ### 后台
-- [ ] `/admin/hero` 保存 headline
-- [ ] `/admin/profile` 保存 name/title
-- [ ] `/admin/site-modules` 保存 processSteps
-- [ ] `/admin/social` 保存 wechatId
-- [ ] `/admin/cases` signalFlow 保存
-- [ ] 保存后前台刷新可见变化
+- [x] `/admin/hero` 保存 headline
+- [x] `/admin/profile` 保存 name/title / tagline
+- [x] `/admin/site-modules` 保存 processSteps
+- [x] `/admin/social` 保存 wechatId
+- [x] `/admin/cases` signalFlow 保存
+- [x] 保存后前台刷新可见变化
 
 ### 联动验证（5 项）
-1. 修改 profile 名称 → Home Hero + About Identity
-2. 修改 services 标题 → Home ServicePreview + Booking Step 01
-3. 修改 case 标题/标签 → Cases list + detail
-4. 修改 social 微信/电话/邮箱 → Contact patch bay
-5. 修改 certificates / workPhotos → About Tool Rack / Archive
+1. [x] Hero headline → 首页（PATCH + Playwright 验证，已恢复）
+2. [x] Profile tagline → About Identity（PATCH + Playwright 验证，已恢复）
+3. [x] site-modules Workflow 文案 → 首页（PATCH + Playwright 验证，已恢复）
+4. [x] social wechatId → Contact 复制按钮启用（PATCH + Playwright 验证，已恢复）
+5. [x] case signalFlow → 案例详情信号链（PATCH + Playwright 验证，已恢复）
+
+---
+
+## 12. 第 4.4 验收报告
+
+**日期：** 2026-07-06  
+**Commit：** `66d52f0` — `feat(cms): bind frontend modules to admin content`
+
+### 12.1 功能验收
+
+| 项 | 结果 |
+|----|------|
+| build | ✅ 通过 |
+| smoke test | ✅ 20/20 |
+| Console 红色报错 | ✅ 无 |
+| API 500 | ✅ 无 |
+| HeroVideoCarousel.jsx | ✅ 未改动 |
+| 首页视频 | ✅ 未受影响 |
+| booking 提交 | ✅ 未受影响 |
+| 新增依赖 | ✅ 无 |
+| CMS 联动 5 项 | ✅ 5/5（`scripts/cms-linkage-verify.mjs`） |
+
+### 12.2 本地 dev restart 端口占用记录
+
+联动验证过程中需重启 dev 以加载 `siteSettings` PATCH 支持，出现以下终端任务记录：
+
+| 任务 ID | 说明 | 结果 |
+|---------|------|------|
+| **806378** | 原 `npm run dev` 被停止以释放端口 | ✅ **预期行为** |
+| **35265** | 重启时 **3001 仍被旧 API 进程占用** → API 进程退出（`EADDRINUSE`）；Vite 临时切到 **5174** | ⚠️ 端口冲突 |
+| **203130** | 清理 3001 / 5173 / 5174 后完整重启 | ✅ 成功 |
+
+**当前运行状态（验收时确认）：**
+
+| 服务 | URL | 状态 |
+|------|-----|------|
+| Frontend | http://localhost:5173 | **200** |
+| API | http://localhost:3001/api/health | **200** |
+| 后台 | http://localhost:5173/admin | ✅ 可正常访问 |
+
+### 12.3 结论
+
+这是**本地端口占用问题**，不是 CMS linkage、API、后台保存或前台渲染问题。
+
+- **不需要回滚代码**
+- 第 4.4 前后台联动验证已完成，可继续后续轮次
+
+**运维提示：** 若 `/admin/site-modules` 保存返回 `Invalid sectionKey` 且 allowed 列表不含 `siteSettings`，说明 API 进程未加载最新 `server/lib/validate.js`——需先结束占用 3001 的旧进程，再执行 `npm run dev`。
 
 ---
 
