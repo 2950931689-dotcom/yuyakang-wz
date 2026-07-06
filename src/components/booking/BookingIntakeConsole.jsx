@@ -75,7 +75,9 @@ function validateStep(step, form, lang) {
       break;
     case 2:
       if (!form.soundIssues.length && !form.processNotes.trim()) {
-        return lang === "cn" ? "请选择声音问题或填写补充说明" : "Select issues or add notes";
+        return lang === "cn"
+          ? "请选择至少一个声音问题，或选择「需要系统初步判断」"
+          : "Select at least one issue, or choose “Need initial system assessment”";
       }
       break;
     case 3:
@@ -394,6 +396,16 @@ export default function BookingIntakeConsole() {
                     ? "选择当前最需要解决的问题，可多选。"
                     : "Select the issues you need help with (multiple allowed)."}
                 </p>
+                <div className="intake-check__hint-card">
+                  <span className="intake-check__hint-label">
+                    {lang === "cn" ? "不确定问题类型？" : "Not sure about the issue type?"}
+                  </span>
+                  <p>
+                    {lang === "cn"
+                      ? "可以先选择「需要系统初步判断」，后续通过微信补充现场视频或设备信息。"
+                      : "Choose “Need initial system assessment” first — you can share site video or gear info via WeChat later."}
+                  </p>
+                </div>
                 <div className="intake-check__grid">
                   {SOUND_ISSUES.map((issue, i) => {
                     const selected = form.soundIssues.includes(issue.id);
@@ -401,12 +413,17 @@ export default function BookingIntakeConsole() {
                       <button
                         key={issue.id}
                         type="button"
-                        className={`intake-check__tag${selected ? " is-marked" : ""}`}
+                        className={`intake-check__tag${selected ? " is-marked" : ""}${issue.recommended ? " is-recommended" : ""}`}
                         onClick={() => toggleIssue(issue.id)}
                         disabled={submitting}
                       >
                         <span className="intake-check__code">
                           CHECK {String(i + 1).padStart(2, "0")}
+                          {issue.recommended && (
+                            <span className="intake-check__rec">
+                              {lang === "cn" ? "推荐" : "REC"}
+                            </span>
+                          )}
                         </span>
                         {lang === "cn" ? issue.cn : issue.en}
                         {selected && <span className="intake-check__state">SIGNAL MARKED</span>}
@@ -440,6 +457,11 @@ export default function BookingIntakeConsole() {
                     onChange={(e) => update("projectDate", e.target.value)}
                     disabled={submitting}
                   />
+                  <p className="form-hint">
+                    {lang === "cn"
+                      ? "建议填写，方便判断档期。"
+                      : "Recommended — helps assess availability."}
+                  </p>
                 </div>
                 <div className="form-group">
                   <label htmlFor="booking-contact-time">

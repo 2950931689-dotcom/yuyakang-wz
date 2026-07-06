@@ -33,6 +33,12 @@ export const PATCH_POINTS = [
 ];
 
 export const SOUND_ISSUES = [
+  {
+    id: "system-assessment",
+    cn: "需要系统初步判断",
+    en: "Need initial system assessment",
+    recommended: true,
+  },
   { id: "vocal-clarity", cn: "人声听不清", en: "Vocals unclear" },
   { id: "low-mud", cn: "低频浑浊 / 轰头", en: "Muddy / boomy low end" },
   { id: "coverage", cn: "覆盖不均匀", en: "Uneven coverage" },

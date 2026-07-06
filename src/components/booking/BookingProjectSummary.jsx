@@ -40,12 +40,16 @@ export default function BookingProjectSummary({ form, services, lang }) {
         : form.processNotes?.trim() || "—",
     },
     {
+      label: lang === "cn" ? "项目日期" : "Project Date",
+      value: form.projectDate || (lang === "cn" ? "待确认" : "TBD"),
+    },
+    {
       label: lang === "cn" ? "时间 / 交付" : "Timeline",
       value: [
-        form.projectDate,
         delivery.map((o) => (lang === "cn" ? o.label.cn : o.label.en)).join("、"),
         urgency && urgency.id !== "normal" ? (lang === "cn" ? urgency.cn : urgency.en) : "",
         form.budgetRange,
+        form.contactTime,
       ]
         .filter(Boolean)
         .join(" · ") || "—",
