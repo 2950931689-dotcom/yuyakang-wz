@@ -1,8 +1,9 @@
-import { ASSIST_CONTENT, ISSUE_HINTS } from "../../lib/bookingContent";
+import { ISSUE_HINTS } from "../../lib/bookingContent";
+import { getBookingGuide } from "../../lib/cmsBinding";
 import BookingSignalMeter from "./BookingSignalMeter";
 
-export default function EngineerAssistPanel({ step, lang, selectedIssues = [] }) {
-  const content = ASSIST_CONTENT[step] ?? ASSIST_CONTENT[0];
+export default function EngineerAssistPanel({ content, step, lang, selectedIssues = [] }) {
+  const guide = getBookingGuide(content, step, lang);
   const hints = selectedIssues
     .map((id) => ISSUE_HINTS[id]?.[lang])
     .filter(Boolean);
@@ -21,13 +22,13 @@ export default function EngineerAssistPanel({ step, lang, selectedIssues = [] })
 
       <div className="intake-assist__block">
         <span className="intake-assist__label">{lang === "cn" ? "当前任务" : "CURRENT TASK"}</span>
-        <p className="intake-assist__text">{content.task[lang]}</p>
+        <p className="intake-assist__text">{guide.task[lang]}</p>
       </div>
 
       <div className="intake-assist__block">
         <span className="intake-assist__label">CHECKLIST</span>
         <ul className="intake-assist__list">
-          {content.checklist[lang].map((item) => (
+          {guide.checklist[lang].map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>

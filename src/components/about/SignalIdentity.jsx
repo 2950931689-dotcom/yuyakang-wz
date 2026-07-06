@@ -1,9 +1,10 @@
 import { useState } from "react";
 import SectionTitle from "../ui/SectionTitle";
-import { SIGNAL_IDENTITY_NODES } from "../../lib/aboutContent";
+import { getSignalIdentityNodes } from "../../lib/cmsBinding";
 
-export default function SignalIdentity({ lang }) {
+export default function SignalIdentity({ content, lang }) {
   const [activeId, setActiveId] = useState(null);
+  const nodes = getSignalIdentityNodes(content, lang);
 
   return (
     <section className="about-section signal-identity">
@@ -23,7 +24,7 @@ export default function SignalIdentity({ lang }) {
       </div>
 
       <ol className="signal-identity__nodes">
-        {SIGNAL_IDENTITY_NODES.map((node, index) => (
+        {nodes.map((node, index) => (
           <li key={node.id} className="signal-identity__item">
             {index > 0 && <span className="signal-identity__connector" aria-hidden="true" />}
             <button

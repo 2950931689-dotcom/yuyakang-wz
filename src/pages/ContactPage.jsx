@@ -54,7 +54,7 @@ export default function ContactPage() {
           onOpenQr={() => setQrOpen(true)}
         />
         <ContactSignalTimeline lang={lang} />
-        <ProjectMaterialChecklist lang={lang} />
+        <ProjectMaterialChecklist />
         <ContactOutputCta lang={lang} bookLabel={t(ci.bookNow, lang)} />
 
         <section className="contact-section contact-archive" aria-label={lang === "cn" ? "补充联系信息" : "Additional contact"}>

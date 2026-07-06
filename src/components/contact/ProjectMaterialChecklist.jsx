@@ -1,8 +1,14 @@
+import { useContent } from "../../context/ContentContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { getContactChecklist } from "../../lib/cmsBinding";
 import SectionTitle from "../ui/SectionTitle";
 import BookingSignalMeter from "../booking/BookingSignalMeter";
-import { MATERIAL_CHECKLIST } from "../../lib/contactContent";
 
-export default function ProjectMaterialChecklist({ lang }) {
+export default function ProjectMaterialChecklist() {
+  const { content } = useContent();
+  const { lang } = useLanguage();
+  const checklist = getContactChecklist(content, lang);
+
   return (
     <section className="contact-section contact-checklist">
       <SectionTitle
@@ -18,7 +24,7 @@ export default function ProjectMaterialChecklist({ lang }) {
       </p>
 
       <div className="contact-checklist__grid">
-        {MATERIAL_CHECKLIST.map((item, i) => (
+        {checklist.map((item, i) => (
           <article key={item.cn} className="contact-checklist__item">
             <div className="contact-checklist__head">
               <span className="contact-checklist__code">

@@ -38,6 +38,8 @@ import {
 
 } from "../../components/admin/AdminForm";
 
+import { AdminBilingualInput } from "../../components/admin/AdminBilingualField";
+
 
 
 function cloneHero(hero) {
@@ -417,6 +419,108 @@ export default function AdminHeroPage() {
       />
 
       <AdminUnsavedGuard when={dirty} />
+
+
+
+      <AdminFieldGroup eyebrow="首页文案" title="Hero 文案与按钮" description="前台 Hero 标题、副标题与按钮文案优先读取此处。">
+
+        <div className="admin-form-grid admin-form-grid--bilingual">
+
+          <AdminBilingualInput
+
+            label="主标题 headline"
+
+            value={hero.headline ?? { cn: "", en: "" }}
+
+            onChange={(v) => updateHero({ headline: v })}
+
+          />
+
+          <AdminBilingualInput
+
+            label="副标题 subheadline"
+
+            value={hero.subheadline ?? { cn: "", en: "" }}
+
+            onChange={(v) => updateHero({ subheadline: v })}
+
+            multiline
+
+            rows={2}
+
+          />
+
+        </div>
+
+        <div className="admin-form-grid admin-form-grid--bilingual">
+
+          <AdminBilingualInput
+
+            label="主按钮文案 primaryButton"
+
+            value={hero.primaryButton ?? { cn: "", en: "" }}
+
+            onChange={(v) => updateHero({ primaryButton: { ...hero.primaryButton, ...v } })}
+
+          />
+
+          <AdminField label="主按钮链接 desktopUrl">
+
+            <AdminInput
+
+              className="admin-mono"
+
+              value={hero.primaryButton?.desktopUrl ?? ""}
+
+              onChange={(e) =>
+
+                updateHero({
+
+                  primaryButton: { ...hero.primaryButton, desktopUrl: e.target.value },
+
+                })
+
+              }
+
+            />
+
+          </AdminField>
+
+          <AdminBilingualInput
+
+            label="次按钮文案 secondaryButton"
+
+            value={hero.secondaryButton ?? { cn: "", en: "" }}
+
+            onChange={(v) => updateHero({ secondaryButton: { ...hero.secondaryButton, ...v } })}
+
+          />
+
+          <AdminField label="次按钮链接 url">
+
+            <AdminInput
+
+              className="admin-mono"
+
+              value={hero.secondaryButton?.url ?? "/cases"}
+
+              onChange={(e) =>
+
+                updateHero({
+
+                  secondaryButton: { ...hero.secondaryButton, url: e.target.value },
+
+                })
+
+              }
+
+            />
+
+          </AdminField>
+
+        </div>
+
+      </AdminFieldGroup>
 
 
 

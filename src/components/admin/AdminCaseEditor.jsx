@@ -325,6 +325,34 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
           <AdminBilingualInput label="客户反馈" value={caseItem.clientFeedback} onChange={(v) => update({ clientFeedback: v })} multiline rows={6} />
 
+          <AdminField label="信号链路 signalFlow JSON" hint="可选。节点数组：id · label · labelCn · desc {cn,en}。留空则使用通用 fallback。">
+
+            <AdminTextarea
+
+              rows={8}
+
+              className="admin-mono"
+
+              value={caseItem._signalFlowRaw ?? JSON.stringify(caseItem.signalFlow ?? [], null, 2)}
+
+              onChange={(e) => {
+
+                try {
+
+                  update({ signalFlow: JSON.parse(e.target.value), _signalFlowRaw: undefined });
+
+                } catch {
+
+                  update({ _signalFlowRaw: e.target.value });
+
+                }
+
+              }}
+
+            />
+
+          </AdminField>
+
         </AdminFieldGroup>
 
       )}

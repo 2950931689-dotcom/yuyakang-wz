@@ -5,17 +5,16 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getVisibleServices, t } from "../../lib/content";
 import { createBooking } from "../../lib/api";
 import {
-  ASSIST_CONTENT,
   DELIVERY_OPTIONS,
   INTAKE_STEPS,
   PATCH_POINTS,
   SERVICE_TAGS,
-  SOUND_ISSUES,
   URGENCY_OPTIONS,
   VENUE_TYPES,
   buildCompositeMessage,
   buildVenueSize,
 } from "../../lib/bookingContent";
+import { getBookingGuide, getBookingSoundIssues } from "../../lib/cmsBinding";
 import Button from "../ui/Button";
 import WechatQr from "../contact/WechatQr";
 import BookingWaveProgress from "./BookingWaveProgress";
@@ -114,6 +113,8 @@ export default function BookingIntakeConsole() {
   if (!content) return null;
 
   const services = getVisibleServices(content);
+  const soundIssues = getBookingSoundIssues(content);
+  const stepGuide = getBookingGuide(content, step, lang);
   const bi = content.i18n.booking;
   const phase = stepPhase(step);
   const currentStep = INTAKE_STEPS[step];
@@ -252,7 +253,7 @@ export default function BookingIntakeConsole() {
         <div className="intake-console__main">
           <h2 className="form-step-title intake-console__step-title">{stepTitle}</h2>
           <p className="intake-console__step-desc">
-            {ASSIST_CONTENT[step]?.task[lang]}
+            {stepGuide.task[lang]}
           </p>
 
           {(stepError || error) && (
@@ -407,7 +408,7 @@ export default function BookingIntakeConsole() {
                   </p>
                 </div>
                 <div className="intake-check__grid">
-                  {SOUND_ISSUES.map((issue, i) => {
+                  {soundIssues.map((issue, i) => {
                     const selected = form.soundIssues.includes(issue.id);
                     return (
                       <button
@@ -645,6 +646,7 @@ export default function BookingIntakeConsole() {
         </div>
 
         <EngineerAssistPanel
+          content={content}
           step={step}
           lang={lang}
           selectedIssues={form.soundIssues}

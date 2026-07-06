@@ -10,7 +10,7 @@ import { getHeroSlides, getHeroVideo, getSafeHero, t } from "../../lib/content";
 
 import { splitHeroHeadline } from "../../lib/heroBoot";
 
-import { HERO_LEAD } from "../../lib/homeContent";
+import { getHeroCopy, getProfileIdentity } from "../../lib/cmsBinding";
 
 import Button from "../ui/Button";
 
@@ -166,19 +166,10 @@ export default function HeroSection() {
 
 
 
-  const nameCn = content.profile?.name ? t(content.profile.name, "cn") : "余雅康";
+  const identity = getProfileIdentity(content, lang);
+  const heroCopy = getHeroCopy(content, lang);
 
-  const nameEnRaw = content.profile?.name ? t(content.profile.name, "en") : "YU YAKANG";
-
-  const nameEn = nameEnRaw || "YU YAKANG";
-
-  const heroRole =
-
-    lang === "cn"
-
-      ? "现场调音师 · 系统工程师 · 混音师"
-
-      : "Live Sound Engineer · System Tuning · Mixing";
+  const { nameCn, nameEn, role: heroRole } = identity;
 
 
 
@@ -262,19 +253,19 @@ export default function HeroSection() {
 
         </div>
 
-        <p className="hero__lead hero-boot__lead">{HERO_LEAD[lang]}</p>
+        <p className="hero__lead hero-boot__lead">{heroCopy.lead}</p>
 
         <div className="hero__actions hero-boot__actions">
 
-          <Button as={Link} to="/cases">
+          <Button as={Link} to={heroCopy.secondaryUrl}>
 
-            {lang === "cn" ? "查看代表案例" : "Featured Projects"}
+            {heroCopy.secondaryLabel}
 
           </Button>
 
-          <Button as={Link} to="/booking" variant="secondary">
+          <Button as={Link} to={heroCopy.bookingUrl} variant="secondary">
 
-            {lang === "cn" ? "预约项目评估" : "Book Assessment"}
+            {heroCopy.bookingLabel}
 
           </Button>
 
@@ -294,7 +285,7 @@ export default function HeroSection() {
 
           >
 
-            {lang === "cn" ? "观看代表视频" : "Watch Reel"}
+            {heroCopy.primaryLabel}
 
           </a>
 

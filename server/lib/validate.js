@@ -19,6 +19,7 @@ export const ALLOWED_SECTION_KEYS = new Set([
   "socialLinks",
   "seo",
   "tutorialSection",
+  "siteSettings",
 ]);
 
 export function validateSiteContent(body) {
@@ -46,6 +47,9 @@ export function validateSiteContent(body) {
   }
   if (body.certificates !== undefined && !Array.isArray(body.certificates)) {
     return { ok: false, error: "certificates must be an array" };
+  }
+  if (body.siteSettings !== undefined && (typeof body.siteSettings !== "object" || Array.isArray(body.siteSettings))) {
+    return { ok: false, error: "siteSettings must be an object" };
   }
 
   return { ok: true };

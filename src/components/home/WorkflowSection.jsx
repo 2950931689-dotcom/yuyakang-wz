@@ -1,12 +1,13 @@
+import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { t } from "../../lib/content";
-import { HOME_WORKFLOW_STEPS } from "../../lib/homeContent";
+import { getHomeWorkflow } from "../../lib/cmsBinding";
 import SectionTitle from "../ui/SectionTitle";
 
 export default function WorkflowSection() {
+  const { content } = useContent();
   const { lang } = useLanguage();
-
-  const steps = HOME_WORKFLOW_STEPS;
+  const steps = getHomeWorkflow(content);
 
   return (
     <div className="workflow-section">

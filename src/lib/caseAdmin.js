@@ -110,5 +110,7 @@ export function normalizeCaseForSave(caseItem) {
     c.heroDuration = c.videos[0].duration;
   }
 
+  delete c._signalFlowRaw;
+
   return c;
 }

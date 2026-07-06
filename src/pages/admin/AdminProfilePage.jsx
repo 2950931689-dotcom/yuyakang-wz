@@ -65,6 +65,9 @@ export default function AdminProfilePage() {
       }
     }
     delete payload._skillGroupsRaw;
+    delete payload._credentialsRaw;
+    delete payload._experienceRaw;
+    delete payload._toolsRaw;
     setLocalSaving(true);
     try {
       await saveContentSection("profile", payload);
@@ -169,6 +172,70 @@ export default function AdminProfilePage() {
             />
           </AdminField>
         </div>
+      </AdminFieldGroup>
+
+      <AdminFieldGroup eyebrow="扩展资料" title="机构 / 经历 / 工具 / 背书">
+        <AdminBilingualInput
+          label="所属机构 affiliation"
+          value={profile.affiliation ?? { cn: "", en: "" }}
+          onChange={(v) => update({ affiliation: v })}
+          multiline
+          rows={2}
+        />
+        <AdminBilingualInput
+          label="身份标语 tagline"
+          value={profile.tagline ?? { cn: "", en: "" }}
+          onChange={(v) => update({ tagline: v })}
+          multiline
+          rows={2}
+        />
+        <AdminBilingualInput
+          label="预约状态 status"
+          value={profile.status ?? { cn: "", en: "" }}
+          onChange={(v) => update({ status: v })}
+        />
+        <AdminField label="credentials JSON" hint="专业背书字符串数组或 {cn,en} 对象">
+          <AdminTextarea
+            rows={6}
+            className="admin-mono"
+            value={profile._credentialsRaw ?? JSON.stringify(profile.credentials ?? [], null, 2)}
+            onChange={(e) => {
+              try {
+                update({ credentials: JSON.parse(e.target.value), _credentialsRaw: undefined });
+              } catch {
+                update({ _credentialsRaw: e.target.value });
+              }
+            }}
+          />
+        </AdminField>
+        <AdminField label="experience JSON" hint="label {cn,en} · value {cn,en}">
+          <AdminTextarea
+            rows={8}
+            className="admin-mono"
+            value={profile._experienceRaw ?? JSON.stringify(profile.experience ?? [], null, 2)}
+            onChange={(e) => {
+              try {
+                update({ experience: JSON.parse(e.target.value), _experienceRaw: undefined });
+              } catch {
+                update({ _experienceRaw: e.target.value });
+              }
+            }}
+          />
+        </AdminField>
+        <AdminField label="tools JSON" hint="label {cn,en} · value {cn,en}">
+          <AdminTextarea
+            rows={6}
+            className="admin-mono"
+            value={profile._toolsRaw ?? JSON.stringify(profile.tools ?? [], null, 2)}
+            onChange={(e) => {
+              try {
+                update({ tools: JSON.parse(e.target.value), _toolsRaw: undefined });
+              } catch {
+                update({ _toolsRaw: e.target.value });
+              }
+            }}
+          />
+        </AdminField>
       </AdminFieldGroup>
 
       <AdminFieldGroup eyebrow="技能" title="技能分组 skillGroups">

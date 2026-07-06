@@ -32,9 +32,9 @@ export default function AboutPage() {
   return (
     <div className="page about-page fade-in">
       <div className="about-page__inner container">
-        <EngineerIdentity profile={profile} lang={lang} />
-        <SignalIdentity lang={lang} />
-        <ControlSurface lang={lang} />
+        <EngineerIdentity content={content} profile={profile} lang={lang} />
+        <SignalIdentity content={content} lang={lang} />
+        <ControlSurface content={content} lang={lang} />
         <ExperienceTimeline profile={profile} lang={lang} />
         <ToolRack certificates={certs} profile={profile} lang={lang} />
         <WorkPhilosophy lang={lang} />

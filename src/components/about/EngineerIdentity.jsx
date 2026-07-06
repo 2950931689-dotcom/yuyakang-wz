@@ -1,20 +1,16 @@
 import SectionTitle from "../ui/SectionTitle";
-import { t } from "../../lib/content";
-import { ENGINEER_IDENTITY_TAGLINE, ENGINEER_PARAMS } from "../../lib/aboutContent";
+import { getProfileIdentity } from "../../lib/cmsBinding";
 
-export default function EngineerIdentity({ profile, lang }) {
-  const nameCn = t(profile?.name, "cn") || "余雅康";
-  const nameEn = t(profile?.name, "en") || "Yu Yakang";
-  const title = t(profile?.title, lang);
-  const location = profile?.location ? t(profile.location, lang) : lang === "cn" ? "中国 / 广东" : "CHINA / GUANGDONG";
-  const tagline = ENGINEER_IDENTITY_TAGLINE[lang];
+export default function EngineerIdentity({ content, profile, lang }) {
+  const identity = getProfileIdentity(content ?? { profile }, lang);
+  const { nameCn, nameEn, title, tagline, location, status, field, engineerId } = identity;
 
   const params = [
-    { key: "ID", value: ENGINEER_PARAMS.id },
-    { key: "STATUS", value: ENGINEER_PARAMS.status[lang] || ENGINEER_PARAMS.status.en },
+    { key: "ID", value: engineerId },
+    { key: "STATUS", value: status },
     { key: "LOCATION", value: location.toUpperCase() },
-    { key: "ROLE", value: ENGINEER_PARAMS.role },
-    { key: "FIELD", value: ENGINEER_PARAMS.field },
+    { key: "ROLE", value: profile?.roleCode || "SYSTEM ENGINEER" },
+    { key: "FIELD", value: field },
   ];
 
   return (
@@ -36,10 +32,10 @@ export default function EngineerIdentity({ profile, lang }) {
             <h1 className="page-title engineer-identity__name">
               <span className="engineer-identity__name-cn">{nameCn}</span>
               <span className="engineer-identity__name-sep"> / </span>
-              <span className="engineer-identity__name-en">{nameEn.toUpperCase()}</span>
+              <span className="engineer-identity__name-en">{nameEn}</span>
             </h1>
             <p className="engineer-identity__role">
-              {title || "Live Sound Engineer · System Tuning · Mixing"}
+              {title || identity.role}
             </p>
             <p className="engineer-identity__tagline">{tagline}</p>
           </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SectionTitle from "../ui/SectionTitle";
-import { CONTROL_SURFACE_CHANNELS } from "../../lib/aboutContent";
+import { getControlSurfaceChannels } from "../../lib/cmsBinding";
 
 function LevelMeters({ level, active }) {
   const lit = Math.round((level / 100) * 8);
@@ -16,8 +16,9 @@ function LevelMeters({ level, active }) {
   );
 }
 
-export default function ControlSurface({ lang }) {
+export default function ControlSurface({ content, lang }) {
   const [activeId, setActiveId] = useState(null);
+  const channels = getControlSurfaceChannels(content, lang);
 
   return (
     <section className="about-section control-surface">
@@ -28,7 +29,7 @@ export default function ControlSurface({ lang }) {
       />
 
       <div className="control-surface__deck">
-        {CONTROL_SURFACE_CHANNELS.map((ch) => {
+        {channels.map((ch) => {
           const isActive = activeId === ch.id;
           return (
             <div

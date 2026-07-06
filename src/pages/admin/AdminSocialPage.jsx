@@ -76,6 +76,13 @@ export default function AdminSocialPage() {
       </AdminFieldGroup>
 
       <AdminFieldGroup eyebrow="微信" title="微信">
+        <AdminField label="微信号 wechatId">
+          <AdminInput
+            className="admin-mono"
+            value={social.wechatId ?? social.wechat ?? ""}
+            onChange={(e) => update({ wechatId: e.target.value })}
+          />
+        </AdminField>
         <AdminMediaField
           label="微信二维码"
           value={social.wechatQrImage ?? ""}

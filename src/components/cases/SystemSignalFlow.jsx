@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { SIGNAL_FLOW_NODES, getSignalFlowToolsHint } from "../../lib/caseSignalFlow";
+import { getCaseSignalFlow } from "../../lib/cmsBinding";
+import { getSignalFlowToolsHint } from "../../lib/caseSignalFlow";
 
 export default function SystemSignalFlow({ caseItem, lang }) {
   const [activeId, setActiveId] = useState(null);
+  const nodes = getCaseSignalFlow(caseItem);
   const toolsHint = getSignalFlowToolsHint(caseItem, lang);
-  const activeNode = SIGNAL_FLOW_NODES.find((n) => n.id === activeId);
+  const activeNode = nodes.find((n) => n.id === activeId);
 
   return (
     <section className="signal-flow case-file__section">
@@ -25,7 +27,7 @@ export default function SystemSignalFlow({ caseItem, lang }) {
       </div>
 
       <ol className="signal-flow__nodes">
-        {SIGNAL_FLOW_NODES.map((node, index) => (
+        {nodes.map((node, index) => (
           <li key={node.id} className="signal-flow__item">
             {index > 0 && <span className="signal-flow__connector" aria-hidden="true" />}
             <button

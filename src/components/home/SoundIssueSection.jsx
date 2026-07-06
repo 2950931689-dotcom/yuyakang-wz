@@ -1,9 +1,13 @@
+import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { SOUND_ISSUES } from "../../lib/homeContent";
+import { t } from "../../lib/content";
+import { getHomeSoundIssues } from "../../lib/cmsBinding";
 import SectionTitle from "../ui/SectionTitle";
 
 export default function SoundIssueSection() {
+  const { content } = useContent();
   const { lang } = useLanguage();
+  const issues = getHomeSoundIssues(content);
 
   return (
     <div className="sound-check">
@@ -18,13 +22,13 @@ export default function SoundIssueSection() {
         }
       />
       <div className="sound-check__grid">
-        {SOUND_ISSUES.map((issue) => (
+        {issues.map((issue) => (
           <article key={issue.order} className="sound-check__card">
             <span className="sound-check__code">
               CHECK {String(issue.order).padStart(2, "0")}
             </span>
-            <h3 className="sound-check__title">{issue.title[lang]}</h3>
-            <p className="sound-check__desc">{issue.description[lang]}</p>
+            <h3 className="sound-check__title">{t(issue.title, lang)}</h3>
+            <p className="sound-check__desc">{t(issue.description, lang)}</p>
           </article>
         ))}
       </div>

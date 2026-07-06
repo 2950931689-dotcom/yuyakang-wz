@@ -14,6 +14,7 @@ export const adminRouteText = {
   social: "社媒 / 联系方式",
   seo: "SEO 设置",
   media: "媒体管理",
+  siteModules: "站点模块",
 };
 
 export const bookingStatusText = {
@@ -151,6 +152,7 @@ export const ADMIN_ROUTE_LINKS = [
   ["/admin/certificates", adminRouteText.certificates],
   ["/admin/work-photos", adminRouteText.workPhotos],
   ["/admin/tutorial", adminRouteText.tutorial],
+  ["/admin/site-modules", adminRouteText.siteModules],
   ["/admin/bookings", adminRouteText.bookings],
   ["/admin/social", adminRouteText.social],
   ["/admin/seo", adminRouteText.seo],
