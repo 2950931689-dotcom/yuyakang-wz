@@ -396,3 +396,14 @@ export function hasCmsExperience(profile, lang, tFn = t) {
     isMeaningful(tFn(item.value, lang))
   );
 }
+
+/** Contact page common tool links from siteSettings.commonTools. */
+export function getCommonTools(content) {
+  const raw = content?.siteSettings?.commonTools;
+  if (!Array.isArray(raw)) return [];
+
+  return raw
+    .filter((item) => item && item.enabled !== false)
+    .filter((item) => isMeaningful(item.title) && isMeaningful(item.url))
+    .sort((a, b) => (a.sortOrder ?? 999) - (b.sortOrder ?? 999));
+}

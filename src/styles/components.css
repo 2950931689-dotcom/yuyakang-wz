@@ -3632,11 +3632,16 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  padding: clamp(72px, 10vh, 120px) 0 clamp(28px, 4vh, 40px);
+  display: flex;
+  justify-content: center;
+  padding: clamp(72px, 10vh, 120px) var(--gutter) clamp(28px, 4vh, 40px);
 }
 
 .case-detail-hero__copy {
-  max-width: var(--width-narrow);
+  width: 100%;
+  max-width: min(1080px, 100%);
+  margin-inline: auto;
+  text-align: left;
 }
 
 .case-detail-hero__top {

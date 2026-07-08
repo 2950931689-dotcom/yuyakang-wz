@@ -6,6 +6,7 @@ import ContactConsole from "../components/contact/ContactConsole";
 import AuxChannels from "../components/contact/AuxChannels";
 import CommunicationPatchBay from "../components/contact/CommunicationPatchBay";
 import WeChatSignalCard from "../components/contact/WeChatSignalCard";
+import CommonTools from "../components/contact/CommonTools";
 import ProjectMaterialChecklist from "../components/contact/ProjectMaterialChecklist";
 import ContactOutputCta from "../components/contact/ContactOutputCta";
 import WechatQrModal from "../components/contact/WechatQrModal";
@@ -39,6 +40,7 @@ export default function ContactPage() {
           ci={ci}
           onOpenQr={() => setQrOpen(true)}
         />
+        <CommonTools content={content} lang={lang} />
         <ProjectMaterialChecklist />
         <ContactOutputCta lang={lang} bookLabel={t(ci.bookNow, lang)} />
       </div>

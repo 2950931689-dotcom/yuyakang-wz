@@ -23,6 +23,7 @@ import AdminTutorialPage from "../pages/admin/AdminTutorialPage";
 import AdminSocialPage from "../pages/admin/AdminSocialPage";
 import AdminSeoPage from "../pages/admin/AdminSeoPage";
 import AdminSiteModulesPage from "../pages/admin/AdminSiteModulesPage";
+import AdminCommonToolsPage from "../pages/admin/AdminCommonToolsPage";
 
 export default function AppRouter() {
   return (
@@ -49,6 +50,7 @@ export default function AppRouter() {
           <Route path="work-photos" element={<AdminWorkPhotosPage />} />
           <Route path="tutorial" element={<AdminTutorialPage />} />
           <Route path="site-modules" element={<AdminSiteModulesPage />} />
+          <Route path="common-tools" element={<AdminCommonToolsPage />} />
           <Route path="tutorials" element={<Navigate to="/admin/tutorial" replace />} />
           <Route path="bookings" element={<AdminBookingsPage />} />
           <Route path="social" element={<AdminSocialPage />} />

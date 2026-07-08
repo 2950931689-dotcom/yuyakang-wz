@@ -9,7 +9,6 @@ import SignalIdentity from "../components/about/SignalIdentity";
 import ControlSurface from "../components/about/ControlSurface";
 import FieldRecord from "../components/about/FieldRecord";
 import WorkPhilosophy from "../components/about/WorkPhilosophy";
-import ProfileArchive from "../components/about/ProfileArchive";
 import AboutCTA from "../components/about/AboutCTA";
 import LoadingState from "../components/ui/LoadingState";
 
@@ -43,7 +42,6 @@ export default function AboutPage() {
           openLightbox={openLightbox}
         />
         <WorkPhilosophy lang={lang} />
-        <ProfileArchive profile={profile} lang={lang} />
         <AboutCTA />
       </div>
     </div>

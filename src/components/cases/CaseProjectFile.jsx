@@ -8,10 +8,8 @@ import CaseGallery from "./CaseGallery";
 import AudioPreviewPlaceholder from "./AudioPreviewPlaceholder";
 import ProjectConsole from "./ProjectConsole";
 import SystemSignalFlow from "./SystemSignalFlow";
-import ProjectQuickView from "./ProjectQuickView";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
-import MediaFallback from "../ui/MediaFallback";
 
 const COLLAPSE_THRESHOLD = 480;
 
@@ -170,7 +168,6 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
   const toolsText = getCaseToolsText(caseItem, lang);
 
   const labels = {
-    file: lang === "cn" ? "项目档案" : "Project File",
     overview: lang === "cn" ? "项目概览" : "Project Overview",
     challenge: lang === "cn" ? "项目难点" : "Challenge",
     role: lang === "cn" ? "我的角色" : "My Role",
@@ -184,7 +181,15 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
 
   return (
     <article className="case-file fade-in">
-      <ProjectQuickView caseItem={caseItem} lang={lang} />
+      <section className="case-file__section case-file__section--data">
+        <header className="case-file__section-head">
+          <span className="case-file__section-code">PROJECT DATA</span>
+          <h2 className="case-file__section-title">
+            {lang === "cn" ? "项目详细信息" : "Project Data"}
+          </h2>
+        </header>
+        <ProjectConsole caseItem={caseItem} content={content} lang={lang} />
+      </section>
 
       <MediaRack caseItem={caseItem} content={content} lang={lang} />
 
@@ -287,16 +292,6 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
       )}
 
       <SystemSignalFlow caseItem={caseItem} lang={lang} />
-
-      <section className="case-file__section case-file__section--data">
-        <header className="case-file__section-head">
-          <span className="case-file__section-code">PROJECT DATA</span>
-          <h2 className="case-file__section-title">
-            {lang === "cn" ? "项目详细信息" : "Project Data"}
-          </h2>
-        </header>
-        <ProjectConsole caseItem={caseItem} content={content} lang={lang} />
-      </section>
 
       <footer className="case-file__cta">
         <div className="case-file__cta-main">
