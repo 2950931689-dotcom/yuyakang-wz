@@ -1,12 +1,20 @@
 /**
  * One-off CMS linkage verification (Round 4.4).
  * PATCH → Playwright verify → restore for each scenario.
+ * Requires admin auth (Round 5.3): set ADMIN_TEST_PASSWORD in env.
  */
 import { chromium } from "playwright";
+import { loginAdmin, adminFetch } from "./lib/admin-session.mjs";
 
 const API = "http://localhost:3001/api/content";
 const WEB = "http://localhost:5173";
 const CASE_SLUG = "echo-live-yunfu";
+
+let adminCookie;
+
+async function initAuth() {
+  adminCookie = (await loginAdmin()).cookie;
+}
 
 const MARKER = {
   headline: { cn: "CMS联动测试标题 Alpha", en: "CMS Link Test Headline Alpha" },
@@ -42,12 +50,15 @@ async function getContent() {
 }
 
 async function patchSection(key, data) {
-  const res = await fetch(`${API}/section/${key}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ data }),
-  });
-  const body = await res.json();
+  const { res, body } = await adminFetch(
+    `/api/content/section/${key}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data }),
+    },
+    adminCookie
+  );
   if (!res.ok || body.ok === false) {
     throw new Error(`PATCH ${key} failed: ${JSON.stringify(body)}`);
   }
@@ -180,6 +191,13 @@ async function test5SignalFlow(backup) {
 
 async function main() {
   console.log("── CMS Linkage Verification ──\n");
+  try {
+    await initAuth();
+  } catch (err) {
+    console.error("Auth required:", err.message);
+    process.exit(1);
+  }
+
   const backup = await getContent();
 
   try {

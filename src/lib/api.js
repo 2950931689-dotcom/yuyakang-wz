@@ -1,6 +1,27 @@
-const API_URL =
-  import.meta.env.VITE_API_URL ??
-  (import.meta.env.DEV ? "" : "http://localhost:3001");
+function resolveApiBase() {
+  const envBase = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+
+  if (import.meta.env.DEV) {
+    return envBase;
+  }
+
+  if (typeof window === "undefined") {
+    return envBase || "http://localhost:3001";
+  }
+
+  // API 同域（Render api.yuyakang.top）时走相对路径，避免跨域与 cookie 问题
+  if (window.location.pathname.startsWith("/admin")) {
+    return "";
+  }
+
+  if (envBase && window.location.origin === envBase) {
+    return "";
+  }
+
+  return envBase;
+}
+
+const API_URL = resolveApiBase();
 
 export class ApiError extends Error {
   constructor(message, status = 500, data = null) {
@@ -11,7 +32,14 @@ export class ApiError extends Error {
   }
 }
 
-async function parseResponse(res) {
+export class AuthRequiredError extends ApiError {
+  constructor(message = "登录已过期，请重新登录", data = null) {
+    super(message, 401, data);
+    this.name = "AuthRequiredError";
+  }
+}
+
+async function parseResponse(res, { admin = false } = {}) {
   let data = null;
   const text = await res.text();
 
@@ -24,6 +52,9 @@ async function parseResponse(res) {
   }
 
   if (!res.ok) {
+    if (admin && res.status === 401) {
+      throw new AuthRequiredError(data?.message || data?.error || "登录已过期，请重新登录", data);
+    }
     throw new ApiError(
       data?.error || data?.message || `Request failed (${res.status})`,
       res.status,
@@ -34,7 +65,7 @@ async function parseResponse(res) {
   return data;
 }
 
-async function request(path, options = {}) {
+async function request(path, options = {}, { admin = false } = {}) {
   const headers = { ...(options.headers ?? {}) };
 
   if (options.body && !(options.body instanceof FormData)) {
@@ -45,9 +76,10 @@ async function request(path, options = {}) {
   const res = await fetch(url, {
     ...options,
     headers,
+    credentials: admin ? "include" : "same-origin",
   });
 
-  return parseResponse(res);
+  return parseResponse(res, { admin });
 }
 
 export function resolveUploadUrl(url) {
@@ -69,18 +101,33 @@ export async function fetchContent() {
 
 export const getContent = fetchContent;
 
+export async function adminLogin(username, password) {
+  return request("/api/admin/login", {
+    method: "POST",
+    body: JSON.stringify({ username, password }),
+  }, { admin: true });
+}
+
+export async function adminMe() {
+  return request("/api/admin/me", {}, { admin: true });
+}
+
+export async function adminLogout() {
+  return request("/api/admin/logout", { method: "POST" }, { admin: true });
+}
+
 export async function saveContent(content) {
   return request("/api/content", {
     method: "PUT",
     body: JSON.stringify(content),
-  });
+  }, { admin: true });
 }
 
 export async function saveContentSection(sectionKey, data) {
   return request(`/api/content/section/${sectionKey}`, {
     method: "PATCH",
     body: JSON.stringify({ data }),
-  });
+  }, { admin: true });
 }
 
 export async function fetchBookings(params = {}) {
@@ -89,7 +136,7 @@ export async function fetchBookings(params = {}) {
   if (params.serviceType) qs.set("serviceType", params.serviceType);
   if (params.limit) qs.set("limit", String(params.limit));
   const query = qs.toString();
-  return request(`/api/bookings${query ? `?${query}` : ""}`);
+  return request(`/api/bookings${query ? `?${query}` : ""}`, {}, { admin: true });
 }
 
 export const getBookings = fetchBookings;
@@ -105,7 +152,7 @@ export async function updateBooking(id, patch) {
   return request(`/api/bookings/${id}`, {
     method: "PATCH",
     body: JSON.stringify(patch),
-  });
+  }, { admin: true });
 }
 
 export async function uploadFile(file) {
@@ -116,19 +163,20 @@ export async function uploadFile(file) {
   const res = await fetch(url, {
     method: "POST",
     body: form,
+    credentials: "include",
   });
 
-  return parseResponse(res);
+  return parseResponse(res, { admin: true });
 }
 
 export async function getMedia() {
-  return request("/api/media");
+  return request("/api/media", {}, { admin: true });
 }
 
 export async function trashMedia(filename) {
   return request(`/api/media/${encodeURIComponent(filename)}`, {
     method: "DELETE",
-  });
+  }, { admin: true });
 }
 
 export { API_URL };

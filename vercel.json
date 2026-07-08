@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build:web",
+  "outputDirectory": "dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+  ],
+  "redirects": [
+    {
+      "source": "/admin/:path*",
+      "destination": "https://api.yuyakang.top/admin/:path*",
+      "permanent": false
+    }
+  ]
+}

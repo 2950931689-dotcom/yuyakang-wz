@@ -1,0 +1,31 @@
+# Render — API + Admin (free tier)
+# Site frontend deploys separately on Vercel.
+# Docs: docs/DEPLOY_VERCEL_RENDER_FREE.md
+
+services:
+  - type: web
+    name: yuyakang-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: NODE_ENV=production API_ONLY=true node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_ONLY
+        value: "true"
+      - key: HOST
+        value: 0.0.0.0
+      - key: PUBLIC_SITE_URL
+        value: https://www.yuyakang.top
+      - key: ALLOWED_ORIGINS
+        value: https://yuyakang.top,https://www.yuyakang.top
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: ADMIN_SESSION_SECRET
+        sync: false
+      - key: ADMIN_SESSION_MAX_AGE
+        value: "86400000"

@@ -1,5 +1,6 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AdminProvider } from "../../context/AdminContext";
+import { useAdminAuth } from "../../context/AdminAuthContext";
 import AdminSidebar from "./AdminSidebar";
 import AdminToast from "./AdminToast";
 
@@ -12,6 +13,14 @@ const MOBILE_LINKS = [
 ];
 
 export default function AdminLayout() {
+  const navigate = useNavigate();
+  const { logout } = useAdminAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/admin/login", { replace: true });
+  };
+
   return (
     <AdminProvider>
       <div className="admin-layout">
@@ -23,6 +32,9 @@ export default function AdminLayout() {
                 {label}
               </NavLink>
             ))}
+            <button type="button" className="admin-mobile-nav__logout" onClick={handleLogout}>
+              退出
+            </button>
           </nav>
           <Outlet />
         </div>

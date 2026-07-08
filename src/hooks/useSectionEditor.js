@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useContent } from "../context/ContentContext";
 import { useAdmin } from "../context/AdminContext";
-import { saveContentSection } from "../lib/api";
+import { saveContentSection, AuthRequiredError } from "../lib/api";
 import { commonActionText } from "../lib/adminUi";
 
 export function useSectionEditor(sectionKey, getInitial, { validate } = {}) {
@@ -56,6 +56,11 @@ export function useSectionEditor(sectionKey, getInitial, { validate } = {}) {
       showToast(commonActionText.saved);
       return true;
     } catch (err) {
+      if (err instanceof AuthRequiredError) {
+        showToast("登录已过期，请重新登录", "error");
+        window.location.assign("/admin/login");
+        return false;
+      }
       showToast(err.message || commonActionText.saveFailed, "error");
       return false;
     } finally {

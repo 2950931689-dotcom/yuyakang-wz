@@ -8,7 +8,9 @@
     "dev:client": "vite --host 0.0.0.0",
     "dev:server": "node server/index.js",
     "start:server": "node server/index.js",
+    "start:api": "node server/index.js",
     "build": "vite build",
+    "build:web": "vite build",
     "preview": "vite preview",
     "test:smoke": "node scripts/smoke-test.mjs"
   },

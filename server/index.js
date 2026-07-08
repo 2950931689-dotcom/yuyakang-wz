@@ -1,8 +1,20 @@
+import "./env.js";
 import express from "express";
 import cors from "cors";
 import { randomUUID } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+  buildSessionClearCookie,
+  buildSessionSetCookie,
+  createSessionToken,
+  getAdminUsername,
+  getSessionFromRequest,
+  isAuthConfigured,
+  verifyAdminCredentials,
+} from "./lib/auth.js";
+import { requireAdminAuth } from "./lib/requireAdminAuth.js";
 import {
   DATA_DIR,
   UPLOADS_DIR,
@@ -26,8 +38,14 @@ import {
   validateSectionPatch,
 } from "./lib/validate.js";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PROJECT_ROOT = path.join(__dirname, "..");
+const DIST_DIR = path.join(PROJECT_ROOT, "dist");
+
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
+const API_ONLY = process.env.API_ONLY === "true";
+const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || "https://www.yuyakang.top";
 const ALLOWED_ORIGINS = (
   process.env.ALLOWED_ORIGINS ||
   "http://localhost:5173,http://127.0.0.1:5173"
@@ -78,6 +96,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    credentials: true,
   })
 );
 
@@ -96,7 +115,59 @@ app.get("/api/health", (_req, res) => {
     ok: true,
     service: "YU YAKANG AUDIO CMS API",
     time: new Date().toISOString(),
+    adminAuthConfigured: isAuthConfigured(),
+    mode: API_ONLY ? "api-only" : "full",
   });
+});
+
+app.post("/api/admin/login", (req, res) => {
+  if (!isAuthConfigured()) {
+    return res.status(503).json({
+      ok: false,
+      message: "后台认证未配置，请设置 ADMIN_USERNAME 与 ADMIN_PASSWORD_HASH",
+    });
+  }
+
+  const { username, password } = req.body ?? {};
+  if (!verifyAdminCredentials(username, password)) {
+    return res.status(401).json({
+      ok: false,
+      message: "账号或密码错误",
+    });
+  }
+
+  const token = createSessionToken(getAdminUsername());
+  res.setHeader("Set-Cookie", buildSessionSetCookie(token));
+  return res.json({
+    ok: true,
+    authenticated: true,
+    user: { username: getAdminUsername() },
+  });
+});
+
+app.get("/api/admin/me", (req, res) => {
+  if (!isAuthConfigured()) {
+    return res.status(503).json({
+      ok: false,
+      authenticated: false,
+      message: "后台认证未配置",
+    });
+  }
+
+  const session = getSessionFromRequest(req);
+  if (!session) {
+    return res.status(401).json({ authenticated: false });
+  }
+
+  return res.json({
+    authenticated: true,
+    user: { username: session.username },
+  });
+});
+
+app.post("/api/admin/logout", (_req, res) => {
+  res.setHeader("Set-Cookie", buildSessionClearCookie());
+  return res.json({ ok: true });
 });
 
 app.get("/api/content", async (_req, res) => {
@@ -109,7 +180,7 @@ app.get("/api/content", async (_req, res) => {
   }
 });
 
-app.put("/api/content", async (req, res) => {
+app.put("/api/content", requireAdminAuth, async (req, res) => {
   try {
     const validation = validateSiteContent(req.body);
     if (!validation.ok) {
@@ -133,7 +204,7 @@ app.put("/api/content", async (req, res) => {
   }
 });
 
-app.patch("/api/content/section/:sectionKey", async (req, res) => {
+app.patch("/api/content/section/:sectionKey", requireAdminAuth, async (req, res) => {
   try {
     const { sectionKey } = req.params;
     const validation = validateSectionPatch(sectionKey, req.body);
@@ -160,7 +231,7 @@ app.patch("/api/content/section/:sectionKey", async (req, res) => {
   }
 });
 
-app.post("/api/upload", (req, res) => {
+app.post("/api/upload", requireAdminAuth, (req, res) => {
   uploadMiddleware.single("file")(req, res, (err) => {
     if (err) {
       console.error("POST /api/upload", err);
@@ -187,7 +258,7 @@ app.post("/api/upload", (req, res) => {
   });
 });
 
-app.get("/api/media", async (_req, res) => {
+app.get("/api/media", requireAdminAuth, async (_req, res) => {
   try {
     const files = await listMediaFiles();
     res.json({ ok: true, files });
@@ -197,7 +268,7 @@ app.get("/api/media", async (_req, res) => {
   }
 });
 
-app.delete("/api/media/:filename", async (req, res) => {
+app.delete("/api/media/:filename", requireAdminAuth, async (req, res) => {
   try {
     await moveUploadToTrash(req.params.filename);
     res.json({ ok: true, message: "文件已移动到 _trash" });
@@ -211,7 +282,7 @@ app.delete("/api/media/:filename", async (req, res) => {
   }
 });
 
-app.get("/api/bookings", async (req, res) => {
+app.get("/api/bookings", requireAdminAuth, async (req, res) => {
   try {
     let list = await readJson(BOOKINGS_PATH, []);
 
@@ -269,7 +340,7 @@ app.post("/api/bookings", async (req, res) => {
   }
 });
 
-app.patch("/api/bookings/:id", async (req, res) => {
+app.patch("/api/bookings/:id", requireAdminAuth, async (req, res) => {
   try {
     const validation = validateBookingPatch(req.body);
     if (!validation.ok) {
@@ -299,6 +370,36 @@ app.patch("/api/bookings/:id", async (req, res) => {
   }
 });
 
+if (process.env.NODE_ENV === "production") {
+  if (API_ONLY) {
+    app.use("/assets", express.static(path.join(DIST_DIR, "assets")));
+
+    const sendAdminSpa = (_req, res) => {
+      res.sendFile(path.join(DIST_DIR, "index.html"));
+    };
+
+    app.get("/admin/login", sendAdminSpa);
+    app.get("/admin", sendAdminSpa);
+    app.get("/admin/*", sendAdminSpa);
+
+    app.get("/", (_req, res) => {
+      res
+        .type("text")
+        .send(
+          `YU YAKANG AUDIO CMS API\n\nSite: ${PUBLIC_SITE_URL}\nAdmin: /admin/login\nHealth: /api/health`
+        );
+    });
+  } else {
+    app.use(express.static(DIST_DIR));
+    app.get("*", (req, res, next) => {
+      if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) {
+        return next();
+      }
+      res.sendFile(path.join(DIST_DIR, "index.html"));
+    });
+  }
+}
+
 app.use((_req, res) => {
   res.status(404).json({ ok: false, error: "Not found" });
 });
@@ -312,6 +413,16 @@ await ensureDataFiles();
 
 app.listen(PORT, HOST, () => {
   console.log(`YU YAKANG AUDIO CMS API → http://localhost:${PORT}`);
+  if (API_ONLY) {
+    console.log(`  Mode: API + /admin (site on Vercel → ${PUBLIC_SITE_URL})`);
+  }
+  if (isAuthConfigured()) {
+    console.log(`  Admin auth: enabled (user: ${getAdminUsername()})`);
+  } else {
+    console.warn(
+      "  Admin auth: NOT configured — set ADMIN_USERNAME + ADMIN_PASSWORD_HASH in .env.local"
+    );
+  }
   const lan = getLanAddresses();
   if (lan.length) {
     console.log("  Network (API direct):");

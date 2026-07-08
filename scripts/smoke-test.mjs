@@ -3,6 +3,9 @@
  * Usage: node scripts/smoke-test.mjs
  */
 import { chromium } from "playwright";
+import { loadScriptEnv } from "./lib/load-script-env.mjs";
+
+loadScriptEnv();
 
 const BASE = process.env.SMOKE_BASE_URL || "http://localhost:5173";
 const API = process.env.SMOKE_API_URL || "http://localhost:3001";
@@ -42,6 +45,29 @@ async function checkPage(page, path, label, selector) {
     pass(label, path);
   } catch (e) {
     fail(label, e.message);
+  }
+}
+
+async function adminLogin(page) {
+  const password = process.env.ADMIN_TEST_PASSWORD;
+  const username = process.env.ADMIN_TEST_USERNAME || process.env.ADMIN_USERNAME || "admin";
+
+  if (!password) {
+    await checkPage(page, "/admin/login", "后台登录页", ".admin-login");
+    return false;
+  }
+
+  try {
+    await page.goto(`${BASE}/admin/login`, { waitUntil: "domcontentloaded", timeout: 15000 });
+    await page.fill("#admin-username", username);
+    await page.fill("#admin-password", password);
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/\/admin(\/)?$/, { timeout: 10000 });
+    pass("后台登录", username);
+    return true;
+  } catch (e) {
+    fail("后台登录", e.message);
+    return false;
   }
 }
 
@@ -114,15 +140,18 @@ async function main() {
     fail("Booking 流程", e.message);
   }
 
-  await checkPage(page, "/admin", "后台 /admin", ".admin-layout, .admin-dashboard");
-  await checkPage(page, "/admin/hero", "后台 Hero", ".admin-layout");
-  await checkPage(page, "/admin/location", "后台 Location", ".admin-layout");
-  await checkPage(page, "/admin/media", "后台 Media", ".admin-layout");
+  const loggedIn = await adminLogin(page);
+  if (loggedIn) {
+    await checkPage(page, "/admin", "后台 /admin", ".admin-layout, .admin-dashboard");
+    await checkPage(page, "/admin/hero", "后台 Hero", ".admin-layout");
+    await checkPage(page, "/admin/location", "后台 Location", ".admin-layout");
+    await checkPage(page, "/admin/media", "后台 Media", ".admin-layout");
 
-  await checkPage(page, "/admin/profile", "后台 Profile", ".admin-layout");
-  await checkPage(page, "/admin/cases", "后台 Cases", ".admin-layout");
-  await checkPage(page, "/admin/seo", "后台 SEO", ".admin-layout");
-  await checkPage(page, "/admin/tutorial", "后台 Tutorial", ".admin-layout");
+    await checkPage(page, "/admin/profile", "后台 Profile", ".admin-layout");
+    await checkPage(page, "/admin/cases", "后台 Cases", ".admin-layout");
+    await checkPage(page, "/admin/seo", "后台 SEO", ".admin-layout");
+    await checkPage(page, "/admin/tutorial", "后台 Tutorial", ".admin-layout");
+  }
 
   try {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -136,7 +165,10 @@ async function main() {
   }
 
   const redErrors = errors.filter(
-    (e) => !e.includes("favicon") && !e.includes("404")
+    (e) =>
+      !e.includes("favicon") &&
+      !e.includes("404") &&
+      !e.includes("401 (Unauthorized)")
   );
   if (redErrors.length === 0) pass("Console 无红色报错", "checked");
   else fail("Console 红色报错", redErrors.slice(0, 2).join("; "));
