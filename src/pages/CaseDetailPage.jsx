@@ -27,7 +27,7 @@ export default function CaseDetailPage() {
 
   return (
     <div className="case-detail-page">
-      <CaseDetailHero caseItem={caseItem} />
+      <CaseDetailHero caseItem={caseItem} content={content} lang={lang} />
       <div className="page container case-detail-page__content section-reveal">
         <div className="container--narrow case-detail-page__file">
           <CaseProjectFile caseItem={caseItem} content={content} lang={lang} />

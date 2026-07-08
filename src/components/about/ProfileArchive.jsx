@@ -1,16 +1,7 @@
 import { useState } from "react";
 import { t } from "../../lib/content";
-import CertificateGallery from "./CertificateGallery";
-import MediaFallback from "../ui/MediaFallback";
 
-export default function ProfileArchive({
-  profile,
-  certs,
-  workPhotos,
-  workItems,
-  lang,
-  openLightbox,
-}) {
+export default function ProfileArchive({ profile, lang }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -18,14 +9,14 @@ export default function ProfileArchive({
       <div className="about-raw-data__shell">
         <header className="about-raw-data__head">
           <div>
-            <span className="about-archive__code">RAW PROFILE DATA</span>
+            <span className="about-archive__code">07 / RAW PROFILE DATA</span>
             <h2 className="about-archive__title">
               {lang === "cn" ? "原始档案" : "Raw Profile Data"}
             </h2>
             <p className="about-raw-data__desc">
               {lang === "cn"
-                ? "以下为完整个人简介、证书与工作照归档，用于补充查看。"
-                : "Full bio, certificates and on-site photos for supplementary reference."}
+                ? "以下为完整个人简介与技能归档，用于补充查看。"
+                : "Full bio and skills archive for supplementary reference."}
             </p>
           </div>
           <button
@@ -76,36 +67,6 @@ export default function ProfileArchive({
                 ))}
               </div>
             )}
-
-            <div className="prose-block">
-              <h3>{lang === "cn" ? "证书" : "Certificates"}</h3>
-              {certs.length ? (
-                <CertificateGallery certificates={certs} />
-              ) : (
-                <MediaFallback label={lang === "cn" ? "暂无证书" : "No certificates"} compact />
-              )}
-            </div>
-
-            <div className="prose-block">
-              <h3>{lang === "cn" ? "工作照" : "On Site"}</h3>
-              {workPhotos.length ? (
-                <div className="case-gallery">
-                  {workPhotos.map((p, i) => (
-                    <button
-                      key={p.id || p.imageUrl}
-                      type="button"
-                      className="case-gallery__item"
-                      onClick={() => openLightbox(workItems, i)}
-                      aria-label={t(p.title, lang)}
-                    >
-                      <img src={p.imageUrl} alt={t(p.title, lang)} loading="lazy" />
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <MediaFallback label={lang === "cn" ? "暂无工作照" : "No work photos"} compact />
-              )}
-            </div>
           </div>
         )}
       </div>

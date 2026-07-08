@@ -36,9 +36,9 @@ export default function CommunicationPatchBay({
   return (
     <section className="contact-section contact-patch-bay">
       <SectionTitle
-        sectionIndex={1}
-        eyebrow="COMMUNICATION PATCH BAY"
-        title={lang === "cn" ? "沟通接入面板" : "Communication Patch Bay"}
+        sectionIndex={3}
+        eyebrow="PRIMARY PATCH BAY"
+        title={lang === "cn" ? "主接入面板" : "Primary Patch Bay"}
       />
 
       <p className="contact-patch-bay__cms-note">

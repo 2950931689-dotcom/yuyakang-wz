@@ -23,7 +23,7 @@ export default function ControlSurface({ content, lang }) {
   return (
     <section className="about-section control-surface">
       <SectionTitle
-        sectionIndex={3}
+        sectionIndex={4}
         eyebrow="CONTROL SURFACE"
         title={lang === "cn" ? "能力控制台" : "Control Surface"}
       />

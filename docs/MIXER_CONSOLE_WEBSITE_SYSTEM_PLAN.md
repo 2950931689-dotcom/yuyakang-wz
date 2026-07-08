@@ -477,4 +477,15 @@ Console Header (Engineer Toolkit)
 
 ---
 
-*文档版本：5.0.0 · Round 5.0 架构方案 · 不涉及代码变更*
+## 12. Strapi Migration Note
+
+> 未来方向说明 · 非本轮实施范围
+
+1. **当前状态**：项目已是 React + 自制 Admin + Express/JSON CMS，并非「纯静态站」；前后台通过 `cmsBinding.js` 与 `/api/content` 联动。
+2. **Strapi 定位**：Strapi 是**未来正式 CMS 方向**，用于内容模型、权限、媒体库与多环境发布；**不建议在页面结构未稳定前直接迁移**。
+3. **推荐顺序**：先完成 Mixer Console 页面结构与模块系统（About / Cases / Contact / Home 模块编排）→ 再设计 Strapi Content Types → 最后做数据迁移与 Admin 切换。
+4. **未来 Strapi Content Types 草案**：Profile、Services、Cases、Certificates、WorkPhotos、SocialLinks、PageModules、Tools、Bookings、SiteSettings。
+
+---
+
+*文档版本：5.1.0 · Round 5.1 补充 Strapi 迁移说明*

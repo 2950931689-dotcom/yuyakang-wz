@@ -9,7 +9,7 @@ export default function SignalIdentity({ content, lang }) {
   return (
     <section className="about-section signal-identity">
       <SectionTitle
-        sectionIndex={2}
+        sectionIndex={3}
         eyebrow="SIGNAL IDENTITY"
         title={lang === "cn" ? "能力信号链" : "Signal Identity"}
         subtitle={
