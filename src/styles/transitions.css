@@ -1,0 +1,334 @@
+/**
+ * Route Transition — Round 5.2.2
+ * Console-style page enter: fade, slide, scan line, module stagger.
+ * Frontend only; admin routes excluded via separate layout.
+ */
+
+@keyframes routePageIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes routeScan {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  25% {
+    opacity: 0.28;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+@keyframes routeStatusFade {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.65;
+  }
+  75% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes consoleModuleIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes routeCaseHeroIn {
+  from {
+    opacity: 0.88;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* —— Shell —— */
+.route-transition {
+  position: relative;
+  min-height: 1px;
+}
+
+.route-transition:not(.route-transition--home) {
+  animation: routePageIn 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+.route-transition--home {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.route-transition__content {
+  position: relative;
+}
+
+/* —— Scan line —— */
+.route-transition__scan {
+  position: fixed;
+  top: var(--header-height, 64px);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--console-border-strong, rgba(255, 255, 255, 0.24)) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 90;
+  animation: routeScan 780ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+[data-theme="light"] .route-transition__scan {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.18) 45%,
+    transparent 100%
+  );
+}
+
+/* —— Status label —— */
+.route-transition__status {
+  position: fixed;
+  top: calc(var(--header-height, 64px) + 8px);
+  right: max(var(--gutter, 20px), 16px);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--console-faint, var(--color-text-muted));
+  pointer-events: none;
+  z-index: 90;
+  animation: routeStatusFade 620ms ease both;
+}
+
+/* —— Home: exclude hero video from page fade —— */
+.route-transition--home .hero,
+.route-transition--home .hero__media,
+.route-transition--home .hero__video-wrap,
+.route-transition--home .hero__video-layer,
+.route-transition--home .hero__carousel,
+.route-transition--home .hero video {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* —— Case detail hero —— */
+.route-transition--case-detail .case-detail-hero {
+  animation: routeCaseHeroIn 520ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+/* —— Disable legacy per-page fade when route transition active —— */
+.route-transition .fade-in,
+.route-transition .section-reveal,
+.route-transition .case-file.fade-in {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* —— Module reveal targets —— */
+.route-transition .console-panel,
+.route-transition .console-rack,
+.route-transition .media-rack,
+.route-transition .patch-bay,
+.route-transition .about-section,
+.route-transition .contact-section,
+.route-transition .case-file__section,
+.route-transition .case-detail-page__content,
+.route-transition .booking-page__inner,
+.route-transition section.section,
+.route-transition .cases-grid,
+.route-transition .not-found {
+  animation: consoleModuleIn 460ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+/* Home sections below hero */
+.route-transition--home .route-transition__content > section {
+  animation: consoleModuleIn 460ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+.route-transition--home .route-transition__content > section:nth-of-type(1) {
+  animation-delay: 60ms;
+}
+.route-transition--home .route-transition__content > section:nth-of-type(2) {
+  animation-delay: 100ms;
+}
+.route-transition--home .route-transition__content > section:nth-of-type(3) {
+  animation-delay: 140ms;
+}
+.route-transition--home .route-transition__content > section:nth-of-type(4) {
+  animation-delay: 180ms;
+}
+.route-transition--home .route-transition__content > section:nth-of-type(5) {
+  animation-delay: 220ms;
+}
+.route-transition--home .route-transition__content > section:nth-of-type(6) {
+  animation-delay: 260ms;
+}
+
+/* About stagger */
+.route-transition--about .about-page__inner > .about-section:nth-child(1) {
+  animation-delay: 50ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(2) {
+  animation-delay: 90ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(3) {
+  animation-delay: 130ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(4) {
+  animation-delay: 170ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(5) {
+  animation-delay: 210ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(6) {
+  animation-delay: 250ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(7) {
+  animation-delay: 290ms;
+}
+
+/* Contact stagger */
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(1) {
+  animation-delay: 50ms;
+}
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(2) {
+  animation-delay: 90ms;
+}
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(3) {
+  animation-delay: 130ms;
+}
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(4) {
+  animation-delay: 170ms;
+}
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(5) {
+  animation-delay: 210ms;
+}
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(6) {
+  animation-delay: 250ms;
+}
+.route-transition--contact .contact-page__inner > .contact-section:nth-child(7) {
+  animation-delay: 290ms;
+}
+
+/* Case detail content stagger */
+.route-transition--case-detail .case-detail-page__content {
+  animation-delay: 80ms;
+}
+.route-transition--case-detail .case-file__section:nth-of-type(1) {
+  animation-delay: 120ms;
+}
+.route-transition--case-detail .case-file__section:nth-of-type(2) {
+  animation-delay: 160ms;
+}
+.route-transition--case-detail .case-file__section:nth-of-type(3) {
+  animation-delay: 200ms;
+}
+.route-transition--case-detail .case-file__section:nth-of-type(4) {
+  animation-delay: 240ms;
+}
+.route-transition--case-detail .case-file__section:nth-of-type(5) {
+  animation-delay: 280ms;
+}
+.route-transition--case-detail .case-file__section:nth-of-type(6) {
+  animation-delay: 320ms;
+}
+
+/* Booking: lighter, single panel */
+.route-transition--booking .booking-page__inner {
+  animation-delay: 40ms;
+}
+
+/* Cases list */
+.route-transition--cases .page.container {
+  animation: consoleModuleIn 460ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) 60ms both;
+}
+
+/* Booking step panels keep their own micro-transition */
+.route-transition .intake-panel.fade-in {
+  animation: fadeIn 0.32s var(--ease-out) both;
+}
+
+/* Legacy alias */
+.page-transition {
+  animation: routePageIn 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+/* —— Reduced motion —— */
+@media (prefers-reduced-motion: reduce) {
+  .route-transition,
+  .route-transition:not(.route-transition--home),
+  .page-transition {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .route-transition__scan {
+    display: none;
+  }
+
+  .route-transition__status {
+    animation: none;
+    opacity: 0;
+  }
+
+  .route-transition .console-panel,
+  .route-transition .console-rack,
+  .route-transition .media-rack,
+  .route-transition .patch-bay,
+  .route-transition .about-section,
+  .route-transition .contact-section,
+  .route-transition .case-file__section,
+  .route-transition .case-detail-page__content,
+  .route-transition .case-detail-hero,
+  .route-transition .booking-page__inner,
+  .route-transition section.section,
+  .route-transition--home .route-transition__content > section,
+  .route-transition .cases-grid,
+  .route-transition .not-found {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .route-transition--home .hero,
+  .route-transition--home .hero video {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .route-transition .intake-panel.fade-in {
+    animation: none;
+  }
+}
