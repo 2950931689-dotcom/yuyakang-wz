@@ -32,7 +32,7 @@ export default function SystemSignalFlow({ caseItem, lang }) {
             {index > 0 && <span className="signal-flow__connector" aria-hidden="true" />}
             <button
               type="button"
-              className={`signal-flow__node${activeId === node.id ? " is-active" : ""}`}
+              className={`signal-flow__node patch-channel${activeId === node.id ? " is-active" : ""}`}
               onMouseEnter={() => setActiveId(node.id)}
               onMouseLeave={() => setActiveId(null)}
               onFocus={() => setActiveId(node.id)}

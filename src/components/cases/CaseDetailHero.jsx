@@ -47,7 +47,7 @@ export default function CaseDetailHero({ caseItem, content, lang }) {
       <div className="case-detail-hero__grid" aria-hidden="true" />
 
       <div className="case-detail-hero__content container">
-        <div className="case-detail-hero__copy">
+        <div className="case-detail-hero__copy console-panel console-panel--hero console-panel--compact">
           <div className="case-detail-hero__top">
             <span className="case-detail-hero__file-id">PROJECT FILE {projectNum}</span>
             {caseItem.featured && (

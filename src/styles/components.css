@@ -15,11 +15,11 @@
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   transition:
-    transform var(--dur-active) var(--ease-out),
-    border-color var(--dur-hover) var(--ease-out),
-    background var(--dur-hover) var(--ease-out),
-    color var(--dur-hover) var(--ease-out),
-    opacity var(--dur-hover) var(--ease-out);
+    transform var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-normal) var(--motion-ease),
+    background var(--motion-normal) var(--motion-ease),
+    color var(--motion-normal) var(--motion-ease),
+    opacity var(--motion-normal) var(--motion-ease);
   text-align: center;
 }
 
@@ -5785,58 +5785,19 @@
   }
 }
 
-/* —— Round 5.1: Certification Rack —— */
+/* —— Round 5.1: Certification Rack (layout; shared rack styles in console-system.css) —— */
 .certification-rack__grid {
-  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-md);
 }
 
 .certification-rack__unit {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
-  padding: clamp(16px, 2vw, 20px);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
   text-align: left;
   cursor: pointer;
   overflow: hidden;
-  transition: border-color var(--dur-hover) var(--ease-out), background var(--dur-hover) var(--ease-out);
-}
-
-.certification-rack__unit:hover {
-  border-color: var(--color-line-strong);
-  background: var(--color-surface-soft);
-}
-
-.certification-rack__unit-code {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--color-text-muted);
-}
-
-.certification-rack__unit-scan {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
-  pointer-events: none;
-  transition: left 0.6s var(--ease-out);
-}
-
-.certification-rack__unit:hover .certification-rack__unit-scan {
-  left: 120%;
-}
-
-[data-theme="light"] .certification-rack__unit-scan {
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.04), transparent);
 }
 
 .certification-rack__image-wrap {
@@ -5879,35 +5840,17 @@
   }
 }
 
-/* —— Field Record —— */
+/* —— Field Record (layout; shared rack styles in console-system.css) —— */
 .field-record__grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
-  gap: var(--space-md);
 }
 
 .field-record__item {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 14px;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
   text-align: left;
   cursor: pointer;
-  transition: border-color var(--dur-hover) var(--ease-out);
-}
-
-.field-record__item:hover {
-  border-color: var(--color-line-strong);
-}
-
-.field-record__item-code {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--color-text-muted);
 }
 
 .field-record__image-wrap {
@@ -5964,29 +5907,11 @@
 }
 
 .project-quick-view__grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-  gap: var(--space-md);
-}
-
-.project-quick-view__card {
-  padding: clamp(16px, 2vw, 20px);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
 }
 
 .project-quick-view__card-head {
   margin-bottom: 10px;
-}
-
-.project-quick-view__card-code {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  color: var(--color-text-muted);
-  margin-bottom: 4px;
 }
 
 .project-quick-view__card-title {
@@ -6042,19 +5967,9 @@
   margin-top: var(--space-md);
 }
 
-/* —— Contact Console —— */
+/* —— Contact Console (layout; shared panel styles in console-system.css) —— */
 .contact-console .section-title.page-title .section-title__heading {
   font-size: clamp(28px, 4vw, 36px);
-}
-
-.contact-console__frame {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
-  gap: clamp(20px, 3vw, 32px);
-  padding: clamp(24px, 3vw, 32px);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
 }
 
 .contact-console__brand {

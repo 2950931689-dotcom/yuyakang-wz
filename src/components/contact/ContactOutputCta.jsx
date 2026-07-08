@@ -21,7 +21,7 @@ export default function ContactOutputCta({ lang, bookLabel }) {
         </p>
         <div className="contact-output-cta__actions">
           <Button as={Link} to="/booking">{bookLabel}</Button>
-          <Button as={Link} to="/cases" variant="secondary">
+          <Button as={Link} to="/cases" variant="secondary" className="btn--output">
             {lang === "cn" ? "查看代表案例" : "View Cases"}
           </Button>
         </div>

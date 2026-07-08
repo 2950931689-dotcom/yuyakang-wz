@@ -29,7 +29,7 @@ export default function SignalIdentity({ content, lang }) {
             {index > 0 && <span className="signal-identity__connector" aria-hidden="true" />}
             <button
               type="button"
-              className={`signal-identity__node${activeId === node.id ? " is-active" : ""}`}
+              className={`signal-identity__node patch-channel${activeId === node.id ? " is-active" : ""}`}
               onMouseEnter={() => setActiveId(node.id)}
               onMouseLeave={() => setActiveId(null)}
               onFocus={() => setActiveId(node.id)}

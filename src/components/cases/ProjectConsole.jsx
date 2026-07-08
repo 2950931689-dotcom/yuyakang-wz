@@ -11,12 +11,12 @@ export default function ProjectConsole({ caseItem, content, lang }) {
   const keywords = getCaseKeywordTags(caseItem, lang);
 
   return (
-    <div className="project-console">
+    <div className="project-console console-panel console-panel--compact">
       <div className="project-console__head">
         <span className="project-console__tag">PROJECT FILE</span>
         <span className="project-console__id">PROJECT {projectNum}</span>
         <span className="project-console__status">
-          <span className="project-console__dot" aria-hidden="true" />
+          <span className="project-console__dot console-panel__status-dot" aria-hidden="true" />
           STATUS: DELIVERED
         </span>
         <span className="project-console__signal">SIGNAL: READY</span>

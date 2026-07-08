@@ -24,7 +24,7 @@ export default function AuxChannels({ content, lang, ci }) {
   ].filter((ch) => ch.href?.trim());
 
   return (
-    <section className="contact-section aux-channels" aria-label={lang === "cn" ? "辅助输出通道" : "Aux channels"}>
+    <section className="contact-section aux-channels patch-bay" aria-label={lang === "cn" ? "辅助输出通道" : "Aux channels"}>
       <header className="aux-channels__head">
         <span className="aux-channels__code">AUX CHANNELS</span>
         <h2 className="aux-channels__title">
@@ -43,7 +43,7 @@ export default function AuxChannels({ content, lang, ci }) {
             key={ch.id}
             href={ch.href}
             variant="secondary"
-            className="aux-channels__btn"
+            className="aux-channels__btn patch-channel"
           >
             <span className="aux-channels__btn-code">
               AUX {String(i + 1).padStart(2, "0")}
@@ -52,14 +52,14 @@ export default function AuxChannels({ content, lang, ci }) {
           </ExternalLinkButton>
         ))}
 
-        <Button as={Link} to="/cases" variant="secondary" className="aux-channels__btn aux-channels__btn--internal">
+        <Button as={Link} to="/cases" variant="secondary" className="aux-channels__btn aux-channels__btn--internal patch-channel">
           <span className="aux-channels__btn-code">AUX {String(channels.length + 1).padStart(2, "0")}</span>
           <span className="aux-channels__btn-label">
             {lang === "cn" ? "代表案例" : "Featured Cases"}
           </span>
         </Button>
 
-        <Button as={Link} to="/booking" variant="secondary" className="aux-channels__btn aux-channels__btn--internal">
+        <Button as={Link} to="/booking" variant="secondary" className="aux-channels__btn aux-channels__btn--internal patch-channel">
           <span className="aux-channels__btn-code">
             AUX {String(channels.length + 2).padStart(2, "0")}
           </span>

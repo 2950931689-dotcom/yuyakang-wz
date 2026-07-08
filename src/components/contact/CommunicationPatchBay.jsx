@@ -34,7 +34,7 @@ export default function CommunicationPatchBay({
       : "Add this channel in admin contact settings.";
 
   return (
-    <section className="contact-section contact-patch-bay">
+    <section className="contact-section contact-patch-bay patch-bay">
       <SectionTitle
         sectionIndex={3}
         eyebrow="PRIMARY PATCH BAY"
@@ -47,7 +47,7 @@ export default function CommunicationPatchBay({
           : "Contact channels come from CMS — add WeChat ID, phone or email in admin to enable copy."}
       </p>
 
-      <div className="contact-patch-bay__grid">
+      <div className="contact-patch-bay__grid patch-bay__grid">
         {PATCH_CHANNELS.map((patch, i) => {
           const isActive = activeId === patch.id;
           let value = "";
@@ -62,17 +62,17 @@ export default function CommunicationPatchBay({
           return (
             <article
               key={patch.id}
-              className={`contact-patch${isActive ? " is-active" : ""}${!configured ? " is-unconfigured" : ""}`}
+              className={`contact-patch patch-channel${isActive ? " is-active" : ""}${!configured ? " is-unconfigured is-disabled" : ""}`}
               onMouseEnter={() => setActiveId(patch.id)}
               onMouseLeave={() => setActiveId(null)}
             >
               <div className="contact-patch__head">
-                <span className="contact-patch__point" aria-hidden="true" />
+                <span className="contact-patch__point patch-channel__point" aria-hidden="true" />
                 <span className="contact-patch__code">PATCH {patch.code}</span>
                 <BookingSignalMeter level={configured ? 60 + i * 8 : 24} active={isActive && configured} />
               </div>
               <h3 className="contact-patch__label">{patch.label}</h3>
-              <span className="contact-patch__status">{statusLabel}</span>
+              <span className="contact-patch__status patch-channel__status">{statusLabel}</span>
               <p className="contact-patch__desc">{patch.desc[lang]}</p>
               {!configured && patch.id !== "booking" && (
                 <p className="contact-patch__configure-hint">{missingHint}</p>

@@ -21,7 +21,7 @@ export default function EngineerIdentity({ content, profile, lang }) {
         title={lang === "cn" ? "工程师身份档案" : "Engineer Profile"}
       />
 
-      <div className="engineer-identity__card">
+      <div className="engineer-identity__card console-panel console-panel--split">
         <div className="engineer-identity__main">
           {profile?.avatarUrl && (
             <div className="engineer-identity__avatar">
@@ -46,7 +46,7 @@ export default function EngineerIdentity({ content, profile, lang }) {
             <div key={p.key} className="engineer-identity__param">
               <span className="engineer-identity__param-key">{p.key}</span>
               <span className="engineer-identity__param-value">
-                {p.key === "STATUS" && <span className="engineer-identity__status-dot" aria-hidden="true" />}
+                {p.key === "STATUS" && <span className="engineer-identity__status-dot console-panel__status-dot" aria-hidden="true" />}
                 {p.value}
               </span>
             </div>

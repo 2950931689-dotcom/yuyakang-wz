@@ -9,7 +9,7 @@ export default function CertificationRack({ certificates, lang }) {
   const items = buildCertificateItems(certificates, lang);
 
   return (
-    <section className="about-section certification-rack">
+    <section className="about-section certification-rack console-rack">
       <SectionTitle
         sectionIndex={2}
         eyebrow="CERTIFICATION RACK"
@@ -22,19 +22,19 @@ export default function CertificationRack({ certificates, lang }) {
       />
 
       {certificates.length ? (
-        <div className="certification-rack__grid">
+        <div className="certification-rack__grid console-rack__grid">
           {certificates.map((cert, i) => (
             <button
               key={cert.id}
               type="button"
-              className="certification-rack__unit"
+              className="certification-rack__unit console-rack__unit"
               onClick={() => openLightbox(items, i)}
               aria-label={t(cert.title, lang)}
             >
-              <span className="certification-rack__unit-code">
+              <span className="certification-rack__unit-code console-rack__index">
                 RACK {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="certification-rack__unit-scan" aria-hidden="true" />
+              <span className="certification-rack__unit-scan console-rack__scan" aria-hidden="true" />
               <div className="certification-rack__image-wrap">
                 <img
                   src={cert.imageUrl}

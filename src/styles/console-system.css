@@ -1,0 +1,517 @@
+/**
+ * Mixer Console Design System — Round 5.2
+ * Unified Rack / Panel / Patch Bay / Media Rack / Project File
+ * Scoped to frontend pages; admin uses admin.css independently.
+ */
+
+/* ── Mono labels & indices ── */
+.console-mono,
+.code-label,
+.section-title__eyebrow,
+.case-file__section-code,
+.case-file__project-id,
+.case-file__file-tag,
+.case-detail-hero__file-id,
+.project-console__label,
+.media-rack__slot-code,
+.contact-patch__code,
+.patch-channel__label-code,
+.console-rack__index,
+.console-panel__meta-key {
+  font-family: var(--font-mono);
+  font-size: var(--console-mono-size);
+  letter-spacing: var(--console-mono-tracking);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--console-faint);
+}
+
+/* ── Section title (console header) ── */
+.section-title {
+  --console-header-gap: var(--space-sm);
+}
+
+.section-title__eyebrow {
+  font-size: var(--console-mono-size);
+  color: var(--console-faint);
+}
+
+.section-title__heading {
+  color: var(--console-text);
+}
+
+.section-title__subtitle {
+  color: var(--console-muted);
+  max-width: 60ch;
+}
+
+.section-title__line {
+  background: var(--console-line-strong);
+  transition: width var(--motion-normal) var(--motion-ease);
+}
+
+.section-title:hover .section-title__line,
+.section-title:focus-within .section-title__line {
+  width: 56px;
+}
+
+/* ── Console Rack ── */
+.console-rack,
+.certification-rack,
+.field-record,
+.media-rack,
+.tool-rack {
+  --rack-gap: var(--space-md);
+}
+
+.console-rack__grid,
+.certification-rack__grid,
+.field-record__grid,
+.contact-patch-bay__grid,
+.patch-bay__grid {
+  display: grid;
+  gap: var(--rack-gap);
+}
+
+.console-rack__unit,
+.certification-rack__unit,
+.field-record__item,
+.tool-rack__unit,
+.project-quick-view__card,
+.media-rack__slot,
+.intake-rack__group {
+  position: relative;
+  border: 1px solid var(--console-border);
+  border-radius: var(--console-radius);
+  background: var(--console-surface);
+  transition:
+    border-color var(--motion-normal) var(--motion-ease),
+    background var(--motion-normal) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
+}
+
+.console-rack__unit,
+.certification-rack__unit,
+.field-record__item,
+.project-quick-view__card {
+  padding: var(--console-padding);
+}
+
+.console-rack__unit:hover,
+.certification-rack__unit:hover,
+.field-record__item:hover,
+.tool-rack__unit:hover,
+.project-quick-view__card:hover,
+.media-rack__slot:hover,
+.intake-rack__group:hover {
+  border-color: var(--console-border-hover);
+  background: var(--console-surface-soft);
+}
+
+.console-rack__index,
+.certification-rack__unit-code,
+.field-record__item-code,
+.tool-rack__unit-code,
+.project-quick-view__card-code,
+.media-rack__slot-code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: var(--console-mono-tracking);
+  color: var(--console-faint);
+  margin-bottom: 6px;
+}
+
+.console-rack__scan,
+.certification-rack__unit-scan,
+.tool-rack__unit-scan,
+.contact-patch__scan {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  pointer-events: none;
+  transition: left var(--motion-slow) var(--motion-ease);
+}
+
+.console-rack__unit:hover .console-rack__scan,
+.console-rack__unit:hover .certification-rack__unit-scan,
+.certification-rack__unit:hover .certification-rack__unit-scan,
+.tool-rack__unit:hover .tool-rack__unit-scan,
+.contact-patch:hover .contact-patch__scan {
+  left: 120%;
+}
+
+[data-theme="light"] .console-rack__scan,
+[data-theme="light"] .certification-rack__unit-scan,
+[data-theme="light"] .tool-rack__unit-scan,
+[data-theme="light"] .contact-patch__scan {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.04), transparent);
+}
+
+/* ── Console Panel ── */
+.console-panel,
+.engineer-identity__card,
+.contact-console__frame,
+.project-console,
+.credentials__panel,
+.intake-console,
+.contact-output-cta__module,
+.contact-wechat-card__frame,
+.about-raw-data__shell {
+  border: 1px solid var(--console-border);
+  border-radius: var(--console-radius);
+  background: var(--console-surface);
+  transition: border-color var(--motion-normal) var(--motion-ease);
+}
+
+.console-panel--split,
+.engineer-identity__card,
+.contact-console__frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
+  gap: clamp(20px, 3vw, 32px);
+  padding: var(--console-padding);
+}
+
+.console-panel--hero {
+  background: color-mix(in srgb, var(--console-surface) 88%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.case-detail-hero__copy.console-panel--hero {
+  padding: clamp(20px, 3vw, 28px);
+}
+
+.console-panel--compact {
+  padding: clamp(16px, 2vw, 20px);
+}
+
+.console-panel__meta,
+.engineer-identity__params,
+.contact-console__params,
+.contact-console__meta,
+.case-detail-hero__meta,
+.project-console__grid,
+.case-file__meta-grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.console-panel__meta-row,
+.engineer-identity__param,
+.contact-console__param,
+.contact-console__meta-row,
+.case-detail-hero__meta-row,
+.project-console__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.console-panel__meta-key,
+.engineer-identity__param-key,
+.contact-console__param-key,
+.case-detail-hero__meta-row dt,
+.project-console__label {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--console-faint);
+}
+
+.console-panel__meta-val,
+.engineer-identity__param-value,
+.contact-console__param-value,
+.case-detail-hero__meta-row dd,
+.project-console__value {
+  font-size: 13px;
+  color: var(--console-text);
+  line-height: var(--leading-prose);
+}
+
+.console-panel__status-dot,
+.engineer-identity__status-dot,
+.project-console__dot,
+.contact-console__dot,
+.contact-patch__point,
+.patch-channel__point {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--console-dot);
+  flex-shrink: 0;
+  transition: box-shadow var(--motion-normal) var(--motion-ease);
+}
+
+.contact-patch.is-active .contact-patch__point,
+.contact-patch:hover .contact-patch__point,
+.patch-channel.is-active .patch-channel__point,
+.patch-channel:hover .patch-channel__point {
+  box-shadow: 0 0 8px color-mix(in srgb, var(--console-dot) 45%, transparent);
+}
+
+/* ── Patch Bay ── */
+.patch-bay,
+.contact-patch-bay,
+.aux-channels {
+  --patch-gap: var(--space-md);
+}
+
+.patch-bay__grid,
+.contact-patch-bay__grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+}
+
+.patch-channel,
+.contact-patch,
+.signal-identity__node,
+.signal-flow__node,
+.service-pick-grid .service-pick,
+.aux-channels__btn {
+  position: relative;
+  border: 1px solid var(--console-border);
+  border-radius: var(--console-radius);
+  background: var(--console-surface);
+  transition:
+    border-color var(--motion-normal) var(--motion-ease),
+    background var(--motion-normal) var(--motion-ease);
+}
+
+.patch-channel,
+.contact-patch {
+  padding: var(--console-padding);
+}
+
+.patch-channel.is-active,
+.patch-channel:hover,
+.contact-patch.is-active,
+.contact-patch:hover,
+.signal-identity__node:hover,
+.signal-identity__node.is-active,
+.signal-identity__node:focus-visible,
+.signal-flow__node:hover,
+.signal-flow__node.is-active,
+.signal-flow__node:focus-visible {
+  border-color: var(--console-border-hover);
+  background: var(--console-surface-soft);
+}
+
+.patch-channel.is-disabled,
+.patch-channel.is-unconfigured,
+.contact-patch.is-unconfigured {
+  opacity: 0.72;
+  border-style: dashed;
+}
+
+.patch-channel__status,
+.contact-patch__status {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--console-faint);
+}
+
+.contact-patch.is-unconfigured .contact-patch__status,
+.patch-channel.is-unconfigured .patch-channel__status {
+  color: var(--color-error);
+}
+
+/* ── Media Rack ── */
+.media-rack__slot:first-of-type {
+  border-color: var(--console-border-strong);
+}
+
+.media-rack__slot-body {
+  border: 1px solid var(--console-border);
+  border-radius: var(--console-radius);
+  background: var(--console-surface-soft);
+  overflow: hidden;
+}
+
+.media-rack__slot-body video,
+.media-rack__slot-body img,
+.case-video-trigger {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+.case-video-trigger {
+  transition: transform var(--motion-normal) var(--motion-ease);
+}
+
+.case-video-trigger:hover {
+  transform: scale(1.015);
+}
+
+.media-rack__slot-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.media-rack__slot-label {
+  font-size: 13px;
+  color: var(--console-muted);
+}
+
+.media-rack__empty,
+.media-rack__snapshot-text--muted {
+  font-size: 13px;
+  color: var(--console-faint);
+}
+
+/* ── Project File ── */
+.case-file__section {
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-xl);
+  border-bottom: 1px solid var(--console-line);
+}
+
+.case-file__section:last-of-type {
+  border-bottom: none;
+}
+
+.case-file__prose {
+  font-size: var(--text-body);
+  line-height: var(--leading-prose);
+  color: var(--console-muted);
+}
+
+.case-file__prose p {
+  margin-bottom: 1em;
+}
+
+.case-file__prose p:last-child {
+  margin-bottom: 0;
+}
+
+.project-quick-view__card-body p {
+  color: var(--console-muted);
+  line-height: var(--leading-prose);
+}
+
+.case-file__tool-chip,
+.project-console__keyword,
+.project-quick-view__tools-list .case-file__tool-chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border: 1px solid var(--console-border);
+  border-radius: var(--console-radius);
+  color: var(--console-muted);
+  background: var(--console-surface-soft);
+}
+
+/* ── Buttons: console / output variants ── */
+.btn--console {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-color: var(--console-border-strong);
+  background: var(--console-surface);
+  color: var(--console-text);
+}
+
+.btn--console:hover:not(:disabled):not(.btn--disabled):not(.btn--loading) {
+  border-color: var(--console-border-hover);
+  background: var(--console-surface-soft);
+}
+
+.btn--output {
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.btn--link {
+  min-height: auto;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: var(--console-muted);
+  font-size: var(--text-meta);
+  letter-spacing: 0.06em;
+}
+
+.btn--link:hover:not(:disabled):not(.btn--disabled):not(.btn--loading) {
+  transform: none;
+  color: var(--console-text);
+  border-color: transparent;
+}
+
+/* ── Case hero uses console opacity tokens ── */
+.case-detail-hero {
+  --case-hero-bg-opacity: var(--console-bg-opacity-dark);
+}
+
+[data-theme="light"] .case-detail-hero {
+  --case-hero-bg-opacity: var(--console-bg-opacity-light);
+}
+
+/* ── Home credentials / workflow alignment ── */
+.credentials__panel,
+.workflow-cue__item {
+  border: 1px solid var(--console-border);
+  border-radius: var(--console-radius);
+  background: var(--console-surface);
+}
+
+.credentials__tag,
+.workflow-cue__num {
+  font-family: var(--font-mono);
+  font-size: var(--console-mono-size);
+  letter-spacing: var(--console-mono-tracking);
+  color: var(--console-faint);
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .console-panel--split,
+  .engineer-identity__card,
+  .contact-console__frame {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-patch-bay__grid,
+  .patch-bay__grid,
+  .aux-channels__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .engineer-identity__params,
+  .contact-console__params {
+    border-left: none;
+    border-top: 1px solid var(--console-border);
+    padding-left: 0;
+    padding-top: var(--space-md);
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .console-rack__scan,
+  .certification-rack__unit-scan,
+  .tool-rack__unit-scan,
+  .contact-patch__scan {
+    display: none;
+  }
+
+  .case-video-trigger:hover {
+    transform: none;
+  }
+
+  .section-title:hover .section-title__line {
+    width: 40px;
+  }
+
+  .btn:hover:not(:disabled):not(.btn--disabled):not(.btn--loading) {
+    transform: none;
+  }
+}

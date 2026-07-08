@@ -4,7 +4,7 @@ import MediaFallback from "../ui/MediaFallback";
 
 export default function FieldRecord({ workPhotos, workItems, lang, openLightbox }) {
   return (
-    <section className="about-section field-record">
+    <section className="about-section field-record console-rack">
       <SectionTitle
         sectionIndex={5}
         eyebrow="FIELD RECORD"
@@ -17,16 +17,16 @@ export default function FieldRecord({ workPhotos, workItems, lang, openLightbox 
       />
 
       {workPhotos.length ? (
-        <div className="field-record__grid">
+        <div className="field-record__grid console-rack__grid">
           {workPhotos.map((photo, i) => (
             <button
               key={photo.id || photo.imageUrl}
               type="button"
-              className="field-record__item"
+              className="field-record__item console-rack__unit"
               onClick={() => openLightbox(workItems, i)}
               aria-label={t(photo.title, lang)}
             >
-              <span className="field-record__item-code">
+              <span className="field-record__item-code console-rack__index">
                 REC {String(i + 1).padStart(2, "0")}
               </span>
               <div className="field-record__image-wrap">

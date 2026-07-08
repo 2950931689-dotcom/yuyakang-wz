@@ -13,6 +13,7 @@ export default function SectionTitle({
 
   const classes = [
     "section-title",
+    "console-section-title",
     align !== "left" && `section-title--${align}`,
     size !== "default" && `section-title--${size}`,
     className,
@@ -23,7 +24,7 @@ export default function SectionTitle({
   return (
     <div className={classes}>
       {(indexLabel || eyebrow) && (
-        <span className="section-title__eyebrow code-label">
+        <span className="section-title__eyebrow code-label console-mono">
           {indexLabel && <span className="section-title__index">{indexLabel}</span>}
           {indexLabel && eyebrow && <span className="section-title__sep"> / </span>}
           {eyebrow}

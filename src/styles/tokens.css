@@ -24,6 +24,23 @@
   --ambient-overlay-bottom: var(--color-bg);
   --ambient-overlay-side: var(--color-bg);
   --grid-line: rgba(255, 255, 255, 0.035);
+
+  /* Mixer Console Design System — surfaces & borders */
+  --console-surface: var(--color-surface);
+  --console-surface-soft: var(--color-surface-soft);
+  --console-surface-strong: #1a1a1a;
+  --console-border: var(--color-line);
+  --console-border-strong: var(--color-line-strong);
+  --console-border-hover: rgba(255, 255, 255, 0.32);
+  --console-text: var(--color-text-primary);
+  --console-muted: var(--color-text-secondary);
+  --console-faint: var(--color-text-muted);
+  --console-line: var(--color-line);
+  --console-line-strong: var(--color-line-strong);
+  --console-dot: var(--color-success);
+  --console-dot-muted: var(--color-text-muted);
+  --console-bg-opacity-dark: 0.6;
+  --console-bg-opacity-light: 0.38;
 }
 
 [data-theme="light"] {
@@ -46,6 +63,22 @@
   --ambient-overlay-bottom: var(--color-bg);
   --ambient-overlay-side: var(--color-bg);
   --grid-line: rgba(0, 0, 0, 0.045);
+
+  --console-surface: var(--color-surface);
+  --console-surface-soft: var(--color-surface-soft);
+  --console-surface-strong: #e8e8e4;
+  --console-border: var(--color-line);
+  --console-border-strong: var(--color-line-strong);
+  --console-border-hover: rgba(0, 0, 0, 0.36);
+  --console-text: var(--color-text-primary);
+  --console-muted: var(--color-text-secondary);
+  --console-faint: var(--color-text-muted);
+  --console-line: var(--color-line);
+  --console-line-strong: var(--color-line-strong);
+  --console-dot: var(--color-success);
+  --console-dot-muted: var(--color-text-muted);
+  --console-bg-opacity-dark: 0.6;
+  --console-bg-opacity-light: 0.38;
 }
 
 :root {
@@ -96,6 +129,16 @@
   --dur-base: 0.35s;
   --dur-slow: 0.6s;
   --dur-theme: 0.22s;
+
+  /* Mixer Console motion */
+  --motion-fast: 120ms;
+  --motion-normal: 220ms;
+  --motion-slow: 360ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --console-padding: var(--card-padding);
+  --console-radius: var(--radius-sm);
+  --console-mono-size: 11px;
+  --console-mono-tracking: 0.14em;
 
   --font-sans: "Inter", "Helvetica Neue", "PingFang SC", "Noto Sans SC", sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", monospace;

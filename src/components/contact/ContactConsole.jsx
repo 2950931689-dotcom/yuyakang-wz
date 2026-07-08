@@ -32,7 +32,7 @@ export default function ContactConsole({ content, lang, t }) {
         className="page-title"
       />
 
-      <div className="contact-console__frame">
+      <div className="contact-console__frame console-panel console-panel--split">
         <div className="contact-console__identity">
           <span className="contact-console__brand code-label">{siteName}</span>
           <h2 className="contact-console__name">{t(profile.name, lang)}</h2>
@@ -72,7 +72,7 @@ export default function ContactConsole({ content, lang, t }) {
             <div key={p.key} className="contact-console__param">
               <span className="contact-console__param-key">{p.key}</span>
               <span className="contact-console__param-value">
-                {p.dot && <span className="contact-console__dot" aria-hidden="true" />}
+                {p.dot && <span className="contact-console__dot console-panel__status-dot" aria-hidden="true" />}
                 {p.value}
               </span>
             </div>

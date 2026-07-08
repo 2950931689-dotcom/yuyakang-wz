@@ -232,7 +232,7 @@ export default function BookingIntakeConsole() {
   const stepTitle = `${phase.en} ${currentStep.code} / ${lang === "cn" ? currentStep.titleCn : currentStep.titleEn}`;
 
   return (
-    <form className="booking-form intake-console" onSubmit={handleSubmit} noValidate>
+    <form className="booking-form intake-console console-panel" onSubmit={handleSubmit} noValidate>
       <header className="intake-console__header">
         <div className="intake-console__header-main">
           <span className="intake-console__eyebrow">PROJECT INTAKE</span>

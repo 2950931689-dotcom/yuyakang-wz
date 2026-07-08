@@ -5,9 +5,9 @@ function QuickCard({ code, title, text, lang }) {
   if (!text?.trim()) return null;
 
   return (
-    <article className="project-quick-view__card">
+    <article className="project-quick-view__card console-rack__unit">
       <header className="project-quick-view__card-head">
-        <span className="project-quick-view__card-code">{code}</span>
+        <span className="project-quick-view__card-code console-rack__index">{code}</span>
         <h3 className="project-quick-view__card-title">{title}</h3>
       </header>
       <div className="project-quick-view__card-body">

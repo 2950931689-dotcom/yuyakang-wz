@@ -17,7 +17,7 @@ export default function CredentialsSection() {
         title={lang === "cn" ? "专业背书" : "Professional Credentials"}
         subtitle={CREDENTIALS_SUBTITLE[lang]}
       />
-      <div className="credentials__panel">
+      <div className="credentials__panel console-panel console-panel--compact">
         <div className="credentials__tags" aria-label={lang === "cn" ? "工程参数标签" : "Engineering tags"}>
           {tags.map((tag) => (
             <span key={tag} className="credentials__tag">
