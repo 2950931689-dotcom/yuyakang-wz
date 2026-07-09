@@ -360,4 +360,12 @@
   .route-transition--home .hero video {
     animation: none !important;
   }
+
+  .route-transition__status {
+    display: none;
+  }
+
+  .route-transition__scan {
+    opacity: 0.08;
+  }
 }

@@ -697,3 +697,142 @@
     animation: none;
   }
 }
+
+/* ── Round 6.3: Mobile QA polish (real-device readiness) ── */
+
+@media (max-width: 1023px) {
+  .control-surface__deck {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .control-surface__channel {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .control-surface__deck {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .certification-rack__image-wrap {
+    min-height: clamp(260px, 56vw, 340px);
+  }
+
+  .certification-rack__image {
+    object-fit: contain;
+    max-height: clamp(260px, 56vw, 340px);
+    width: 100%;
+  }
+
+  .hero__content.hero-copy .hero__title,
+  .hero__content.hero-copy .hero-identity__name,
+  .hero__content.hero-copy .hero-identity__role,
+  .hero__content.hero-copy .hero__lead {
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.62);
+  }
+
+  .header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .mobile-nav__panel {
+    padding-top: calc(var(--space-md) + env(safe-area-inset-top, 0px));
+  }
+
+  .common-tools__title,
+  .common-tools__desc,
+  .common-tools__category {
+    overflow-wrap: anywhere;
+  }
+
+  .common-tools__link {
+    max-width: 100%;
+  }
+
+  .media-rack__slot-body video,
+  .case-video-trigger,
+  .case-video-trigger video {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .contact-patch__actions .btn,
+  .contact-patch__actions button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .contact-wechat-card__qr {
+    min-width: min(240px, 72vw);
+  }
+
+  .page.container,
+  .booking-page__inner,
+  .about-page__inner,
+  .contact-page__inner,
+  .case-detail-page {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .sound-check__code {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .media-rack__slot-head {
+    align-items: flex-start;
+  }
+
+  .media-rack__slot-code,
+  .media-rack__slot-label {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 899px) {
+  .admin-layout {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  .admin-main {
+    padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .admin-table-wrap {
+    max-width: 100%;
+  }
+
+  .admin-table__actions .admin-btn {
+    min-height: 44px;
+  }
+
+  .admin-input,
+  .admin-textarea,
+  .admin-select,
+  .admin-login__field input {
+    font-size: 16px;
+    min-height: 48px;
+  }
+
+  .admin-textarea {
+    min-height: 96px;
+  }
+
+  .admin-login-shell {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+@media (max-width: 480px) {
+  .case-detail-hero__meta {
+    grid-template-columns: 1fr;
+  }
+}
