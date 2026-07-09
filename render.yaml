@@ -31,3 +31,13 @@ services:
         sync: false
       - key: ADMIN_SESSION_MAX_AGE
         value: "86400000"
+      - key: STRAPI_ENABLED
+        value: "false"
+      - key: STRAPI_WRITE_ENABLED
+        value: "false"
+      - key: STRAPI_BASE_URL
+        value: ""
+      - key: STRAPI_API_TOKEN
+        sync: false
+      - key: STRAPI_TIMEOUT_MS
+        value: "5000"
