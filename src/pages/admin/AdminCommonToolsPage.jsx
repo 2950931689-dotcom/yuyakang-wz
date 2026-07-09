@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useAdmin } from "../../context/AdminContext";
-import { saveContentSection } from "../../lib/api";
+import { checkHealth, saveCommonTools, saveContentSection } from "../../lib/api";
 import { useSectionEditor } from "../../hooks/useSectionEditor";
 import { randomUUID } from "../../lib/id";
 import AdminTopbar from "../../components/admin/AdminTopbar";
@@ -80,6 +80,13 @@ export default function AdminCommonToolsPage() {
   const [localSaving, setLocalSaving] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
+  const [strapiWriteEnabled, setStrapiWriteEnabled] = useState(false);
+
+  useEffect(() => {
+    checkHealth()
+      .then((health) => setStrapiWriteEnabled(Boolean(health?.strapi?.writeEnabled)))
+      .catch(() => setStrapiWriteEnabled(false));
+  }, []);
 
   const tools = settings?.commonTools ?? [];
 
@@ -133,10 +140,17 @@ export default function AdminCommonToolsPage() {
     }
     setLocalSaving(true);
     try {
-      await saveContentSection("siteSettings", payload);
-      await reloadContent();
-      reset();
-      showToast(commonActionText.saved);
+      if (strapiWriteEnabled) {
+        const result = await saveCommonTools(payload.commonTools);
+        await reloadContent();
+        reset();
+        showToast(result?.message || "已同步到 Strapi");
+      } else {
+        await saveContentSection("siteSettings", payload);
+        await reloadContent();
+        reset();
+        showToast("已保存到 JSON CMS");
+      }
     } catch (err) {
       showToast(err.message || commonActionText.saveFailed, "error");
     } finally {

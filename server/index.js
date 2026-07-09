@@ -37,6 +37,12 @@ import {
   validateSiteContent,
   validateSectionPatch,
 } from "./lib/validate.js";
+import { getStrapiPublicStatus, isStrapiWriteEnabled } from "./lib/strapiConfig.js";
+import {
+  syncCommonToolsToStrapi,
+  validateCommonToolsPayload,
+} from "./lib/strapiCommonToolsSync.js";
+import { readSiteContent } from "./lib/siteContent.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.join(__dirname, "..");
@@ -117,6 +123,7 @@ app.get("/api/health", (_req, res) => {
     time: new Date().toISOString(),
     adminAuthConfigured: isAuthConfigured(),
     mode: API_ONLY ? "api-only" : "full",
+    strapi: getStrapiPublicStatus(),
   });
 });
 
@@ -172,11 +179,42 @@ app.post("/api/admin/logout", (_req, res) => {
 
 app.get("/api/content", async (_req, res) => {
   try {
-    const content = await readJson(SITE_CONTENT_PATH);
+    const content = await readSiteContent(SITE_CONTENT_PATH);
     res.json(content);
   } catch (err) {
     console.error("GET /api/content", err);
     res.status(500).json({ ok: false, error: "Failed to read site content" });
+  }
+});
+
+app.patch("/api/admin/common-tools", requireAdminAuth, async (req, res) => {
+  if (!isStrapiWriteEnabled()) {
+    return res.status(400).json({
+      ok: false,
+      error: "Strapi 写入未启用（需 STRAPI_ENABLED=true 且 STRAPI_WRITE_ENABLED=true）",
+    });
+  }
+
+  const validation = validateCommonToolsPayload(req.body?.tools);
+  if (!validation.ok) {
+    return res.status(400).json({ ok: false, error: validation.error });
+  }
+
+  try {
+    const result = await syncCommonToolsToStrapi(req.body.tools);
+    return res.json({
+      ok: true,
+      source: "strapi",
+      syncStrategy: result.strategy,
+      tools: result.tools,
+      message: "已同步到 Strapi",
+    });
+  } catch (err) {
+    console.error("PATCH /api/admin/common-tools", err);
+    return res.status(502).json({
+      ok: false,
+      error: err.message || "Strapi 同步失败",
+    });
   }
 });
 

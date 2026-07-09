@@ -130,6 +130,13 @@ export async function saveContentSection(sectionKey, data) {
   }, { admin: true });
 }
 
+export async function saveCommonTools(tools) {
+  return request("/api/admin/common-tools", {
+    method: "PATCH",
+    body: JSON.stringify({ tools }),
+  }, { admin: true });
+}
+
 export async function fetchBookings(params = {}) {
   const qs = new URLSearchParams();
   if (params.status) qs.set("status", params.status);
