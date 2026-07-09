@@ -7,7 +7,10 @@ import { chromium } from "playwright";
 import { loginAdmin, adminFetch } from "./lib/admin-session.mjs";
 
 const API = "http://localhost:3001/api/content";
-const WEB = "http://localhost:5173";
+const WEB =
+  process.env.CMS_VERIFY_BASE_URL ||
+  process.env.SMOKE_BASE_URL ||
+  "http://localhost:5173";
 const CASE_SLUG = "echo-live-yunfu";
 
 let adminCookie;
@@ -191,6 +194,7 @@ async function test5SignalFlow(backup) {
 
 async function main() {
   console.log("── CMS Linkage Verification ──\n");
+  console.log(`BASE_URL: ${WEB}\n`);
   try {
     await initAuth();
   } catch (err) {
