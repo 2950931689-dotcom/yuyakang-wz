@@ -1,18 +1,487 @@
+/**
+ * Round 6.2 — Mobile Layout Adaptation
+ * PC content → mobile-friendly layout. CSS-only; no Hero / API / CMS changes.
+ *
+ * Breakpoints:
+ *   <= 480px  phone
+ *   <= 767px  large phone
+ *   768–1023  tablet
+ *   >= 1024   desktop (minimal overrides here)
+ */
+
+/* ── Global foundations (phone + large phone) ── */
 @media (max-width: 767px) {
-  .hero { min-height: 85vh; }
-  .hero__content { padding-block: clamp(88px, 18vh, 120px) clamp(48px, 8vh, 72px); }
+  :root {
+    --gutter: clamp(16px, 4.5vw, 18px);
+    --space-section: clamp(48px, 12vw, 64px);
+    --space-section-sm: clamp(48px, 10vw, 56px);
+    --card-padding: clamp(16px, 4vw, 20px);
+    --card-padding-lg: clamp(18px, 4.5vw, 22px);
+    --text-hero: clamp(34px, 10vw, 52px);
+    --text-page: clamp(28px, 8vw, 42px);
+    --text-section: clamp(22px, 6vw, 30px);
+    --text-body: clamp(15px, 3.8vw, 16px);
+    --leading-body: 1.7;
+    --leading-prose: 1.75;
+  }
+
+  html {
+    overflow-x: clip;
+  }
+
+  body {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  .site-layout,
+  .site-main,
+  .container,
+  .container--wide,
+  .container--narrow,
+  .page,
+  .page-header,
+  .section {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  img,
+  video,
+  iframe,
+  embed,
+  object {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Chinese titles: no single-character vertical stacks */
+  h1,
+  h2,
+  h3,
+  .page-title,
+  .hero__title,
+  .hero-boot__title-line,
+  .section-title__heading,
+  .case-card__title,
+  .case-detail-hero__title,
+  .booking-cta__title,
+  .booking-title,
+  .common-tools__title,
+  .about-archive__title {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.12;
+  }
+
+  /* Mono labels: wrap without breaking layout */
+  [class*="__code"],
+  [class*="__tag"],
+  [class*="__eyebrow"],
+  [class*="__meta-label"],
+  [class*="__project-id"],
+  .admin-mono,
+  .form-steps span {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .btn,
+  .mobile-cta__btn,
+  .case-filter button,
+  .aux-channels__btn,
+  .contact-patch__copy,
+  .common-tools__link {
+    min-height: 44px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .grid-2,
+  .grid-3,
+  .service-preview,
+  .featured-cases .grid-3,
+  .cases-grid .grid-3,
+  .project-quick-view__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .section-title__heading {
+    font-size: var(--text-section);
+    line-height: 1.15;
+  }
+
+  .page-lead,
+  .prose-block p,
+  .case-file__prose p {
+    font-size: var(--text-body);
+    line-height: var(--leading-prose);
+    max-width: 100%;
+  }
+
+  [data-theme="light"] .console-panel,
+  [data-theme="light"] .console-rack__unit,
+  [data-theme="light"] .case-card,
+  [data-theme="light"] .contact-patch,
+  [data-theme="light"] .media-rack__slot {
+    border-color: rgba(0, 0, 0, 0.16);
+  }
+}
+
+/* ── Phone (390 / 430) ── */
+@media (max-width: 480px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .header__logo {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    max-width: min(52vw, 200px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header__actions {
+    gap: 6px;
+  }
+
+  .theme-switch,
+  .header__menu-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .sound-check__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aux-channels__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-surface__deck {
+    grid-template-columns: 1fr;
+  }
+
+  .engineer-identity__params,
+  .contact-console__params {
+    grid-template-columns: 1fr !important;
+  }
+
+  .case-detail-hero__meta {
+    grid-template-columns: 1fr;
+  }
+
+  .case-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-cta__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .booking-cta__actions .btn {
+    width: 100%;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .hero__actions .btn {
+    width: 100%;
+  }
+
+  .contact-console__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-console__actions .btn {
+    width: 100%;
+  }
+}
+
+/* ── Large phone / small tablet ── */
+@media (min-width: 481px) and (max-width: 767px) {
+  .sound-check__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aux-channels__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field-record__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field-record__item:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Tablet ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --gutter: clamp(20px, 3vw, 32px);
+    --space-section: var(--space-section-md);
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .service-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sound-check__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ── Home ── */
+@media (max-width: 767px) {
+  .hero {
+    min-height: 85vh;
+  }
+
+  .hero__content {
+    padding-block: clamp(88px, 18vh, 120px) clamp(48px, 8vh, 72px);
+  }
+
+  .hero__content.hero-copy {
+    width: min(var(--width-content), calc(100% - var(--gutter) * 2));
+    margin-inline: auto;
+    text-align: left;
+  }
+
+  .hero__title {
+    font-size: clamp(34px, 10vw, 52px);
+    max-width: 100%;
+    line-height: 1.05;
+  }
+
+  .hero-boot__title-line {
+    white-space: normal;
+  }
+
+  .hero__lead {
+    max-width: 100%;
+    margin-bottom: var(--space-lg);
+  }
+
+  .credentials__list {
+    grid-template-columns: 1fr;
+  }
+
+  .credentials__tags {
+    gap: 6px;
+  }
+
+  .workflow-cue__item {
+    padding: var(--space-md) 0;
+  }
+
+  .workflow-cue__title,
+  .workflow-cue__desc {
+    line-height: 1.55;
+  }
+
+  .home-conversion-zone {
+    padding-block: var(--space-section-sm);
+  }
+
+  .booking-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tutorial-section--compact .tutorial-section__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── About ── */
+@media (max-width: 767px) {
+  .engineer-identity__card,
+  .engineer-identity__main {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .engineer-identity__params,
+  .contact-console__params {
+    border-left: none;
+    border-top: 1px solid var(--console-border);
+    padding-left: 0;
+    padding-top: var(--space-md);
+  }
+
+  .certification-rack__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .certification-rack__image-wrap {
+    min-height: 220px;
+  }
+
+  .certification-rack__image {
+    object-fit: contain;
+    max-height: 280px;
+  }
+
+  .signal-identity__nodes {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .signal-identity__item {
+    width: 100%;
+  }
+
+  .signal-identity__connector {
+    display: none;
+  }
+
+  .control-surface__deck {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
+  }
+
+  .field-record__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-record__item:first-child .field-record__image-wrap {
+    aspect-ratio: 16 / 10;
+  }
+
+  .work-philosophy__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Cases list ── */
+@media (max-width: 767px) {
+  .case-filter-wrap {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .case-filter {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 8px;
+  }
+
+  .case-filter button {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .case-card__title {
+    font-size: clamp(18px, 5vw, 22px);
+    line-height: 1.2;
+  }
+
+  .case-card__meta-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .case-card__keywords {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
 
   .case-card:active,
   .case-card--pressing {
     background: var(--color-surface-soft);
   }
 
-  .case-card__media img { transform: none !important; }
+  .case-card__media img {
+    transform: none !important;
+  }
+}
 
-  .contact-social__btn {
+/* ── Case detail ── */
+@media (max-width: 767px) {
+  .case-detail-hero {
+    min-height: clamp(240px, 42vh, 360px);
+  }
+
+  .case-detail-hero__content {
+    padding-top: calc(var(--header-height, 64px) + 24px);
+  }
+
+  .case-detail-hero__meta {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+  }
+
+  .project-console__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .signal-flow__nodes {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .signal-flow__item {
+    flex: none;
     width: 100%;
   }
 
+  .signal-flow__track {
+    display: none;
+  }
+
+  .signal-flow__connector {
+    display: none;
+  }
+
+  .media-rack__slot-head {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+
+  .media-rack__slot-body,
+  .case-video-trigger,
+  .case-video-trigger video {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .case-file__section {
+    padding: var(--card-padding);
+  }
+
+  .case-file__section-title {
+    font-size: clamp(18px, 5vw, 22px);
+    line-height: 1.2;
+  }
+}
+
+/* ── Booking ── */
+@media (max-width: 767px) {
   .page {
     padding-bottom: calc(var(--space-section) + 16px);
   }
@@ -33,6 +502,7 @@
 
   .booking-lead {
     font-size: 14px;
+    line-height: 1.65;
   }
 
   .booking-page {
@@ -45,22 +515,185 @@
 
   .booking-form .form-steps {
     gap: 8px 12px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .booking-form .form-actions {
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .booking-form .form-actions .btn {
+    flex: 1 1 auto;
+    min-width: min(100%, 140px);
+  }
+
+  .intake-patch-grid,
+  .intake-module-grid,
+  .service-pick-grid {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .intake-patch,
+  .intake-output,
+  .service-pick,
+  .intake-module {
+    min-height: 44px;
   }
 }
 
+/* ── Contact ── */
+@media (max-width: 767px) {
+  .contact-console__frame,
+  .contact-patch-bay__grid,
+  .patch-bay__grid,
+  .contact-checklist__grid,
+  .common-tools__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-social__btn {
+    width: 100%;
+  }
+
+  .contact-wechat-card__qr {
+    max-width: min(280px, 72vw);
+    margin-inline: auto;
+  }
+
+  .contact-wechat-card__frame {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-output-cta__status {
+    position: static;
+    display: block;
+    margin-top: var(--space-md);
+  }
+
+  .contact-archive__meta-row,
+  .contact-console__meta-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .contact-patch__value,
+  .common-tools__desc {
+    overflow-wrap: anywhere;
+  }
+
+  .contact-checklist__item {
+    align-items: flex-start;
+  }
+}
+
+/* ── Admin (basic mobile usability) ── */
+@media (max-width: 899px) {
+  .admin-main {
+    padding: var(--space-md);
+    max-width: 100%;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-mobile-nav {
+    gap: 6px;
+  }
+
+  .admin-mobile-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+  }
+
+  .admin-login {
+    width: min(calc(100% - var(--gutter) * 2), 420px);
+    padding: var(--space-lg);
+  }
+
+  .admin-login__field input {
+    width: 100%;
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .admin-login__submit {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .admin-toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .admin-toolbar .btn {
+    min-height: 44px;
+  }
+}
+
+/* ── Navigation ── */
+@media (max-width: 767px) {
+  .mobile-nav__panel {
+    width: min(320px, 88vw);
+    padding: var(--space-md);
+  }
+
+  .mobile-nav__links .nav-link,
+  .mobile-nav__links a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+  }
+
+  .mobile-cta {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* ── Touch: disable hover-only transforms ── */
+@media (hover: none) and (pointer: coarse) {
+  .case-card:hover .case-card__media img,
+  .case-gallery__item:hover img,
+  .certification-rack__unit:hover,
+  .field-record__item:hover {
+    transform: none;
+  }
+
+  .btn:hover:not(:disabled):not(.btn--disabled):not(.btn--loading) {
+    transform: none;
+  }
+}
+
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .fade-in,
   .page-transition,
   .route-transition {
     animation: none !important;
   }
-  .case-card__media img { transition: none; }
-  .btn:hover { transform: none; }
+
+  .case-card__media img {
+    transition: none;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+
   .modal__panel,
-  .modal__backdrop { transition: none; }
-  .skeleton { animation: none; }
+  .modal__backdrop {
+    transition: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
 }

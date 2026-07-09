@@ -332,3 +332,32 @@
     animation: none;
   }
 }
+
+/* ── Mobile: lighter route transitions (Round 6.2) ── */
+@media (max-width: 767px) {
+  .route-transition:not(.route-transition--home) {
+    animation-duration: 300ms;
+  }
+
+  .route-transition__scan {
+    opacity: 0.12;
+  }
+
+  .route-transition__status {
+    animation-duration: 280ms;
+  }
+
+  .route-transition .console-panel,
+  .route-transition .console-rack,
+  .route-transition .media-rack,
+  .route-transition .about-section,
+  .route-transition .contact-section,
+  .route-transition .case-file__section {
+    animation-duration: 320ms;
+  }
+
+  .route-transition--home .hero,
+  .route-transition--home .hero video {
+    animation: none !important;
+  }
+}
