@@ -4,6 +4,7 @@ dist/
 .env.local
 .env.*
 !.env.example
+.render-env.local.txt
 *.local
 .DS_Store
 *.log

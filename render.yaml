@@ -7,6 +7,8 @@ services:
     name: yuyakang-api
     runtime: node
     plan: free
+    branch: master
+    autoDeploy: true
     buildCommand: npm install && npm run build
     startCommand: NODE_ENV=production API_ONLY=true node server/index.js
     healthCheckPath: /api/health
