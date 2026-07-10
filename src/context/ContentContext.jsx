@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import mockData from "../data/site-content.mock.json";
 import { getContent, getContentSource, clearContentCache } from "../lib/content";
 
 const ContentContext = createContext(null);
@@ -16,8 +17,10 @@ export function ContentProvider({ children }) {
       setSource(getContentSource());
       return data;
     } catch (err) {
-      console.warn("[content] reload failed:", err.message);
-      return null;
+      console.warn("[content] reload failed, using mock fallback:", err.message);
+      setContent(mockData);
+      setSource("mock");
+      return mockData;
     }
   }, []);
 

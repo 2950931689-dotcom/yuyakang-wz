@@ -42,6 +42,11 @@ export class AuthRequiredError extends ApiError {
 async function parseResponse(res, { admin = false } = {}) {
   let data = null;
   const text = await res.text();
+  const contentType = res.headers.get("content-type") || "";
+
+  if (res.ok && contentType.includes("text/html")) {
+    throw new ApiError("Unexpected HTML response from API", res.status);
+  }
 
   if (text) {
     try {
@@ -65,7 +70,9 @@ async function parseResponse(res, { admin = false } = {}) {
   return data;
 }
 
-async function request(path, options = {}, { admin = false } = {}) {
+const REQUEST_TIMEOUT_MS = 10_000;
+
+async function request(path, options = {}, { admin = false, timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
   const headers = { ...(options.headers ?? {}) };
 
   if (options.body && !(options.body instanceof FormData)) {
@@ -73,13 +80,26 @@ async function request(path, options = {}, { admin = false } = {}) {
   }
 
   const url = API_URL ? `${API_URL}${path}` : path;
-  const res = await fetch(url, {
-    ...options,
-    headers,
-    credentials: admin ? "include" : "same-origin",
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  return parseResponse(res, { admin });
+  try {
+    const res = await fetch(url, {
+      ...options,
+      headers,
+      credentials: admin ? "include" : "same-origin",
+      signal: options.signal ?? controller.signal,
+    });
+
+    return parseResponse(res, { admin });
+  } catch (err) {
+    if (err.name === "AbortError") {
+      throw new ApiError("Request timed out", 408);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export function resolveUploadUrl(url) {

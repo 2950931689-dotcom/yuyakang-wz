@@ -6,11 +6,25 @@ let cache = null;
 /** @type {"api" | "mock" | null} */
 let contentSource = null;
 
+function isValidSiteContent(data) {
+  return (
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    Array.isArray(data.cases) &&
+    data.siteSettings &&
+    typeof data.siteSettings === "object"
+  );
+}
+
 export async function getContent() {
   if (cache) return cache;
 
   try {
     const data = await fetchContent();
+    if (!isValidSiteContent(data)) {
+      throw new Error("Invalid or unexpected content payload from API");
+    }
     cache = data;
     contentSource = "api";
     return data;
