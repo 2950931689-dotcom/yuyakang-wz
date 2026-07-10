@@ -13,15 +13,22 @@ import EmptyState from "../ui/EmptyState";
 
 const COLLAPSE_THRESHOLD = 480;
 
-function ProseSection({ code, title, text, lang, defaultExpanded = true }) {
+function ProseSection({ code, title, text, lang, defaultExpanded = true, className = "", hideHeadOnMobile = false }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   if (!text?.trim()) return null;
 
   const isLong = text.length > COLLAPSE_THRESHOLD;
   const showCollapsed = isLong && !expanded;
+  const sectionClass = [
+    "case-file__section",
+    className,
+    hideHeadOnMobile ? "case-file__section--mobile-muted-head" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <section className="case-file__section">
+    <section className={sectionClass}>
       <header className="case-file__section-head">
         <span className="case-file__section-code">{code}</span>
         <h2 className="case-file__section-title">{title}</h2>
@@ -63,7 +70,7 @@ function MediaRack({ caseItem, content, lang }) {
   };
 
   return (
-    <section className="case-file__section case-file__section--media media-rack">
+    <section className="case-file__section case-file__section--media media-rack case-file__section--mobile-priority">
       <header className="media-rack__head">
         <span className="case-file__section-code">MEDIA RACK</span>
         <h2 className="case-file__section-title">
@@ -181,7 +188,7 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
 
   return (
     <article className="case-file fade-in">
-      <section className="case-file__section case-file__section--data">
+      <section className="case-file__section case-file__section--data case-file__section--mobile-defer">
         <header className="case-file__section-head">
           <span className="case-file__section-code">PROJECT DATA</span>
           <h2 className="case-file__section-title">
@@ -193,7 +200,7 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
 
       <MediaRack caseItem={caseItem} content={content} lang={lang} />
 
-      <section className="case-file__section case-file__section--detail">
+      <section className="case-file__section case-file__section--detail case-file__section--mobile-defer">
         <header className="case-file__section-head">
           <span className="case-file__section-code">PROJECT FILE DETAIL</span>
           <h2 className="case-file__section-title">{labels.detail}</h2>
@@ -205,6 +212,7 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
         title={labels.overview}
         text={overview}
         lang={lang}
+        hideHeadOnMobile
       />
       {backgroundOnly && (
         <ProseSection
@@ -212,6 +220,7 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
           title={lang === "cn" ? "项目背景" : "Background"}
           text={backgroundOnly}
           lang={lang}
+          hideHeadOnMobile
         />
       )}
 
@@ -220,10 +229,11 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
         title={labels.challenge}
         text={t(caseItem.challenge, lang)}
         lang={lang}
+        hideHeadOnMobile
       />
 
       {(roleText || serviceText) && (
-        <section className="case-file__section">
+        <section className="case-file__section case-file__section--mobile-muted-head">
           <header className="case-file__section-head">
             <span className="case-file__section-code">03 / ROLE</span>
             <h2 className="case-file__section-title">{labels.role}</h2>

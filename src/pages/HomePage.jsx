@@ -1,7 +1,9 @@
 import HeroSection from "../components/home/HeroSection";
 import CredentialsSection from "../components/home/CredentialsSection";
+import HomeMobileCertificates from "../components/home/HomeMobileCertificates";
 import ServicePreview from "../components/home/ServicePreview";
 import FeaturedCases from "../components/home/FeaturedCases";
+import VideoHighlights from "../components/home/VideoHighlights";
 import WorkflowSection from "../components/home/WorkflowSection";
 import SoundIssueSection from "../components/home/SoundIssueSection";
 import TutorialSection from "../components/home/TutorialSection";
@@ -15,35 +17,63 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <section className="section container section-reveal" id="credentials">
-        <CredentialsSection />
-      </section>
-      <section className="section container section-reveal" id="services">
-        <SectionTitle
-          sectionIndex={2}
-          eyebrow="SERVICES"
-          title={lang === "cn" ? "声音解决方案" : "Sound Solutions"}
-          subtitle={
-            lang === "cn"
-              ? "按项目类型定位问题，提供可落地的现场与后期支持。"
-              : "Problem-focused support for live sound, systems and post-production."
-          }
-        />
-        <ServicePreview />
-      </section>
-      <section className="section section--tight container section-reveal" id="process">
-        <WorkflowSection />
-      </section>
-      <section className="section container section-reveal" id="featured-cases">
-        <FeaturedCases />
-      </section>
-      <section className="section container section-reveal" id="sound-check">
-        <SoundIssueSection />
-      </section>
-      <section className="home-conversion-zone container section-reveal" id="conversion">
-        <BookingCTA compact />
-        <TutorialSection compact />
-      </section>
+      <div className="home-sections-flow">
+        <section
+          className="section container section-reveal home-section home-section--credentials-text home-mobile-hide"
+          id="credentials"
+        >
+          <CredentialsSection />
+        </section>
+        <section
+          className="section container section-reveal home-section home-section--certificates mobile-only-block"
+          id="home-certificates"
+          aria-label={lang === "cn" ? "专业证书" : "Professional certificates"}
+        >
+          <HomeMobileCertificates />
+        </section>
+        <section
+          className="section container section-reveal home-section home-section--services"
+          id="services"
+        >
+          <SectionTitle
+            sectionIndex={2}
+            eyebrow="SERVICES"
+            title={lang === "cn" ? "声音解决方案" : "Sound Solutions"}
+            subtitle={
+              lang === "cn"
+                ? "按项目类型定位问题，提供可落地的现场与后期支持。"
+                : "Problem-focused support for live sound, systems and post-production."
+            }
+          />
+          <ServicePreview />
+        </section>
+        <section
+          className="section section--tight container section-reveal home-section home-section--process"
+          id="process"
+        >
+          <WorkflowSection />
+        </section>
+        <section
+          className="section container section-reveal home-section home-section--featured-cases"
+          id="featured-cases"
+        >
+          <FeaturedCases />
+        </section>
+        <VideoHighlights />
+        <section
+          className="section container section-reveal home-section home-section--sound-check"
+          id="sound-check"
+        >
+          <SoundIssueSection />
+        </section>
+        <section
+          className="home-conversion-zone container section-reveal home-section home-section--conversion"
+          id="conversion"
+        >
+          <BookingCTA compact />
+          <TutorialSection compact />
+        </section>
+      </div>
     </>
   );
 }
