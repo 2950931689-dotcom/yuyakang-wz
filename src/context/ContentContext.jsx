@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import mockData from "../data/site-content.mock.json";
 import { getContent, getContentSource, clearContentCache } from "../lib/content";
+import { normalizeContent } from "../lib/contentDefaults";
 
 const ContentContext = createContext(null);
 
@@ -18,9 +19,10 @@ export function ContentProvider({ children }) {
       return data;
     } catch (err) {
       console.warn("[content] reload failed, using mock fallback:", err.message);
-      setContent(mockData);
+      const fallback = normalizeContent(mockData);
+      setContent(fallback);
       setSource("mock");
-      return mockData;
+      return fallback;
     }
   }, []);
 

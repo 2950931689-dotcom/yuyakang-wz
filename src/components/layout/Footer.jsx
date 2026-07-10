@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { t, getSiteLocation, getLocationDisplay } from "../../lib/content";
+import { t, getSiteLocation, getLocationDisplay, getSiteDisplayName } from "../../lib/content";
 
 export default function Footer() {
   const { content } = useContent();
@@ -16,8 +16,8 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer__inner">
         <div>
-          <div className="footer__brand">{content.siteSettings.siteName.en}</div>
-          <div className="footer__tagline">{t(content.siteSettings.tagline, lang)}</div>
+          <div className="footer__brand">{getSiteDisplayName(content, "en")}</div>
+          <div className="footer__tagline">{t(content.siteSettings?.tagline, lang)}</div>
         </div>
         <div className="footer__copy">
           © {new Date().getFullYear()} {t(content.profile.name, lang)}

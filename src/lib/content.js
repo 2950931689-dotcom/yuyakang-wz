@@ -1,5 +1,8 @@
 import mockData from "../data/site-content.mock.json";
 import { fetchContent } from "./api";
+import { normalizeContent } from "./contentDefaults";
+
+export { getSiteDisplayName, normalizeContent } from "./contentDefaults";
 
 /** @type {typeof mockData | null} */
 let cache = null;
@@ -13,7 +16,9 @@ function isValidSiteContent(data) {
     !Array.isArray(data) &&
     Array.isArray(data.cases) &&
     data.siteSettings &&
-    typeof data.siteSettings === "object"
+    typeof data.siteSettings === "object" &&
+    data.siteSettings.siteName &&
+    typeof data.siteSettings.siteName === "object"
   );
 }
 
@@ -22,17 +27,18 @@ export async function getContent() {
 
   try {
     const data = await fetchContent();
-    if (!isValidSiteContent(data)) {
+    const normalized = normalizeContent(data);
+    if (!isValidSiteContent(normalized)) {
       throw new Error("Invalid or unexpected content payload from API");
     }
-    cache = data;
+    cache = normalized;
     contentSource = "api";
-    return data;
+    return normalized;
   } catch (err) {
     console.warn("[content] API unavailable, using mock data:", err.message);
-    cache = mockData;
+    cache = normalizeContent(mockData);
     contentSource = "mock";
-    return mockData;
+    return cache;
   }
 }
 

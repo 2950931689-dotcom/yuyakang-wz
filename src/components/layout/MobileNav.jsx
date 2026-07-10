@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getNavLabel } from "../../lib/content";
+import { getNavLabel, getSiteDisplayName } from "../../lib/content";
 import LanguageSwitch from "./LanguageSwitch";
 import ThemeSwitch from "./ThemeSwitch";
 import LogoLink from "./LogoLink";
@@ -44,7 +44,7 @@ export default function MobileNav({ open, onClose }) {
       <button type="button" className="mobile-nav__backdrop" aria-label="关闭菜单" onClick={onClose} />
       <div className="mobile-nav__panel">
         <div className="mobile-nav__head">
-          <LogoLink onNavigate={onClose}>{content.siteSettings.siteName.en}</LogoLink>
+          <LogoLink onNavigate={onClose}>{getSiteDisplayName(content, "en")}</LogoLink>
           <button type="button" className="header__menu-btn" aria-label="关闭" onClick={onClose}>
             <X size={20} strokeWidth={1.5} />
           </button>

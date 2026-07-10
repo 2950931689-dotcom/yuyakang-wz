@@ -6,7 +6,7 @@ import { useContent } from "../../context/ContentContext";
 
 import { useLanguage } from "../../context/LanguageContext";
 
-import { getHeroSlides, getHeroVideo, getSafeHero, t } from "../../lib/content";
+import { getHeroSlides, getHeroVideo, getSafeHero, getSiteDisplayName, t } from "../../lib/content";
 
 import { splitHeroHeadline } from "../../lib/heroBoot";
 
@@ -213,7 +213,7 @@ export default function HeroSection() {
 
           <span className="hero__logo-index">01 / </span>
 
-          {content.siteSettings.siteName.en}
+          {getSiteDisplayName(content, "en")}
 
         </p>
 

@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getNavLabel } from "../../lib/content";
+import { getNavLabel, getSiteDisplayName } from "../../lib/content";
 import LanguageSwitch from "./LanguageSwitch";
 import ThemeSwitch from "./ThemeSwitch";
 import LogoLink from "./LogoLink";
@@ -25,7 +25,7 @@ export default function Header({ onMenuOpen }) {
   return (
     <header className="header">
       <div className="header__inner">
-        <LogoLink>{content.siteSettings.siteName.en}</LogoLink>
+        <LogoLink>{getSiteDisplayName(content, "en")}</LogoLink>
         <nav className="header__nav" aria-label="主导航">
           {NAV_KEYS.map(([key, path]) => (
             <NavSignalLink key={key} to={path} end={path === "/"}>
