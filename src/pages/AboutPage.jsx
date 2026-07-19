@@ -5,13 +5,16 @@ import { buildWorkPhotoItems } from "../lib/media";
 import { useMediaLightbox } from "../context/MediaLightboxContext";
 import EngineerIdentity from "../components/about/EngineerIdentity";
 import CertificationRack from "../components/about/CertificationRack";
-import SignalIdentity from "../components/about/SignalIdentity";
-import ControlSurface from "../components/about/ControlSurface";
+import AboutCapabilityModules from "../components/about/AboutCapabilityModules";
 import FieldRecord from "../components/about/FieldRecord";
 import WorkPhilosophy from "../components/about/WorkPhilosophy";
 import AboutCTA from "../components/about/AboutCTA";
 import LoadingState from "../components/ui/LoadingState";
 
+/**
+ * About page — full engineer profile (round 7.5).
+ * 01 Identity → 02 Certifications → 03–07 Capabilities → Field photos → Philosophy → CTA
+ */
 export default function AboutPage() {
   const { content, loading } = useContent();
   const { lang } = useLanguage();
@@ -33,8 +36,7 @@ export default function AboutPage() {
       <div className="about-page__inner container">
         <EngineerIdentity content={content} profile={profile} lang={lang} />
         <CertificationRack certificates={certs} lang={lang} />
-        <SignalIdentity content={content} lang={lang} />
-        <ControlSurface content={content} lang={lang} />
+        <AboutCapabilityModules lang={lang} />
         <FieldRecord
           workPhotos={workPhotos}
           workItems={workItems}

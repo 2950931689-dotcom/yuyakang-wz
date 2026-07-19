@@ -3,6 +3,7 @@ import { t } from "../../lib/content";
 import { buildCertificateItems } from "../../lib/media";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";
 import MediaFallback from "../ui/MediaFallback";
+import { AboutCredentialTags } from "./AboutCapabilityModules";
 
 /**
  * Certificate image rack. About page uses full title; homepage embeds without
@@ -17,18 +18,23 @@ export default function CertificationRack({ certificates, lang, embedded = false
     : "about-section certification-rack console-rack";
 
   return (
-    <Wrapper className={wrapperClass}>
+    <Wrapper className={wrapperClass} id={embedded ? undefined : "credentials"}>
       {!embedded && (
-        <SectionTitle
-          sectionIndex={2}
-          eyebrow="CERTIFICATION RACK"
-          title={lang === "cn" ? "证书认证机架" : "Certification Rack"}
-          subtitle={
-            lang === "cn"
-              ? "专业认证与资质档案，用于快速建立现场与系统交付信任。"
-              : "Professional certifications and credentials for on-site and system delivery trust."
-          }
-        />
+        <>
+          <SectionTitle
+            sectionIndex={2}
+            eyebrow="CERTIFICATIONS"
+            title={lang === "cn" ? "证书与资质" : "Certifications"}
+            subtitle={
+              lang === "cn"
+                ? "专业认证与资质档案，用于建立现场与系统交付信任。"
+                : "Professional certifications for on-site and system delivery trust."
+            }
+          />
+          <div className="about-capability__creds">
+            <AboutCredentialTags lang={lang} />
+          </div>
+        </>
       )}
 
       {embedded && (

@@ -216,6 +216,18 @@
 .route-transition--about .about-page__inner > .about-section:nth-child(7) {
   animation-delay: 290ms;
 }
+.route-transition--about .about-page__inner > .about-section:nth-child(8) {
+  animation-delay: 330ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(9) {
+  animation-delay: 370ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(10) {
+  animation-delay: 410ms;
+}
+.route-transition--about .about-page__inner > .about-section:nth-child(n + 11) {
+  animation-delay: 450ms;
+}
 
 /* Contact stagger */
 .route-transition--contact .contact-page__inner > .contact-section:nth-child(1) {

@@ -175,6 +175,24 @@
     grid-template-columns: 1fr !important;
   }
 
+  .engineer-identity__tags,
+  .about-capability__tags {
+    gap: 6px;
+  }
+
+  .engineer-identity__tag,
+  .about-capability__tag {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .engineer-identity__intro,
+  .about-capability__lead,
+  .about-capability__panel {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .case-detail-hero__meta {
     grid-template-columns: 1fr;
   }

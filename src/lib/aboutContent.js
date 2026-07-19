@@ -259,3 +259,229 @@ export function buildExperienceCues(profile, lang, t) {
     desc: item.value,
   }));
 }
+
+/* —— Round 7.5: About full profile (frontend copy; no API schema change) —— */
+
+/** About page lead — longer than homepage HOME_PROFILE_INTRO. */
+export const ABOUT_FULL_INTRO = {
+  paragraphs: {
+    cn: [
+      "余雅康，dBsource 音响系统工程师，中国录音师协会会员，录音技术专业背景，持有初级录音师、华汇 DiGiCo 高级技术培训与 VOS 音响系统工程师认证。工作内容覆盖现场扩声、系统测量调试、FOH / Monitor / OB 调音、录音、音频编辑与后期混音。",
+      "我理解声音从制作到现场扩声的完整流程：从前期编写、录音制式选择、麦克风摆位、前级与音频接口连接，到后期修唱、编辑、混音处理，再到现场系统搭建、处理器调试、监听分配与前场扩声控制。",
+    ],
+    en: [
+      "Yu Yakang is a dBsource sound system engineer and a member of the China Recording Engineers Association, with a recording technology background. He holds Junior Recording Engineer, Huahui DiGiCo Advanced Technical Training, and VOS Sound System Engineer certifications. His work covers live reinforcement, system measurement and tuning, FOH / Monitor / OB mixing, recording, audio editing and post-production mixing.",
+      "He works across the full path from production to live sound: arrangement and capture choices, microphone placement, preamps and interfaces, editing and mixing, through to system setup, processor tuning, monitor allocation and FOH control.",
+    ],
+  },
+};
+
+export const ABOUT_IDENTITY_TAGS = {
+  cn: [
+    "dBsource 音响系统工程师",
+    "中国录音师协会会员",
+    "录音技术专业背景",
+    "现场调音 / 后期混音 / 音响系统工程",
+  ],
+  en: [
+    "dBsource Sound System Engineer",
+    "China Recording Engineers Association",
+    "Recording Technology Background",
+    "Live Sound / Mixing / System Engineering",
+  ],
+};
+
+export const ABOUT_CREDENTIAL_TAGS = {
+  cn: [
+    "初级录音师证书",
+    "华汇 DiGiCo 高级技术培训证书",
+    "VOS 认证音响系统工程师",
+    "中国录音师协会会员",
+  ],
+  en: [
+    "Junior Recording Engineer",
+    "Huahui DiGiCo Advanced Technical Training",
+    "VOS Certified Sound System Engineer",
+    "China Recording Engineers Association",
+  ],
+};
+
+/**
+ * Capability modules 03–07 for About page.
+ * Each: short lead + tag chips (website copy, not a job CV dump).
+ */
+export const ABOUT_CAPABILITY_MODULES = [
+  {
+    id: "recording-mixing",
+    sectionIndex: 3,
+    eyebrow: "RECORDING / MIXING",
+    title: { cn: "录音 / 混音能力", en: "Recording & Mixing" },
+    lead: {
+      cn: "具备乐理与和声基础，熟悉常见录音制式与人声、器乐拾音方式；可完成 DAW 内编辑、修唱与混音处理，并参与过交响乐、合唱录音及现场扩声相关工作。",
+      en: "Grounded in music theory and harmony, with practical stereo techniques and vocal/instrument capture. Comfortable editing, tuning and mixing in major DAWs, with experience in orchestral, choir and live-related sessions.",
+    },
+    tags: {
+      cn: [
+        "AB / MS / ORTF / Decca Tree",
+        "Cubase / Pro Tools / Studio One",
+        "Melodyne",
+        "Waves / FabFilter / Slate Digital",
+        "Ozone / Valhalla / iZotope RX",
+        "人声 / 器乐录音",
+        "修唱 / 修节奏",
+        "齿音 / 口水音 / 噪声处理",
+        "音频前后级与接口连接",
+      ],
+      en: [
+        "AB / MS / ORTF / Decca Tree",
+        "Cubase / Pro Tools / Studio One",
+        "Melodyne",
+        "Waves / FabFilter / Slate Digital",
+        "Ozone / Valhalla / iZotope RX",
+        "Vocal / instrument recording",
+        "Pitch & timing edit",
+        "De-ess / mouth noise / denoise",
+        "Preamps & audio interfaces",
+      ],
+    },
+  },
+  {
+    id: "system-engineering",
+    sectionIndex: 4,
+    eyebrow: "SYSTEM ENGINEERING",
+    title: { cn: "音响工程 / 系统调试能力", en: "System Engineering & Tuning" },
+    lead: {
+      cn: "使用专业测量与声学仿真工具校正频响、相位与延时，优化线阵列与超低阵列覆盖；调试处理器增益、EQ、延时与压限，并排查维护音频设备问题。",
+      en: "Uses measurement and acoustic simulation tools to correct response, phase and delay, and to refine line-array and sub coverage. Tunes processors for gain, EQ, delay and limiting, and troubleshoots audio systems.",
+    },
+    tags: {
+      cn: [
+        "Smaart",
+        "VOS4 / VOS Pro",
+        "EASE Focus",
+        "频响校正",
+        "相位耦合",
+        "延时对齐",
+        "线阵列 / 超低阵列模拟",
+        "处理器调试",
+        "EQ / 延时 / 限幅 / 增益",
+      ],
+      en: [
+        "Smaart",
+        "VOS4 / VOS Pro",
+        "EASE Focus",
+        "Frequency response",
+        "Phase coupling",
+        "Delay alignment",
+        "Line array / sub simulation",
+        "Processor tuning",
+        "EQ / delay / limiting / gain",
+      ],
+    },
+  },
+  {
+    id: "live-sound",
+    sectionIndex: 5,
+    eyebrow: "LIVE SOUND",
+    title: { cn: "现场调音能力", en: "Live Sound" },
+    lead: {
+      cn: "重视增益架构与数字台路由、母线规划；可搭建 FOH、Monitor、OB 等场景，并在现场合理安排麦克风与录音制式以支持分轨录音。",
+      en: "Focuses on gain structure, digital console routing and bus planning. Builds FOH, Monitor and OB setups, and places microphones for clean multitrack capture when needed.",
+    },
+    tags: {
+      cn: [
+        "FOH",
+        "Monitor",
+        "OB",
+        "数字调音台路由",
+        "母线规划",
+        "动态 / 滤波 / 空间效果器",
+        "现场分轨录音",
+        "PA / Monitor 场景搭建",
+        "传声器增益与信噪比",
+      ],
+      en: [
+        "FOH",
+        "Monitor",
+        "OB",
+        "Digital console routing",
+        "Bus planning",
+        "Dynamics / EQ / time-based FX",
+        "On-site multitrack",
+        "PA / monitor system setup",
+        "Mic gain & SNR",
+      ],
+    },
+  },
+  {
+    id: "software-tools",
+    sectionIndex: 6,
+    eyebrow: "SOFTWARE & TOOLS",
+    title: { cn: "常用软件与工具", en: "Software & Tools" },
+    lead: {
+      cn: "日常工作覆盖 DAW、混音插件、修音工具、声学测量与仿真软件，用于录音混音与现场系统调试。",
+      en: "Day-to-day tools include DAWs, mix plugins, editing utilities, and acoustic measurement / simulation software for both studio and live system work.",
+    },
+    tags: {
+      cn: [
+        "DAW：Cubase / Pro Tools / Studio One",
+        "插件：Waves / FabFilter / Slate / Ozone / Valhalla / RX",
+        "修音：Melodyne",
+        "测量：Smaart / VOS4 / VOS Pro",
+        "仿真：EASE Focus",
+      ],
+      en: [
+        "DAW: Cubase / Pro Tools / Studio One",
+        "Plugins: Waves / FabFilter / Slate / Ozone / Valhalla / RX",
+        "Editing: Melodyne",
+        "Measurement: Smaart / VOS4 / VOS Pro",
+        "Simulation: EASE Focus",
+      ],
+    },
+  },
+  {
+    id: "consoles",
+    sectionIndex: 7,
+    eyebrow: "CONSOLE EXPERIENCE",
+    title: { cn: "调音台与系统经验", en: "Console & System Experience" },
+    lead: {
+      cn: "熟悉多品牌数字调音台的现场配置与操作，覆盖巡演级与中小型场地常见型号。",
+      en: "Hands-on experience across major digital console families used in touring and mid-size venues.",
+    },
+    tags: {
+      cn: [
+        "DiGiCo SD / Quantum",
+        "Yamaha TF / CL / QL / PM / DM / MG",
+        "Behringer X32 / WING",
+        "Midas M32 / Pro / HD",
+        "PreSonus StudioLive 24 / 32S",
+        "Allen & Heath Qu / SQ / dLive / Avantis",
+        "Soundcraft Vi / Si",
+      ],
+      en: [
+        "DiGiCo SD / Quantum",
+        "Yamaha TF / CL / QL / PM / DM / MG",
+        "Behringer X32 / WING",
+        "Midas M32 / Pro / HD",
+        "PreSonus StudioLive 24 / 32S",
+        "Allen & Heath Qu / SQ / dLive / Avantis",
+        "Soundcraft Vi / Si",
+      ],
+    },
+  },
+];
+
+/** Resolve About intro paragraphs: prefer profile.bioLong / bio when multi-paragraph, else fallback. */
+export function getAboutIntroParagraphs(profile, lang = "cn") {
+  const fallback = ABOUT_FULL_INTRO.paragraphs[lang] || ABOUT_FULL_INTRO.paragraphs.cn;
+  const raw =
+    (typeof profile?.bioLong === "object"
+      ? profile.bioLong?.[lang] || profile.bioLong?.cn
+      : profile?.bioLong) ||
+    (typeof profile?.bio === "object" ? profile.bio?.[lang] || profile.bio?.cn : profile?.bio) ||
+    "";
+  const text = String(raw || "").trim();
+  if (!text) return fallback;
+  const parts = text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
+  return parts.length ? parts : fallback;
+}

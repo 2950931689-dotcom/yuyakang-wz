@@ -5,7 +5,7 @@ export default function WorkPhilosophy({ lang }) {
   return (
     <section className="about-section work-philosophy">
       <SectionTitle
-        sectionIndex={6}
+        sectionIndex={9}
         eyebrow="WORK PHILOSOPHY"
         title={lang === "cn" ? "工作方法论" : "Work Philosophy"}
       />

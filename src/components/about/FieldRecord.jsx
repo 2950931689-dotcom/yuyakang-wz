@@ -6,7 +6,7 @@ export default function FieldRecord({ workPhotos, workItems, lang, openLightbox 
   return (
     <section className="about-section field-record console-rack">
       <SectionTitle
-        sectionIndex={5}
+        sectionIndex={8}
         eyebrow="FIELD RECORD"
         title={lang === "cn" ? "现场工作记录" : "Field Record"}
         subtitle={
