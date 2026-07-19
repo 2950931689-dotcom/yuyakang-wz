@@ -24,6 +24,8 @@ import { AdminBilingualInput, AdminTabs } from "./AdminBilingualField";
 
 import { AdminMediaField } from "./AdminMediaField";
 
+import AdminMixingAudioPanel from "./AdminMixingAudioPanel";
+
 
 
 const TABS = [
@@ -33,6 +35,8 @@ const TABS = [
   ["copy", "项目文案"],
 
   ["media", "项目媒体"],
+
+  ["mixing-audio", "混音音频"],
 
   ["hero", "首页展示"],
 
@@ -484,6 +488,14 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
           </AdminField>
 
         </AdminFieldGroup>
+
+      )}
+
+
+
+      {tab === "mixing-audio" && (
+
+        <AdminMixingAudioPanel caseItem={caseItem} onChange={update} />
 
       )}
 

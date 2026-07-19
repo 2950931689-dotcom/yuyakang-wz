@@ -1,4 +1,5 @@
 import { randomUUID } from "./id.js";
+import { createDefaultMixingAudioModules, normalizeMixingAudioModules } from "./mixingAudio.js";
 
 export const CASE_CATEGORIES = [
   ["livehouse-system-tuning", "Livehouse 系统调试"],
@@ -49,6 +50,7 @@ export function createEmptyCase(sortOrder = 999) {
     videos: [],
     audio: [],
     audioUrl: null,
+    mixingAudioModules: createDefaultMixingAudioModules(),
     featured: false,
     isFeatured: false,
     showInHero: true,
@@ -108,6 +110,10 @@ export function normalizeCaseForSave(caseItem) {
 
   if (c.heroDuration == null && c.videos?.[0]?.duration) {
     c.heroDuration = c.videos[0].duration;
+  }
+
+  if (c.mixingAudioModules != null) {
+    c.mixingAudioModules = normalizeMixingAudioModules(c.mixingAudioModules);
   }
 
   delete c._signalFlowRaw;

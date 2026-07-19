@@ -1055,6 +1055,41 @@
       "images": [],
       "videoUrl": null,
       "audioUrl": "/audio/mix-gulou-v7.mp3",
+      "mixingAudioModules": {
+        "enabled": true,
+        "vocalTune": {
+          "title": {
+            "cn": "贴唱",
+            "en": "Vocal Tune"
+          },
+          "description": {
+            "cn": "展示贴唱混音、修唱、人声处理与整体声音完成度相关音频。",
+            "en": "Vocal-focused mixes, tuning and polish examples."
+          },
+          "tracks": [
+            {
+              "id": "vocal-gulou-01",
+              "name": "《鼓楼》贴唱参考",
+              "description": "案例既有试听音频（上传正式文件后可替换 URL）。",
+              "audioUrl": "/audio/mix-gulou-v7.mp3",
+              "duration": "",
+              "order": 1,
+              "enabled": true
+            }
+          ]
+        },
+        "multitrack": {
+          "title": {
+            "cn": "分轨",
+            "en": "Multitrack"
+          },
+          "description": {
+            "cn": "展示分轨混音、乐器层次、空间关系与整体动态控制相关音频。",
+            "en": "Multitrack mixes — balance, space and dynamics."
+          },
+          "tracks": []
+        }
+      },
       "externalVideoUrl": null,
       "seo": {
         "title": {

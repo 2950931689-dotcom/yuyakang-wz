@@ -12,13 +12,17 @@ export const ALLOWED_MIME_TYPES = new Set([
   "audio/mpeg",
   "audio/wav",
   "audio/mp3",
+  "audio/x-wav",
+  "audio/aac",
+  "audio/mp4",
+  "audio/ogg",
   "application/pdf",
 ]);
 
 const SIZE_LIMITS = {
   image: 20 * 1024 * 1024,
   video: 300 * 1024 * 1024,
-  audio: 100 * 1024 * 1024,
+  audio: 30 * 1024 * 1024,
   document: 50 * 1024 * 1024,
   other: 50 * 1024 * 1024,
 };

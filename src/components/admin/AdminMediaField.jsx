@@ -31,6 +31,9 @@ export function AdminMediaField({ label, value, onChange, accept = "image/*", hi
         {previewUrl && accept.includes("video") && (
           <video src={previewUrl} className="admin-media-field__preview" controls muted />
         )}
+        {previewUrl && accept.includes("audio") && (
+          <audio src={previewUrl} className="admin-media-field__preview" controls preload="metadata" />
+        )}
         <label className="admin-btn admin-btn--ghost admin-btn--sm">
           {uploading ? commonActionText.uploading : "上传替换"}
           <input type="file" accept={accept} hidden onChange={(e) => handleUpload(e.target.files?.[0])} />

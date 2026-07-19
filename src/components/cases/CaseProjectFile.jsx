@@ -5,9 +5,11 @@ import { buildCaseVideoItem } from "../../lib/media";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";
 import CaseGallery from "./CaseGallery";
 import AudioPreviewPlaceholder from "./AudioPreviewPlaceholder";
+import MixingAudioSection from "./MixingAudioSection";
 import ProjectConsole from "./ProjectConsole";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
+import { getVisibleMixingAudioModules } from "../../lib/mixingAudio";
 
 /**
  * Build a single「项目介绍」body from case narrative fields.
@@ -172,12 +174,12 @@ function MediaRack({ caseItem, content, lang }) {
 }
 
 /**
- * Simplified case detail body (round case-detail simplification):
- * Project data → Media rack → Project introduction → CTA.
- * Narrative fields remain in CMS; only front-end sections are reduced.
+ * Simplified case detail body:
+ * Project data → Media rack → Mixing audio (mixing cases only) → Introduction → CTA.
  */
 export default function CaseProjectFile({ caseItem, content, lang }) {
   const introduction = getCaseIntroductionText(caseItem, lang);
+  const mixingModules = getVisibleMixingAudioModules(caseItem);
 
   return (
     <article className="case-file fade-in">
@@ -192,6 +194,8 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
       </section>
 
       <MediaRack caseItem={caseItem} content={content} lang={lang} />
+
+      {mixingModules && <MixingAudioSection modules={mixingModules} lang={lang} />}
 
       <IntroductionSection text={introduction} lang={lang} />
 
