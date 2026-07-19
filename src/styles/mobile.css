@@ -908,6 +908,10 @@
   align-self: flex-start;
 }
 
+.featured-cases__footer {
+  margin-top: var(--space-xl);
+}
+
 @media (min-width: 768px) {
   .home-sections-flow {
     display: block;
@@ -928,33 +932,37 @@
     flex-direction: column;
   }
 
-  /* Round 7.1 mobile visual order (preserves 6.5 CTA-before-workflow) */
+  /* Round 7.3 mobile visual order */
   .home-section--certificates {
     order: 1;
   }
 
-  .home-section--featured-cases {
+  .home-section--live-cases {
     order: 2;
   }
 
-  .home-section--video-highlights {
+  .home-section--mixing-cases {
     order: 3;
   }
 
-  .home-section--conversion {
+  .home-section--video-highlights {
     order: 4;
   }
 
-  .home-section--process {
+  .home-section--conversion {
     order: 5;
   }
 
-  .home-section--sound-check {
+  .home-section--process {
     order: 6;
   }
 
-  .home-section--services {
+  .home-section--sound-check {
     order: 7;
+  }
+
+  .home-section--services {
+    order: 8;
   }
 
   .home-mobile-certificates .certification-rack__grid {
@@ -984,6 +992,10 @@
 
   .featured-cases .grid-3 {
     grid-template-columns: 1fr;
+  }
+
+  .featured-cases__footer {
+    margin-top: var(--space-xl);
   }
 
   /* Case detail: story-first on phone */

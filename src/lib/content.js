@@ -297,6 +297,41 @@ export function getCases(content, { featured, categoryId, visible = true } = {})
   });
 }
 
+const HOME_LIVE_CATEGORIES = new Set([
+  "livehouse-system-tuning",
+  "tour-system-engineering",
+  "event-sound-reinforcement",
+]);
+
+const HOME_MIXING_CATEGORIES = new Set([
+  "mixing-post-production",
+  "recording-editing",
+]);
+
+function isHomeFeatured(caseItem) {
+  return Boolean(caseItem?.featured || caseItem?.isFeatured);
+}
+
+/**
+ * Homepage Live block — field / tour / event works.
+ * Excludes mixing, recording, and acoustic-simulation via category allowlist.
+ * Does not mutate featured flags; acoustic stays on /cases when featured.
+ */
+export function getHomeLiveCases(content) {
+  return getCases(content, { visible: true }).filter(
+    (c) => HOME_LIVE_CATEGORIES.has(c.category) && isHomeFeatured(c)
+  );
+}
+
+/**
+ * Homepage Mixing block — post-production / mixing works only.
+ */
+export function getHomeMixingCases(content) {
+  return getCases(content, { visible: true }).filter(
+    (c) => HOME_MIXING_CATEGORIES.has(c.category) && isHomeFeatured(c)
+  );
+}
+
 export function getCaseProjectNumber(content, caseItem) {
   const all = getCases(content, { visible: true });
   const idx = all.findIndex((c) => c.slug === caseItem.slug);

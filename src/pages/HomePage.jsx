@@ -12,9 +12,9 @@ import SectionTitle from "../components/ui/SectionTitle";
 import { useLanguage } from "../context/LanguageContext";
 
 /**
- * Round 7.1 homepage DOM order (PC visual = source order):
- * Hero → credentials → certificates(mobile) → featured cases → video
- * → workflow → sound check → services(deferred) → conversion CTA
+ * Round 7.3 homepage DOM order (PC visual = source order):
+ * Hero → credentials → certificates(mobile) → live cases → mixing cases
+ * → video → workflow → sound check → services → conversion CTA
  *
  * Mobile visual order is controlled by CSS flex order in mobile.css.
  */
@@ -41,10 +41,17 @@ export default function HomePage() {
         </section>
 
         <section
-          className="section container section-reveal home-section home-section--featured-cases"
-          id="featured-cases"
+          className="section container section-reveal home-section home-section--live-cases"
+          id="live-cases"
         >
-          <FeaturedCases />
+          <FeaturedCases variant="live" sectionIndex={2} />
+        </section>
+
+        <section
+          className="section container section-reveal home-section home-section--mixing-cases"
+          id="mixing-cases"
+        >
+          <FeaturedCases variant="mixing" sectionIndex={3} />
         </section>
 
         <VideoHighlights />
