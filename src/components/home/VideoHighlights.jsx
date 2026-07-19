@@ -56,7 +56,7 @@ export default function VideoHighlights() {
 
   return (
     <section
-      className="section container section-reveal home-section home-section--video-highlights mobile-only-block"
+      className="section container section-reveal home-section home-section--video-highlights"
       id="video-highlights"
       aria-label={lang === "cn" ? "精选视频" : "Video highlights"}
     >
