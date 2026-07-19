@@ -3701,18 +3701,44 @@
   overflow-wrap: anywhere;
 }
 
-/* —— Mixing case audio modules —— */
-.mixing-audio-section__grid {
-  display: grid;
-  gap: var(--space-xl);
+/* —— Mixing case audio modules (stacked 贴唱 → 分轨) —— */
+.mixing-audio-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl, 2.5rem);
   min-width: 0;
 }
 
-@media (min-width: 900px) {
-  .mixing-audio-section__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-lg);
-  }
+.mixing-audio-module {
+  min-width: 0;
+}
+
+.mixing-audio-module__body {
+  min-width: 0;
+  padding: clamp(16px, 2.5vw, 24px);
+}
+
+.mixing-audio-module__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.mixing-audio-module__tracks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* legacy class names kept for safety if referenced elsewhere */
+.mixing-audio-section__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  min-width: 0;
 }
 
 .mixing-audio-section__group {
