@@ -39,7 +39,7 @@ export default function ProjectQuickView({ caseItem, lang }) {
     section: lang === "cn" ? "快速项目概览" : "Project Quick View",
     background: lang === "cn" ? "项目背景" : "Background",
     role: lang === "cn" ? "我的角色" : "My Role",
-    challenge: lang === "cn" ? "现场问题" : "On-Site Challenge",
+    challenge: lang === "cn" ? "项目介绍" : "Introduction",
     solution: lang === "cn" ? "解决思路" : "Approach",
     result: lang === "cn" ? "交付结果" : "Delivery Result",
   };

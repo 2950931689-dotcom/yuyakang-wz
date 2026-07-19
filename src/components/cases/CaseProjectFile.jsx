@@ -176,7 +176,7 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
 
   const labels = {
     overview: lang === "cn" ? "项目概览" : "Project Overview",
-    challenge: lang === "cn" ? "项目难点" : "Challenge",
+    challenge: lang === "cn" ? "项目介绍" : "Introduction",
     role: lang === "cn" ? "我的角色" : "My Role",
     solution: lang === "cn" ? "解决方案" : "Solution",
     result: lang === "cn" ? "最终效果" : "Result",
@@ -225,7 +225,7 @@ export default function CaseProjectFile({ caseItem, content, lang }) {
       )}
 
       <ProseSection
-        code="02 / CHALLENGE"
+        code="02 / INTRODUCTION"
         title={labels.challenge}
         text={t(caseItem.challenge, lang)}
         lang={lang}
