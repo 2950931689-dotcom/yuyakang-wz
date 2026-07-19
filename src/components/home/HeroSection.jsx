@@ -158,8 +158,6 @@ export default function HeroSection() {
 
   const hero = getSafeHero(content);
 
-  const primaryUrl = isMobile ? hero.primaryButton.mobileUrl : hero.primaryButton.desktopUrl;
-
   const carouselSlides = getHeroSlides(content, hero);
 
   const useCarousel = hero.mode !== "singleVideo" && carouselSlides.length > 0;
@@ -270,26 +268,6 @@ export default function HeroSection() {
           </Button>
 
         </div>
-
-        {primaryUrl && (
-
-          <a
-
-            className="text-link hero__video-link hero-boot__actions-link"
-
-            href={primaryUrl}
-
-            target="_blank"
-
-            rel="noopener noreferrer"
-
-          >
-
-            {heroCopy.primaryLabel}
-
-          </a>
-
-        )}
 
       </div>
 

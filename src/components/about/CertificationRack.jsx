@@ -4,22 +4,38 @@ import { buildCertificateItems } from "../../lib/media";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";
 import MediaFallback from "../ui/MediaFallback";
 
-export default function CertificationRack({ certificates, lang }) {
+/**
+ * Certificate image rack. About page uses full title; homepage embeds without
+ * a second section chrome (`embedded`).
+ */
+export default function CertificationRack({ certificates, lang, embedded = false }) {
   const { openLightbox } = useMediaLightbox();
   const items = buildCertificateItems(certificates, lang);
+  const Wrapper = embedded ? "div" : "section";
+  const wrapperClass = embedded
+    ? "certification-rack certification-rack--embedded console-rack"
+    : "about-section certification-rack console-rack";
 
   return (
-    <section className="about-section certification-rack console-rack">
-      <SectionTitle
-        sectionIndex={2}
-        eyebrow="CERTIFICATION RACK"
-        title={lang === "cn" ? "证书认证机架" : "Certification Rack"}
-        subtitle={
-          lang === "cn"
-            ? "专业认证与资质档案，用于快速建立现场与系统交付信任。"
-            : "Professional certifications and credentials for on-site and system delivery trust."
-        }
-      />
+    <Wrapper className={wrapperClass}>
+      {!embedded && (
+        <SectionTitle
+          sectionIndex={2}
+          eyebrow="CERTIFICATION RACK"
+          title={lang === "cn" ? "证书认证机架" : "Certification Rack"}
+          subtitle={
+            lang === "cn"
+              ? "专业认证与资质档案，用于快速建立现场与系统交付信任。"
+              : "Professional certifications and credentials for on-site and system delivery trust."
+          }
+        />
+      )}
+
+      {embedded && (
+        <h3 className="home-profile__certs-heading">
+          {lang === "cn" ? "专业证书" : "Certificates"}
+        </h3>
+      )}
 
       {certificates.length ? (
         <div className="certification-rack__grid console-rack__grid">
@@ -50,6 +66,6 @@ export default function CertificationRack({ certificates, lang }) {
       ) : (
         <MediaFallback label={lang === "cn" ? "暂无证书" : "No certificates"} />
       )}
-    </section>
+    </Wrapper>
   );
 }

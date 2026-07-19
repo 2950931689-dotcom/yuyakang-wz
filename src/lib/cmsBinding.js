@@ -103,7 +103,6 @@ export function getHeroCopy(content, lang = "cn") {
     normalizeBilingual(settings.tagline, lang) ||
     HERO_LEAD[lang];
   const secondary = hero.secondaryButton ?? {};
-  const primary = hero.primaryButton ?? {};
 
   return {
     lead,
@@ -111,9 +110,6 @@ export function getHeroCopy(content, lang = "cn") {
       normalizeBilingual(secondary, lang) ||
       (lang === "cn" ? "查看代表案例" : "Featured Projects"),
     secondaryUrl: secondary.url || "/cases",
-    primaryLabel:
-      normalizeBilingual(primary, lang) ||
-      (lang === "cn" ? "观看代表视频" : "Watch Reel"),
     bookingLabel: lang === "cn" ? "预约项目评估" : "Book Assessment",
     bookingUrl: "/booking",
   };

@@ -1,6 +1,5 @@
 import HeroSection from "../components/home/HeroSection";
-import CredentialsSection from "../components/home/CredentialsSection";
-import HomeMobileCertificates from "../components/home/HomeMobileCertificates";
+import HomeProfileSection from "../components/home/HomeProfileSection";
 import ServicePreview from "../components/home/ServicePreview";
 import FeaturedCases from "../components/home/FeaturedCases";
 import VideoHighlights from "../components/home/VideoHighlights";
@@ -12,8 +11,8 @@ import SectionTitle from "../components/ui/SectionTitle";
 import { useLanguage } from "../context/LanguageContext";
 
 /**
- * Round 7.3 homepage DOM order (PC visual = source order):
- * Hero → credentials → certificates(mobile) → live cases → mixing cases
+ * Round 7.4 homepage DOM order (PC visual = source order):
+ * Hero → 01 profile+certs → live cases → mixing cases
  * → video → workflow → sound check → services → conversion CTA
  *
  * Mobile visual order is controlled by CSS flex order in mobile.css.
@@ -26,18 +25,10 @@ export default function HomePage() {
       <HeroSection />
       <div className="home-sections-flow">
         <section
-          className="section container section-reveal home-section home-section--credentials-text home-mobile-hide"
-          id="credentials"
+          className="section container section-reveal home-section home-section--profile"
+          id="profile"
         >
-          <CredentialsSection />
-        </section>
-
-        <section
-          className="section container section-reveal home-section home-section--certificates mobile-only-block"
-          id="home-certificates"
-          aria-label={lang === "cn" ? "专业证书" : "Professional certificates"}
-        >
-          <HomeMobileCertificates />
+          <HomeProfileSection />
         </section>
 
         <section

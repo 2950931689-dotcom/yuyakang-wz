@@ -10,6 +10,44 @@ export const CREDENTIALS_SUBTITLE = {
   en: "Built on recording engineering, system design and live sound experience for venues and audio projects.",
 };
 
+/** Homepage 01 — short engineer profile (full bio stays on About). */
+export const HOME_PROFILE_SUBTITLE = {
+  cn: "现场调音 · 系统工程 · 录音与后期混音",
+  en: "Live sound · System engineering · Recording & mixing",
+};
+
+export const HOME_PROFILE_INTRO = {
+  cn: "余雅康，dBsource 音响系统工程师，中国录音师协会会员，录音技术专业背景，持有初级录音师、华汇 DiGiCo 高级技术培训与 VOS 音响系统工程师认证。工作覆盖现场扩声、FOH / Monitor / OB 调音、系统测量调试、录音与后期混音，能够从音乐制作、录音到现场扩声系统搭建中理解声音的完整流程。",
+  en: "Yu Yakang is a dBsource sound system engineer and a member of the China Recording Engineers Association, with a recording technology background. He holds Junior Recording Engineer, Huahui DiGiCo Advanced Technical Training, and VOS Sound System Engineer certifications. His work covers live reinforcement, FOH / Monitor / OB mixing, system measurement and tuning, recording and post-production mixing — following the full path from music production and tracking through to live sound system delivery.",
+};
+
+export const HOME_PROFILE_ROLES = {
+  cn: ["dBsource 音响系统工程师", "现场调音师", "后期混音师", "音响系统工程师"],
+  en: [
+    "dBsource Sound System Engineer",
+    "Live Sound Engineer",
+    "Mixing Engineer",
+    "System Engineer",
+  ],
+};
+
+export const HOME_PROFILE_QUALIFICATIONS = {
+  cn: [
+    "中国录音师协会会员",
+    "录音技术专业",
+    "初级录音师证书",
+    "华汇 DiGiCo 高级技术培训",
+    "VOS 认证音响系统工程师",
+  ],
+  en: [
+    "China Recording Engineers Association",
+    "Recording Technology Background",
+    "Junior Recording Engineer",
+    "Huahui DiGiCo Advanced Training",
+    "VOS Certified Sound System Engineer",
+  ],
+};
+
 export const ENGINEERING_TAGS = [
   "CERTIFIED",
   "SYSTEM ENGINEER",
