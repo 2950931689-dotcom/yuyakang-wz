@@ -44,8 +44,14 @@ export default function MediaLightbox() {
     <div className="lightbox open" role="dialog" aria-modal="true" aria-label={title || "Media preview"}>
       <button type="button" className="lightbox__backdrop" aria-label="Close" onClick={closeLightbox} />
       <div className="lightbox__panel">
-        <button type="button" className="lightbox__close" aria-label="Close" onClick={closeLightbox}>
-          <X size={20} strokeWidth={1.5} />
+        <button
+          type="button"
+          className="lightbox__close"
+          aria-label={lang === "cn" ? "关闭" : "Close"}
+          onClick={closeLightbox}
+        >
+          <X size={18} strokeWidth={1.75} />
+          <span className="lightbox__close-label">{lang === "cn" ? "关闭" : "Close"}</span>
         </button>
 
         {hasNav && (

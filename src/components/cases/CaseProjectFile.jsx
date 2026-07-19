@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Play } from "lucide-react";
-import { t } from "../../lib/content";
+import { getCaseImages, t } from "../../lib/content";
 import { buildCaseVideoItem } from "../../lib/media";
 import { useMediaLightbox } from "../../context/MediaLightboxContext";
 import CaseGallery from "./CaseGallery";
@@ -76,9 +76,8 @@ function MediaRack({ caseItem, content, lang }) {
   const { openLightbox } = useMediaLightbox();
   const videoItem = buildCaseVideoItem(caseItem, lang);
   const hasVideo = Boolean(videoItem);
-  const hasGallery = Array.isArray(caseItem?.gallery) && caseItem.gallery.length > 0;
-  const hasCover = Boolean(caseItem?.coverImage || caseItem?.imageUrl);
-  const hasPhotos = hasGallery || hasCover;
+  const photoCount = getCaseImages(caseItem).length;
+  const hasPhotos = photoCount > 0;
   const hasAudio = Boolean(caseItem?.audioUrl);
   let slotIndex = 0;
 
