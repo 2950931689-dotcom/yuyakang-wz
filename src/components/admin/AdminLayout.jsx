@@ -7,9 +7,10 @@ import AdminToast from "./AdminToast";
 const MOBILE_LINKS = [
   ["/admin", "仪表盘"],
   ["/admin/hero", "首页视频"],
-  ["/admin/location", "所在地"],
-  ["/admin/media", "媒体管理"],
-  ["/admin/bookings", "预约管理"],
+  ["/admin/home-sections", "首页文案"],
+  ["/admin/cases", "案例"],
+  ["/admin/media", "媒体"],
+  ["/admin/bookings", "预约"],
 ];
 
 export default function AdminLayout() {

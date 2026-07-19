@@ -1,13 +1,14 @@
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { t } from "../../lib/content";
-import { getHomeSoundIssues } from "../../lib/cmsBinding";
+import { getHomeSection, getHomeSoundIssues } from "../../lib/cmsBinding";
 import SectionTitle from "../ui/SectionTitle";
 
 export default function SoundIssueSection() {
   const { content } = useContent();
   const { lang } = useLanguage();
   const issues = getHomeSoundIssues(content);
+  const section = getHomeSection(content, "soundCheck");
 
   if (!issues.length) return null;
 
@@ -15,13 +16,9 @@ export default function SoundIssueSection() {
     <div className="sound-check">
       <SectionTitle
         sectionIndex={6}
-        eyebrow="SOUND CHECK"
-        title={lang === "cn" ? "现场声音问题诊断" : "Sound Issue Diagnostics"}
-        subtitle={
-          lang === "cn"
-            ? "常见现场问题速览，便于沟通前快速对照可能成因。"
-            : "A quick checklist of common on-site issues and likely causes."
-        }
+        eyebrow={t(section.eyebrow, lang) || "SOUND CHECK"}
+        title={t(section.title, lang)}
+        subtitle={t(section.subtitle, lang)}
       />
       <div className="sound-check__grid">
         {issues.map((issue, index) => (

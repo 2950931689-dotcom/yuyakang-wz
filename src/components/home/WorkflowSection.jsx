@@ -1,13 +1,14 @@
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { t } from "../../lib/content";
-import { getHomeWorkflow } from "../../lib/cmsBinding";
+import { getHomeSection, getHomeWorkflow } from "../../lib/cmsBinding";
 import SectionTitle from "../ui/SectionTitle";
 
 export default function WorkflowSection() {
   const { content } = useContent();
   const { lang } = useLanguage();
   const steps = getHomeWorkflow(content);
+  const section = getHomeSection(content, "workflow");
 
   if (!steps.length) return null;
 
@@ -15,13 +16,9 @@ export default function WorkflowSection() {
     <div className="workflow-section">
       <SectionTitle
         sectionIndex={5}
-        eyebrow="WORKFLOW"
-        title={lang === "cn" ? "合作流程" : "Workflow"}
-        subtitle={
-          lang === "cn"
-            ? "从沟通需求到现场调试 / 混音制作，再到交付复盘的协作路径。"
-            : "From briefing through on-site tuning or mix production to delivery review."
-        }
+        eyebrow={t(section.eyebrow, lang) || "WORKFLOW"}
+        title={t(section.title, lang)}
+        subtitle={t(section.subtitle, lang)}
       />
       <ol className="workflow-cue">
         {steps.map((step, index) => (

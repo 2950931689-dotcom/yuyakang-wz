@@ -1,4 +1,8 @@
 import mockData from "../data/site-content.mock.json";
+import {
+  DEFAULT_HOME_SECTIONS,
+  deepMergeHomeSections,
+} from "./homeSectionsDefaults";
 
 const DEFAULT_SITE_NAME = {
   cn: "YU YAKANG AUDIO",
@@ -71,6 +75,14 @@ export function normalizeContent(raw) {
       ...asObject(mockData.i18n),
       ...asObject(source.i18n),
     },
+    tutorialSection: {
+      ...asObject(mockData.tutorialSection),
+      ...asObject(source.tutorialSection),
+    },
+    homeSections: deepMergeHomeSections(
+      deepMergeHomeSections(DEFAULT_HOME_SECTIONS, asObject(mockData.homeSections)),
+      asObject(source.homeSections)
+    ),
     location: source.location ?? mockData.location,
     serviceArea: source.serviceArea ?? mockData.serviceArea,
     display: {

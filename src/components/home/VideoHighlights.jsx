@@ -1,98 +1,362 @@
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
+import { getHomeSection } from "../../lib/cmsBinding";
 import {
+  getDouyinUrl,
   getFeaturedVideos,
-  getOfficialDouyinUrl,
   t,
 } from "../../lib/content";
+import { resolveUploadUrl } from "../../lib/api";
+import { MOTION, openExternalAfterLaunch, prefersReducedMotion } from "../../lib/motion";
 import ExternalLinkButton from "../ui/ExternalLinkButton";
+import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 
-function buildPlatformEntries(content, lang) {
+/** Preview framework — mix of photo / video card shells until CMS is filled. */
+const PREVIEW_COVER_FRAMEWORK = [
+  { id: "preview-01", mediaType: "image", title: { cn: "照片卡片 01", en: "Photo 01" }, index: "01" },
+  { id: "preview-02", mediaType: "video", title: { cn: "视频卡片 02", en: "Video 02" }, index: "02" },
+  { id: "preview-03", mediaType: "image", title: { cn: "照片卡片 03", en: "Photo 03" }, index: "03" },
+  { id: "preview-04", mediaType: "video", title: { cn: "视频卡片 04", en: "Video 04" }, index: "04" },
+  { id: "preview-05", mediaType: "image", title: { cn: "照片卡片 05", en: "Photo 05" }, index: "05" },
+  { id: "preview-06", mediaType: "video", title: { cn: "视频卡片 06", en: "Video 06" }, index: "06" },
+];
+
+function buildPlatformEntries(content, lang, section) {
   const social = content?.socialLinks ?? {};
-  const entries = [];
+  const wechatCopy = section.wechat ?? {};
+  const douyinCopy = section.douyin ?? {};
 
-  const wechatUrl = String(social.wechatVideoUrl || "").trim();
-  if (wechatUrl) {
-    entries.push({
-      id: "platform-wechat",
-      platform: lang === "cn" ? "视频号" : "WeChat Channel",
-      title: lang === "cn" ? "视频号主页" : "WeChat Channel Home",
-      description:
-        lang === "cn"
-          ? "查看现场调音、系统调试、项目记录与声音相关内容。"
-          : "Live sound, system tuning and project notes on WeChat Channels.",
-      href: wechatUrl,
-      cta: lang === "cn" ? "打开视频号主页" : "Open WeChat Channel",
-    });
-  }
-
-  const douyinUrl = getOfficialDouyinUrl(social);
-  if (douyinUrl) {
-    entries.push({
+  return [
+    {
       id: "platform-douyin",
-      platform: lang === "cn" ? "抖音" : "Douyin",
-      title: lang === "cn" ? "抖音主页" : "Douyin Profile",
+      platform: t(douyinCopy.platform, lang) || (lang === "cn" ? "抖音" : "Douyin"),
+      title: t(douyinCopy.title, lang) || (lang === "cn" ? "抖音主页" : "Douyin Profile"),
       description:
-        lang === "cn"
+        t(douyinCopy.description, lang) ||
+        (lang === "cn"
           ? "查看现场调音、系统调试、项目记录与声音相关内容。"
-          : "Live sound, system tuning and project notes on Douyin.",
-      href: douyinUrl,
-      cta: lang === "cn" ? "打开抖音主页" : "Open Douyin Profile",
-    });
-  }
-
-  return entries;
+          : "Live sound, system tuning and project notes on Douyin."),
+      href: String(getDouyinUrl(social) || "").trim(),
+      cta: t(douyinCopy.cta, lang) || (lang === "cn" ? "打开抖音主页" : "Open Douyin Profile"),
+    },
+    {
+      id: "platform-wechat",
+      platform: t(wechatCopy.platform, lang) || (lang === "cn" ? "视频号" : "WeChat Channel"),
+      title: t(wechatCopy.title, lang) || (lang === "cn" ? "视频号主页" : "WeChat Channel Home"),
+      description:
+        t(wechatCopy.description, lang) ||
+        (lang === "cn"
+          ? "查看现场调音、系统调试、项目记录与声音相关内容。"
+          : "Live sound, system tuning and project notes on WeChat Channels."),
+      href: String(social.wechatVideoUrl || "").trim(),
+      cta: t(wechatCopy.cta, lang) || (lang === "cn" ? "打开视频号主页" : "Open WeChat Channel"),
+    },
+  ];
 }
 
-function platformLabel(platform, lang) {
-  const key = String(platform || "").toLowerCase();
-  if (key.includes("douyin") || key.includes("抖音")) {
-    return lang === "cn" ? "抖音" : "Douyin";
+function mediaSrc(url) {
+  if (!url) return "";
+  return url.startsWith("/uploads/") ? resolveUploadUrl(url) : url;
+}
+
+function getCoverVideos(content) {
+  return getFeaturedVideos(content).filter((item) => {
+    const hasImage = Boolean(String(item.coverImage || "").trim());
+    const hasVideo = Boolean(String(item.previewVideo || "").trim());
+    return hasImage || hasVideo;
+  });
+}
+
+function resolveMediaType(item) {
+  if (item.mediaType === "video" || item.mediaType === "image") return item.mediaType;
+  if (String(item.previewVideo || "").trim()) return "video";
+  return "image";
+}
+
+function buildMarqueeTrack(items) {
+  if (!items.length) return [];
+  let unit = [...items];
+  while (unit.length < 6) {
+    unit = unit.concat(items);
   }
-  if (key.includes("wechat") || key.includes("视频号")) {
-    return lang === "cn" ? "视频号" : "WeChat Channel";
+  return [
+    ...unit.map((item, i) => ({ ...item, _key: `a-${i}-${item.id || item.url || i}` })),
+    ...unit.map((item, i) => ({ ...item, _key: `b-${i}-${item.id || item.url || i}` })),
+  ];
+}
+
+function CoverCardMedia({ item, title, isPreview, registerVideo }) {
+  const videoRef = useRef(null);
+  const mediaType = resolveMediaType(item);
+  const cover = mediaSrc(String(item.coverImage || "").trim());
+  const previewVideo = mediaSrc(String(item.previewVideo || "").trim());
+  const indexLabel = item.index || "";
+
+  const setVideoEl = (el) => {
+    videoRef.current = el;
+    registerVideo?.(el);
+  };
+
+  const playPreview = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.play().catch(() => {});
+  };
+
+  const pausePreview = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.pause();
+    try {
+      el.currentTime = 0;
+    } catch {
+      /* ignore */
+    }
+  };
+
+  if (isPreview || (!cover && !previewVideo)) {
+    return (
+      <div
+        className={`video-cover-marquee__placeholder video-cover-marquee__placeholder--${mediaType}`}
+        aria-hidden="true"
+      >
+        <span className="video-cover-marquee__placeholder-code">{indexLabel || "CARD"}</span>
+        <span className="video-cover-marquee__placeholder-mark">
+          {mediaType === "video" ? "VIDEO" : "PHOTO"}
+        </span>
+      </div>
+    );
   }
-  return t(platform, lang) || String(platform || "");
+
+  if (mediaType === "video" && previewVideo) {
+    return (
+      <div
+        className="video-cover-marquee__media"
+        onMouseEnter={playPreview}
+        onMouseLeave={pausePreview}
+        onFocus={playPreview}
+        onBlur={pausePreview}
+      >
+        <video
+          ref={setVideoEl}
+          className="video-cover-marquee__video"
+          src={previewVideo}
+          poster={cover || undefined}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={title}
+        />
+        <span className="video-cover-marquee__badge" aria-hidden="true">
+          VIDEO
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="video-cover-marquee__media">
+      <img
+        src={cover || previewVideo}
+        alt={title}
+        className="video-cover-marquee__img"
+        loading="lazy"
+        draggable={false}
+      />
+      <span className="video-cover-marquee__badge video-cover-marquee__badge--photo" aria-hidden="true">
+        PHOTO
+      </span>
+    </div>
+  );
+}
+
+function CoverMarquee({ items, lang, isPreview }) {
+  const track = useMemo(() => buildMarqueeTrack(items), [items]);
+  const [launchingKey, setLaunchingKey] = useState(null);
+  const videoRefs = useRef(new Map());
+
+  const stopPreviewOnCard = useCallback((key) => {
+    const el = videoRefs.current.get(key);
+    if (!el) return;
+    el.pause();
+    try {
+      el.currentTime = 0;
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const handleCoverOpen = useCallback(
+    (event, href, key) => {
+      event.preventDefault();
+      if (!href || launchingKey) return;
+      stopPreviewOnCard(key);
+      setLaunchingKey(key);
+      const delay = prefersReducedMotion() ? 0 : MOTION.launchMs;
+      openExternalAfterLaunch(href, { delayMs: delay }).finally(() => {
+        setLaunchingKey(null);
+      });
+    },
+    [launchingKey, stopPreviewOnCard]
+  );
+
+  if (!track.length) return null;
+
+  const durationSec = Math.max(32, Math.max(items.length, 6) * 6);
+  const locked = Boolean(launchingKey);
+
+  return (
+    <div
+      className={[
+        "video-cover-marquee",
+        isPreview && "video-cover-marquee--preview",
+        locked && "video-cover-marquee--locked",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      aria-label={
+        isPreview
+          ? lang === "cn"
+            ? "封面滚动预览框架"
+            : "Cover marquee preview framework"
+          : lang === "cn"
+            ? "抖音视频封面"
+            : "Douyin video covers"
+      }
+    >
+      <div
+        className="video-cover-marquee__viewport"
+        style={{ "--marquee-duration": `${durationSec}s` }}
+      >
+        <ul className="video-cover-marquee__track">
+          {track.map((item) => {
+            const href = String(item.url || "").trim();
+            const title =
+              t(item.title, lang) ||
+              (lang === "cn" ? "抖音视频" : "Douyin video");
+
+            const cardInner = (
+              <>
+                <CoverCardMedia
+                  item={item}
+                  title={title}
+                  isPreview={isPreview}
+                  registerVideo={(el) => {
+                    if (el) videoRefs.current.set(item._key, el);
+                    else videoRefs.current.delete(item._key);
+                  }}
+                />
+                <span className="video-cover-marquee__shade" aria-hidden="true" />
+                <span className="video-cover-marquee__label">{title}</span>
+              </>
+            );
+
+            return (
+              <li key={item._key} className="video-cover-marquee__item">
+                {href && !isPreview ? (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={[
+                      "video-cover-marquee__link",
+                      launchingKey === item._key && "is-launching",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    title={title}
+                    onClick={(e) => handleCoverOpen(e, href, item._key)}
+                  >
+                    {cardInner}
+                  </a>
+                ) : (
+                  <div className="video-cover-marquee__link video-cover-marquee__link--static">
+                    {cardInner}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      {isPreview && (
+        <p className="video-cover-marquee__preview-note">
+          {lang === "cn"
+            ? "预览框架 · 支持照片 / 视频卡片 · 后台可上传替换"
+            : "Preview · Photo / video cards · Replace in admin"}
+        </p>
+      )}
+    </div>
+  );
 }
 
 /**
- * Homepage 04 — platform home entries + optional manual featured videos.
- * No scraping, embeds, or fabricated links.
+ * Homepage 04: cover marquee (photo or video preview) + platform text cards.
  */
 export default function VideoHighlights() {
   const { content } = useContent();
   const { lang } = useLanguage();
+  const [launchingPlatform, setLaunchingPlatform] = useState(null);
 
   if (!content) return null;
 
-  const platforms = buildPlatformEntries(content, lang);
-  const featured = getFeaturedVideos(content);
+  const section = getHomeSection(content, "videoHighlights");
+  const platforms = buildPlatformEntries(content, lang, section);
+  const realCovers = getCoverVideos(content);
+  const isPreview = realCovers.length === 0;
+  const covers = isPreview ? PREVIEW_COVER_FRAMEWORK : realCovers;
 
-  if (!platforms.length && !featured.length) return null;
+  const handlePlatformOpen = (event, href, id) => {
+    if (!href?.trim() || launchingPlatform) {
+      event.preventDefault();
+      return;
+    }
+    event.preventDefault();
+    setLaunchingPlatform(id);
+    const delay = prefersReducedMotion() ? 0 : MOTION.launchMs;
+    openExternalAfterLaunch(href, { delayMs: delay }).finally(() => {
+      setLaunchingPlatform(null);
+    });
+  };
 
   return (
-    <section
-      className="section container section-reveal home-section home-section--video-highlights"
+    <Reveal
+      as="section"
+      className="section container home-section home-section--video-highlights"
       id="video-highlights"
-      aria-label={lang === "cn" ? "抖音 / 视频号" : "Social video"}
+      delay={40}
+      aria-label={t(section.title, lang) || (lang === "cn" ? "抖音 / 视频号" : "Social video")}
     >
       <div className="video-highlights">
         <SectionTitle
           sectionIndex={4}
-          eyebrow="SOCIAL VIDEO"
-          title={lang === "cn" ? "抖音 / 视频号" : "Douyin / WeChat Channel"}
-          subtitle={
-            lang === "cn"
-              ? "通过短视频平台查看更多现场调音、系统搭建、声音调试与项目记录。"
-              : "Short-form platforms for live sound, system setup and project notes."
-          }
+          eyebrow={t(section.eyebrow, lang) || "SOCIAL VIDEO"}
+          title={t(section.title, lang)}
+          subtitle={t(section.subtitle, lang)}
         />
 
-        {platforms.length > 0 && (
-          <ul className="video-highlights__platforms" aria-label={lang === "cn" ? "平台主页" : "Platform homes"}>
+        <div className="video-highlights__marquee-zone">
+          <CoverMarquee items={covers} lang={lang} isPreview={isPreview} />
+        </div>
+
+        <div className="video-highlights__platform-zone">
+          <ul
+            className="video-highlights__platforms"
+            aria-label={lang === "cn" ? "平台主页" : "Platform homes"}
+          >
             {platforms.map((item) => (
-              <li key={item.id} className="video-highlights__platform-card">
+              <li
+                key={item.id}
+                className={[
+                  "video-highlights__platform-card",
+                  launchingPlatform === item.id && "is-launching",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
                 <span className="video-highlights__platform-badge">{item.platform}</span>
                 <h3 className="video-highlights__title">{item.title}</h3>
                 <p className="video-highlights__desc">{item.description}</p>
@@ -100,62 +364,15 @@ export default function VideoHighlights() {
                   href={item.href}
                   variant="secondary"
                   className="video-highlights__btn"
+                  onClick={(e) => handlePlatformOpen(e, item.href, item.id)}
                 >
                   {item.cta}
                 </ExternalLinkButton>
               </li>
             ))}
           </ul>
-        )}
-
-        {featured.length > 0 && (
-          <ul
-            className="video-highlights__list"
-            aria-label={lang === "cn" ? "精选视频" : "Featured videos"}
-          >
-            {featured.map((item) => {
-              const href = String(item.url || "").trim();
-              const cover = String(item.coverImage || "").trim();
-              const title = t(item.title, lang) || (lang === "cn" ? "精选视频" : "Featured video");
-              const description = t(item.description, lang);
-              return (
-                <li key={item.id || href} className="video-highlights__card">
-                  {cover ? (
-                    <div className="video-highlights__poster-wrap">
-                      <img
-                        src={cover}
-                        alt=""
-                        className="video-highlights__poster"
-                        loading="lazy"
-                      />
-                      <span className="video-highlights__platform">
-                        {platformLabel(item.platform, lang)}
-                      </span>
-                    </div>
-                  ) : (
-                    <span className="video-highlights__platform video-highlights__platform--inline">
-                      {platformLabel(item.platform, lang)}
-                    </span>
-                  )}
-                  <div className="video-highlights__body">
-                    <h3 className="video-highlights__title">{title}</h3>
-                    {description ? (
-                      <p className="video-highlights__desc">{description}</p>
-                    ) : null}
-                    <ExternalLinkButton
-                      href={href}
-                      variant="secondary"
-                      className="video-highlights__btn"
-                    >
-                      {lang === "cn" ? "观看" : "Watch"}
-                    </ExternalLinkButton>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        </div>
       </div>
-    </section>
+    </Reveal>
   );
 }

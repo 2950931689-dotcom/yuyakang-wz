@@ -7,6 +7,7 @@ import {
   getVisibleCertificates,
   getVisibleServices,
   getCaseImages,
+  CASE_PLATES,
   t,
 } from "./content";
 import {
@@ -16,6 +17,10 @@ import {
   HOME_WORKFLOW_STEPS,
   SOUND_ISSUES as HOME_SOUND_ISSUES_FALLBACK,
 } from "./homeContent";
+import {
+  DEFAULT_HOME_SECTIONS,
+  deepMergeHomeSections,
+} from "./homeSectionsDefaults";
 import {
   SIGNAL_IDENTITY_NODES,
   CONTROL_SURFACE_CHANNELS,
@@ -47,6 +52,97 @@ function normalizeBilingual(item, lang) {
   if (item == null) return "";
   if (typeof item === "string") return item;
   return item[lang] ?? item.cn ?? item.en ?? "";
+}
+
+/** Merged homeSections from CMS + defaults. */
+export function getHomeSections(content) {
+  return deepMergeHomeSections(
+    DEFAULT_HOME_SECTIONS,
+    content?.homeSections && typeof content.homeSections === "object"
+      ? content.homeSections
+      : {}
+  );
+}
+
+/** One homepage chrome section (profile, liveCases, …). */
+export function getHomeSection(content, key) {
+  const sections = getHomeSections(content);
+  return sections[key] ?? DEFAULT_HOME_SECTIONS[key] ?? {};
+}
+
+function langList(value, lang, fallbackList) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (value && typeof value === "object") {
+    const list = value[lang] ?? value.cn ?? value.en;
+    if (Array.isArray(list) && list.length) return list.filter(Boolean);
+  }
+  return fallbackList ?? [];
+}
+
+/** Homepage profile block copy. */
+export function getHomeProfileCopy(content, lang = "cn") {
+  const section = getHomeSection(content, "profile");
+  const fb = DEFAULT_HOME_SECTIONS.profile;
+  return {
+    eyebrow: normalizeBilingual(section.eyebrow, lang) || normalizeBilingual(fb.eyebrow, lang),
+    title: normalizeBilingual(section.title, lang) || normalizeBilingual(fb.title, lang),
+    subtitle: normalizeBilingual(section.subtitle, lang) || normalizeBilingual(fb.subtitle, lang),
+    intro: normalizeBilingual(section.intro, lang) || normalizeBilingual(fb.intro, lang),
+    roles: langList(section.roles, lang, fb.roles[lang] || fb.roles.cn),
+    qualifications: langList(
+      section.qualifications,
+      lang,
+      fb.qualifications[lang] || fb.qualifications.cn
+    ),
+  };
+}
+
+/**
+ * Resolve plate chrome for homepage FeaturedCases.
+ * Structural category mapping stays in CASE_PLATES; labels/titles prefer CMS.
+ */
+export function getHomeCasePlateChrome(content, plateId) {
+  const base = CASE_PLATES.find((p) => p.id === plateId) ?? CASE_PLATES[0];
+  const sectionKey = plateId === "mixing" ? "mixingCases" : "liveCases";
+  const section = getHomeSection(content, sectionKey);
+  const fb = DEFAULT_HOME_SECTIONS[sectionKey];
+
+  const cmsBranches = Array.isArray(section.branches) ? section.branches : [];
+  const branches = base.branches.map((branch) => {
+    const override = cmsBranches.find((b) => b.id === branch.id);
+    return {
+      ...branch,
+      label: override?.label ?? branch.label,
+    };
+  });
+
+  return {
+    ...base,
+    homeEyebrow: section.eyebrow ?? fb.eyebrow ?? base.homeEyebrow,
+    homeTitle: section.title ?? fb.title ?? base.homeTitle,
+    homeSubtitle: section.subtitle ?? fb.subtitle ?? base.homeSubtitle,
+    label: section.label ?? fb.label ?? base.label,
+    viewAllLabel: section.viewAllLabel ?? fb.viewAllLabel,
+    defaultBranchId: section.defaultBranchId || base.defaultBranchId,
+    branches,
+  };
+}
+
+/** Booking CTA copy. */
+export function getHomeBookingCtaCopy(content, lang = "cn") {
+  const section = getHomeSection(content, "bookingCta");
+  const fb = DEFAULT_HOME_SECTIONS.bookingCta;
+  return {
+    eyebrow: normalizeBilingual(section.eyebrow, lang) || normalizeBilingual(fb.eyebrow, lang),
+    title: normalizeBilingual(section.title, lang) || normalizeBilingual(fb.title, lang),
+    description:
+      normalizeBilingual(section.description, lang) || normalizeBilingual(fb.description, lang),
+    hint: normalizeBilingual(section.hint, lang) || normalizeBilingual(fb.hint, lang),
+    primaryCta:
+      normalizeBilingual(section.primaryCta, lang) || normalizeBilingual(fb.primaryCta, lang),
+    secondaryCta:
+      normalizeBilingual(section.secondaryCta, lang) || normalizeBilingual(fb.secondaryCta, lang),
+  };
 }
 
 /** Profile name, role, status for Hero / About. */

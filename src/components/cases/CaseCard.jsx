@@ -5,10 +5,9 @@ import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getCaseCover, getCategoryLabel, getCaseProjectNumber, t } from "../../lib/content";
 import { getCaseKeywordTags } from "../../lib/homeContent";
+import { MOTION, prefersReducedMotion } from "../../lib/motion";
 import Tag from "../ui/Tag";
 import MediaFallback from "../ui/MediaFallback";
-
-const OPEN_DELAY_MS = 220;
 
 export default function CaseCard({ caseItem, projectNumber, featuredLayout = false }) {
   const { content } = useContent();
@@ -29,9 +28,10 @@ export default function CaseCard({ caseItem, projectNumber, featuredLayout = fal
       e.preventDefault();
       if (isOpening) return;
       setIsOpening(true);
+      const delay = prefersReducedMotion() ? 0 : MOTION.launchMs;
       window.setTimeout(() => {
         navigate(href);
-      }, OPEN_DELAY_MS);
+      }, delay);
     },
     [href, navigate, isOpening]
   );

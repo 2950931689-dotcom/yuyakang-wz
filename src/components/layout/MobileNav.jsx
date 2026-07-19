@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getNavLabel, getSiteDisplayName } from "../../lib/content";
+import { originFromEvent } from "../../lib/motion";
 import LanguageSwitch from "./LanguageSwitch";
 import ThemeSwitch from "./ThemeSwitch";
 import LogoLink from "./LogoLink";
@@ -67,20 +68,31 @@ export function MobileCta() {
   const { content } = useContent();
   const { lang } = useLanguage();
   const [qrOpen, setQrOpen] = useState(false);
+  const [qrOrigin, setQrOrigin] = useState(null);
+
+  const openQr = useCallback((event) => {
+    setQrOrigin(originFromEvent(event));
+    setQrOpen(true);
+  }, []);
 
   if (!content) return null;
 
   return (
     <>
       <div className="mobile-cta">
-        <button type="button" className="mobile-cta__btn" onClick={() => setQrOpen(true)}>
+        <button type="button" className="mobile-cta__btn" onClick={openQr}>
           {lang === "cn" ? "微信咨询" : "WeChat"}
         </button>
         <Link to="/booking" className="mobile-cta__btn mobile-cta__btn--primary">
           {lang === "cn" ? "提交需求" : "Book"}
         </Link>
       </div>
-      <WechatQrModal open={qrOpen} onClose={() => setQrOpen(false)} content={content} />
+      <WechatQrModal
+        open={qrOpen}
+        onClose={() => setQrOpen(false)}
+        content={content}
+        originRect={qrOrigin}
+      />
     </>
   );
 }

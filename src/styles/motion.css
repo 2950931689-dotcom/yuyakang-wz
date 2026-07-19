@@ -1,0 +1,206 @@
+/**
+ * Feel language — Soft Lift / Signal Punch / Expand Open / Scroll Reveal
+ * Rules: one open layer at a time; route enter XOR scroll reveal; auto motion yields to click.
+ */
+
+/* —— Soft Lift / Signal Punch utilities —— */
+.feel-lift {
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-normal) var(--motion-ease),
+    opacity var(--motion-normal) var(--motion-ease);
+}
+
+.feel-lift:hover {
+  transform: translateY(-1px);
+}
+
+.feel-lift:active {
+  transform: translateY(0) scale(var(--motion-scale-press));
+  transition-duration: var(--motion-press);
+  transition-timing-function: var(--motion-ease-press);
+}
+
+.feel-expand-source:active {
+  border-color: var(--color-line-strong);
+  transform: scale(var(--motion-scale-press));
+  transition-duration: var(--motion-press);
+  transition-timing-function: var(--motion-ease-press);
+}
+
+/* Punch pulse lives on .btn.feel-punch / .signal-button :active in components.css */
+
+/* —— Modal Expand Open —— */
+.modal--expand-open .modal__backdrop {
+  transition: opacity var(--motion-overlay-expand) var(--motion-ease);
+  transition-delay: 0ms;
+}
+
+.modal--expand-open.modal--enter .modal__backdrop {
+  transition-delay: 50ms;
+}
+
+.modal--expand-open.modal--leave.open .modal__backdrop {
+  opacity: 0;
+  transition: opacity var(--motion-overlay-collapse) var(--motion-ease);
+  transition-delay: 0ms;
+}
+
+.modal--expand-open .modal__panel {
+  transform-origin: center center;
+  will-change: transform, opacity;
+  transition: none;
+}
+
+.modal--expand-open.modal--settled .modal__panel {
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+}
+
+.modal--expand-open.modal--reduced .modal__backdrop {
+  transition: opacity var(--motion-fast) ease;
+  transition-delay: 0ms;
+}
+
+.modal--expand-open.modal--reduced .modal__panel {
+  transition: opacity var(--motion-fast) ease;
+  transform: none;
+}
+
+/* —— Cover marquee Press→Launch —— */
+.video-cover-marquee__link:not(.video-cover-marquee__link--static):active {
+  transform: scale(var(--motion-scale-press));
+  border-color: var(--color-line-strong);
+  transition-duration: var(--motion-press);
+  transition-timing-function: var(--motion-ease-press);
+}
+
+.video-cover-marquee__link.is-launching {
+  transform: scale(var(--motion-scale-launch));
+  opacity: 0.72;
+  border-color: var(--color-line-strong);
+  pointer-events: none;
+  transition:
+    transform var(--motion-launch) var(--motion-ease),
+    opacity var(--motion-launch) var(--motion-ease),
+    border-color var(--motion-press) var(--motion-ease-press);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.36);
+}
+
+.video-cover-marquee--locked .video-cover-marquee__track,
+body.modal-open .video-cover-marquee__track {
+  animation-play-state: paused;
+}
+
+.video-cover-marquee__viewport:hover {
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.18));
+}
+
+/* Platform text cards — Press→Launch */
+.video-highlights__platform-card {
+  transition:
+    transform var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out);
+}
+
+.video-highlights__platform-card.is-launching {
+  transform: translateY(-1px) scale(1.01);
+  border-color: var(--color-line-strong);
+}
+
+.video-highlights__platform-card .external-link-btn:active {
+  transform: scale(var(--motion-scale-press));
+}
+
+/* —— Case card open continuity —— */
+.case-card {
+  transition:
+    transform var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out),
+    opacity var(--motion-launch) var(--motion-ease);
+}
+
+.case-card:hover {
+  transform: translateY(-2px);
+}
+
+.case-card:active {
+  transform: translateY(0) scale(var(--motion-scale-press));
+  transition-duration: var(--motion-press);
+  transition-timing-function: var(--motion-ease-press);
+}
+
+.case-card.is-opening {
+  transform: translateY(-1px) scale(1.01);
+  opacity: 0.88;
+  border-color: var(--color-line-strong);
+  pointer-events: none;
+}
+
+.case-card.is-opening .case-card__body {
+  opacity: 0.55;
+  transition: opacity var(--motion-launch) var(--motion-ease);
+}
+
+.case-card.is-opening .case-card__media img {
+  transform: scale(1.03);
+}
+
+/* —— Scroll Reveal (XOR with route consoleModuleIn) —— */
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--motion-normal) var(--motion-ease),
+    transform var(--motion-normal) var(--motion-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal--eager,
+.reveal.is-revealed.reveal--eager {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .feel-lift:hover {
+    transform: none;
+  }
+
+  .feel-lift:active {
+    transform: scale(var(--motion-scale-press));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal--expand-open .modal__backdrop,
+  .modal--expand-open .modal__panel,
+  .video-cover-marquee__link.is-launching,
+  .case-card.is-opening,
+  .case-card.is-opening .case-card__body,
+  .case-card.is-opening .case-card__media img,
+  .reveal {
+    transition: opacity 0.01ms !important;
+    transform: none !important;
+  }
+
+  .reveal {
+    opacity: 1;
+  }
+
+  .video-cover-marquee__viewport:hover {
+    filter: none;
+  }
+
+  .feel-lift:hover,
+  .feel-lift:active {
+    transform: none;
+  }
+}

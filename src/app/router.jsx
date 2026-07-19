@@ -25,6 +25,7 @@ import AdminTutorialPage from "../pages/admin/AdminTutorialPage";
 import AdminSocialPage from "../pages/admin/AdminSocialPage";
 import AdminSeoPage from "../pages/admin/AdminSeoPage";
 import AdminSiteModulesPage from "../pages/admin/AdminSiteModulesPage";
+import AdminHomeSectionsPage from "../pages/admin/AdminHomeSectionsPage";
 import AdminCommonToolsPage from "../pages/admin/AdminCommonToolsPage";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
 
@@ -48,6 +49,7 @@ export default function AppRouter() {
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="hero" element={<AdminHeroPage />} />
+              <Route path="home-sections" element={<AdminHomeSectionsPage />} />
               <Route path="location" element={<AdminLocationPage />} />
               <Route path="profile" element={<AdminProfilePage />} />
               <Route path="services" element={<AdminServicesPage />} />

@@ -1,37 +1,22 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { getHomeLiveCases, getHomeMixingCases } from "../../lib/content";
+import { getHomeCasePlateChrome } from "../../lib/cmsBinding";
+import { getHomePlateCases, t } from "../../lib/content";
 import CaseCard from "../cases/CaseCard";
 import SectionTitle from "../ui/SectionTitle";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
 
-const SECTION_COPY = {
-  live: {
-    eyebrow: { cn: "LIVE CASES", en: "LIVE CASES" },
-    title: { cn: "现场 Live 精选案例", en: "Field Live Works" },
-    subtitle: {
-      cn: "从 Livehouse、巡演系统到活动扩声，记录真实现场中的系统搭建、测量调试与现场调音工作。",
-      en: "Livehouse, tour systems and event reinforcement — real on-site build, measurement and live mixing.",
-    },
-    viewAll: { cn: "查看全部案例", en: "View All Works" },
-    empty: { cn: "暂无现场 Live 案例", en: "No live cases yet" },
-  },
-  mixing: {
-    eyebrow: { cn: "MIXING WORKS", en: "MIXING WORKS" },
-    title: { cn: "后期 / 混音案例", en: "Post-Production Audio" },
-    subtitle: {
-      cn: "记录录音、编辑、修唱、混音与声音后期相关作品。",
-      en: "Recording, editing, vocal production, mixing and post-production audio works.",
-    },
-    viewAll: { cn: "查看混音相关案例", en: "View Mixing Works" },
-    empty: { cn: "暂无后期 / 混音案例", en: "No mixing cases yet" },
-  },
+const VARIANT_TO_PLATE = {
+  live: "live",
+  mixing: "mixing",
 };
 
 /**
- * Homepage case block — Round 7.3.
+ * Homepage case block — two plates with inner branch tabs.
+ * Chrome from CMS homeSections.liveCases / mixingCases.
  * @param {"live" | "mixing"} variant
  */
 export default function FeaturedCases({
@@ -41,49 +26,74 @@ export default function FeaturedCases({
 }) {
   const { content } = useContent();
   const { lang } = useLanguage();
+  const plateId = VARIANT_TO_PLATE[variant] ?? "live";
+  const plate = getHomeCasePlateChrome(content, plateId);
+  const [branchId, setBranchId] = useState(plate.defaultBranchId);
 
-  if (!content) return null;
+  const cases = useMemo(() => {
+    if (!content) return [];
+    return getHomePlateCases(content, plateId, branchId);
+  }, [content, plateId, branchId]);
 
-  const copy = SECTION_COPY[variant] ?? SECTION_COPY.live;
-  const cases =
-    variant === "mixing" ? getHomeMixingCases(content) : getHomeLiveCases(content);
+  if (!content || !plate) return null;
 
-  if (!cases.length) {
-    return (
-      <div className={`featured-cases featured-cases--${variant}`}>
-        <SectionTitle
-          sectionIndex={sectionIndex}
-          eyebrow={copy.eyebrow[lang] ?? copy.eyebrow.en}
-          title={copy.title[lang] ?? copy.title.cn}
-          subtitle={copy.subtitle[lang] ?? copy.subtitle.cn}
-        />
-        <EmptyState message={copy.empty[lang] ?? copy.empty.cn} />
-      </div>
-    );
-  }
+  const empty =
+    lang === "cn"
+      ? `暂无「${t(plate.branches.find((b) => b.id === branchId)?.label, lang) || "该分支"}」精选案例`
+      : `No featured cases in this branch yet`;
+
+  const viewAllTo = `/cases?plate=${encodeURIComponent(plateId)}&branch=${encodeURIComponent(branchId)}`;
+  const viewAllLabel =
+    t(plate.viewAllLabel, lang) ||
+    (lang === "cn" ? "查看该板块全部案例" : "View All in This Plate");
 
   return (
     <div className={`featured-cases featured-cases--${variant}`}>
       <SectionTitle
         sectionIndex={sectionIndex}
-        eyebrow={copy.eyebrow[lang] ?? copy.eyebrow.en}
-        title={copy.title[lang] ?? copy.title.cn}
-        subtitle={copy.subtitle[lang] ?? copy.subtitle.cn}
+        eyebrow={t(plate.homeEyebrow, lang)}
+        title={t(plate.homeTitle, lang)}
+        subtitle={t(plate.homeSubtitle, lang)}
       />
-      <div className="grid-3">
-        {cases.map((c, i) => (
-          <CaseCard
-            key={c.slug}
-            caseItem={c}
-            projectNumber={String(i + 1).padStart(3, "0")}
-            featuredLayout
-          />
+
+      <div
+        className="case-filter case-filter--branches featured-cases__branches"
+        role="tablist"
+        aria-label={t(plate.label, lang)}
+      >
+        {plate.branches.map((branch) => (
+          <button
+            key={branch.id}
+            type="button"
+            role="tab"
+            aria-selected={branchId === branch.id}
+            className={branchId === branch.id ? "active" : ""}
+            onClick={() => setBranchId(branch.id)}
+          >
+            <span>{t(branch.label, lang)}</span>
+          </button>
         ))}
       </div>
+
+      {!cases.length ? (
+        <EmptyState message={empty} />
+      ) : (
+        <div className="grid-3">
+          {cases.map((c, i) => (
+            <CaseCard
+              key={c.slug}
+              caseItem={c}
+              projectNumber={String(i + 1).padStart(3, "0")}
+              featuredLayout
+            />
+          ))}
+        </div>
+      )}
+
       {showViewAll && (
         <div className="featured-cases__footer">
-          <Button as={Link} to="/cases" variant="secondary">
-            {copy.viewAll[lang] ?? copy.viewAll.cn}
+          <Button as={Link} to={viewAllTo} variant="secondary">
+            {viewAllLabel}
           </Button>
         </div>
       )}

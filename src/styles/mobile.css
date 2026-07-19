@@ -208,6 +208,7 @@
 
   .booking-cta__actions .btn {
     width: 100%;
+    justify-content: center;
   }
 
   .hero__actions {
@@ -873,7 +874,8 @@
 }
 
 .video-highlights__platforms {
-  margin-bottom: var(--space-xl);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .video-highlights__platform-card,

@@ -2,20 +2,21 @@
 
 export const adminRouteText = {
   dashboard: "后台控制台",
-  hero: "首页视频",
+  hero: "01 首页视频",
+  homeSections: "02 首页文案",
+  certificates: "03 证书管理",
+  cases: "04 案例管理",
+  social: "05 封面滚动 / 社媒",
+  siteModules: "06 流程 / 诊断",
+  services: "07 服务管理",
+  tutorial: "08 预约 CTA / 教程",
   location: "所在地 / 服务范围",
-  profile: "个人资料",
-  services: "服务管理",
-  cases: "案例管理",
-  certificates: "证书管理",
+  profile: "个人资料（About）",
   workPhotos: "工作照管理",
-  tutorial: "经验分享 / 教程",
   bookings: "预约管理",
-  social: "社媒 / 联系方式",
+  commonTools: "常用工具",
   seo: "SEO 设置",
   media: "媒体管理",
-  siteModules: "站点模块",
-  commonTools: "常用工具",
 };
 
 export const bookingStatusText = {
@@ -143,20 +144,26 @@ export function heroModeLabel(mode) {
   return heroModeText[mode] ?? mode;
 }
 
+/**
+ * 侧栏顺序对齐首页模块：
+ * Hero → 文案(介绍/案例板块/社媒文案/流程标题/服务/CTA) → 证书 → 案例
+ * → 社媒链接 → 流程步骤/诊断 → 服务 → 预约CTA/教程 → 其余
+ */
 export const ADMIN_ROUTE_LINKS = [
   ["/admin", adminRouteText.dashboard],
   ["/admin/hero", adminRouteText.hero],
-  ["/admin/location", adminRouteText.location],
-  ["/admin/profile", adminRouteText.profile],
-  ["/admin/services", adminRouteText.services],
-  ["/admin/cases", adminRouteText.cases],
+  ["/admin/home-sections", adminRouteText.homeSections],
   ["/admin/certificates", adminRouteText.certificates],
-  ["/admin/work-photos", adminRouteText.workPhotos],
-  ["/admin/tutorial", adminRouteText.tutorial],
+  ["/admin/cases", adminRouteText.cases],
+  ["/admin/social", adminRouteText.social],
   ["/admin/site-modules", adminRouteText.siteModules],
+  ["/admin/services", adminRouteText.services],
+  ["/admin/tutorial", adminRouteText.tutorial],
+  ["/admin/profile", adminRouteText.profile],
+  ["/admin/location", adminRouteText.location],
+  ["/admin/work-photos", adminRouteText.workPhotos],
   ["/admin/common-tools", adminRouteText.commonTools],
   ["/admin/bookings", adminRouteText.bookings],
-  ["/admin/social", adminRouteText.social],
   ["/admin/seo", adminRouteText.seo],
   ["/admin/media", adminRouteText.media],
 ];

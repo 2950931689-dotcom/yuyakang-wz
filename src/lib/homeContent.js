@@ -1,4 +1,4 @@
-/** Homepage-only copy and fallbacks — does not alter CMS JSON schema. */
+/** Homepage-only copy fallbacks when CMS homeSections fields are missing. */
 
 export const HERO_LEAD = {
   cn: "面向 Livehouse、演出现场、系统调试与混音后期的声音解决方案。",

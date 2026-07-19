@@ -135,6 +135,16 @@
   --motion-normal: 220ms;
   --motion-slow: 360ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-press: ease-out;
+
+  /* Expand Open / Press→Launch (feel language) */
+  --motion-press: 80ms;
+  --motion-launch: 200ms;
+  --motion-overlay-expand: 280ms;
+  --motion-overlay-collapse: 160ms;
+  --motion-route: 360ms;
+  --motion-scale-press: 0.98;
+  --motion-scale-launch: 1.04;
   --console-padding: var(--card-padding);
   --console-radius: var(--radius-sm);
   --console-mono-size: 11px;

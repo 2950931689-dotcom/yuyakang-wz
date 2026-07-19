@@ -93,13 +93,18 @@ export default function AdminTutorialPage() {
   return (
     <>
       <AdminTopbar
-        eyebrow="教程"
-        title="经验分享 / 教程"
-        description="区块设置 · 社媒链接 · 标签"
+        eyebrow="08"
+        title="预约 CTA / 经验分享"
+        description="首页 conversion：经验分享区块（预约 CTA 文案在「首页文案」）"
         actions={
-          <Link to="/#tutorials" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost admin-btn--sm admin-mono">
-            预览首页 ↗
-          </Link>
+          <>
+            <Link to="/admin/home-sections" className="admin-btn admin-btn--ghost admin-btn--sm admin-mono">
+              编辑预约 CTA
+            </Link>
+            <Link to="/#conversion" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost admin-btn--sm admin-mono">
+              预览首页 ↗
+            </Link>
+          </>
         }
       />
       <AdminUnsavedGuard when={dirty} />

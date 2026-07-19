@@ -7,7 +7,7 @@
 @keyframes routePageIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(7px);
   }
   to {
     opacity: 1;
@@ -21,8 +21,8 @@
     transform: scaleX(0);
     transform-origin: left center;
   }
-  25% {
-    opacity: 0.28;
+  20% {
+    opacity: 0.16;
   }
   100% {
     opacity: 0;
@@ -73,7 +73,7 @@
 }
 
 .route-transition:not(.route-transition--home) {
-  animation: routePageIn 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: routePageIn var(--motion-route, 360ms) var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 
 .route-transition--home {
@@ -101,7 +101,7 @@
   );
   pointer-events: none;
   z-index: 90;
-  animation: routeScan 780ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: routeScan 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 
 [data-theme="light"] .route-transition__scan {
@@ -125,7 +125,7 @@
   color: var(--console-faint, var(--color-text-muted));
   pointer-events: none;
   z-index: 90;
-  animation: routeStatusFade 620ms ease both;
+  animation: routeStatusFade 420ms ease both;
 }
 
 /* —— Home: exclude hero video from page fade —— */
@@ -142,7 +142,7 @@
 
 /* —— Case detail hero —— */
 .route-transition--case-detail .case-detail-hero {
-  animation: routeCaseHeroIn 520ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: routeCaseHeroIn 360ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 
 /* —— Disable legacy per-page fade when route transition active —— */
@@ -154,135 +154,81 @@
   transform: none;
 }
 
-/* —— Module reveal targets —— */
-.route-transition .console-panel,
-.route-transition .console-rack,
-.route-transition .media-rack,
-.route-transition .patch-bay,
-.route-transition .about-section,
-.route-transition .contact-section,
-.route-transition .case-file__section,
-.route-transition .case-detail-page__content,
-.route-transition .booking-page__inner,
-.route-transition section.section,
-.route-transition .cases-grid,
-.route-transition .not-found {
-  animation: consoleModuleIn 460ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+/* Scroll reveal XOR route module enter — .reveal owns opacity/transform */
+.route-transition .reveal,
+.route-transition .reveal.about-section,
+.route-transition .reveal.contact-section,
+.route-transition .reveal.service-page-card,
+.route-transition .reveal.case-file__section {
+  animation: none !important;
 }
 
-/* Home sections below hero */
+/* —— Module reveal targets (route enter; skipped when .reveal present) —— */
+.route-transition .console-panel:not(.reveal),
+.route-transition .console-rack:not(.reveal),
+.route-transition .media-rack:not(.reveal),
+.route-transition .patch-bay:not(.reveal),
+.route-transition .case-detail-page__content:not(.reveal),
+.route-transition .booking-page__inner:not(.reveal),
+.route-transition .cases-grid:not(.reveal),
+.route-transition .not-found:not(.reveal),
+.route-transition .service-page-list:not(.reveal) {
+  animation: consoleModuleIn 360ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+/* Home: hero excluded; below-fold uses scroll Reveal on .home-section */
+.route-transition--home .home-sections-flow > .home-section {
+  animation: none;
+}
+
 .route-transition--home .route-transition__content > section {
-  animation: consoleModuleIn 460ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: none;
 }
 
-.route-transition--home .route-transition__content > section:nth-of-type(1) {
-  animation-delay: 60ms;
-}
-.route-transition--home .route-transition__content > section:nth-of-type(2) {
-  animation-delay: 100ms;
-}
-.route-transition--home .route-transition__content > section:nth-of-type(3) {
-  animation-delay: 140ms;
-}
-.route-transition--home .route-transition__content > section:nth-of-type(4) {
-  animation-delay: 180ms;
-}
-.route-transition--home .route-transition__content > section:nth-of-type(5) {
-  animation-delay: 220ms;
-}
-.route-transition--home .route-transition__content > section:nth-of-type(6) {
-  animation-delay: 260ms;
+/* Services page cards — soft route cue on list shell */
+.route-transition--services .service-page-list {
+  animation: consoleModuleIn 360ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) 40ms both;
 }
 
-/* About stagger */
-.route-transition--about .about-page__inner > .about-section:nth-child(1) {
-  animation-delay: 50ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(2) {
-  animation-delay: 90ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(3) {
-  animation-delay: 130ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(4) {
-  animation-delay: 170ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(5) {
-  animation-delay: 210ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(6) {
-  animation-delay: 250ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(7) {
-  animation-delay: 290ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(8) {
-  animation-delay: 330ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(9) {
-  animation-delay: 370ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(10) {
-  animation-delay: 410ms;
-}
-.route-transition--about .about-page__inner > .about-section:nth-child(n + 11) {
-  animation-delay: 450ms;
+.route-transition--services .page-header {
+  animation: consoleModuleIn 360ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 
-/* Contact stagger */
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(1) {
-  animation-delay: 50ms;
-}
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(2) {
-  animation-delay: 90ms;
-}
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(3) {
-  animation-delay: 130ms;
-}
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(4) {
-  animation-delay: 170ms;
-}
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(5) {
-  animation-delay: 210ms;
-}
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(6) {
-  animation-delay: 250ms;
-}
-.route-transition--contact .contact-page__inner > .contact-section:nth-child(7) {
-  animation-delay: 290ms;
+/* About / Contact / Services / Case detail: scroll reveal defaults (avoid FOUC) */
+.route-transition--about .about-section,
+.route-transition--contact .contact-section,
+.route-transition--services .service-page-card,
+.route-transition--case-detail .case-file__section {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--motion-normal) var(--motion-ease),
+    transform var(--motion-normal) var(--motion-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+  animation: none !important;
 }
 
-/* Case detail content stagger */
-.route-transition--case-detail .case-detail-page__content {
-  animation-delay: 80ms;
+.route-transition--about .about-section.is-revealed,
+.route-transition--contact .contact-section.is-revealed,
+.route-transition--services .service-page-card.is-revealed,
+.route-transition--case-detail .case-file__section.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
-.route-transition--case-detail .case-file__section:nth-of-type(1) {
-  animation-delay: 120ms;
-}
-.route-transition--case-detail .case-file__section:nth-of-type(2) {
-  animation-delay: 160ms;
-}
-.route-transition--case-detail .case-file__section:nth-of-type(3) {
-  animation-delay: 200ms;
-}
-.route-transition--case-detail .case-file__section:nth-of-type(4) {
-  animation-delay: 240ms;
-}
-.route-transition--case-detail .case-file__section:nth-of-type(5) {
-  animation-delay: 280ms;
-}
-.route-transition--case-detail .case-file__section:nth-of-type(6) {
-  animation-delay: 320ms;
+
+/* Case detail content stagger — tighter archive open (non-reveal shells) */
+.route-transition--case-detail .case-detail-page__content:not(.reveal) {
+  animation-delay: 40ms;
 }
 
 /* Booking: lighter, single panel */
-.route-transition--booking .booking-page__inner {
+.route-transition--booking .booking-page__inner:not(.reveal) {
   animation-delay: 40ms;
 }
 
 /* Cases list */
 .route-transition--cases .page.container {
-  animation: consoleModuleIn 460ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) 60ms both;
+  animation: consoleModuleIn 360ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) 40ms both;
 }
 
 /* Booking step panels keep their own micro-transition */
@@ -292,7 +238,7 @@
 
 /* Legacy alias */
 .page-transition {
-  animation: routePageIn 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: routePageIn var(--motion-route, 360ms) var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 
 /* —— Reduced motion —— */
@@ -343,9 +289,17 @@
   .route-transition .intake-panel.fade-in {
     animation: none;
   }
+
+  .route-transition--about .about-section,
+  .route-transition--contact .contact-section,
+  .route-transition--services .service-page-card,
+  .route-transition--case-detail .case-file__section {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
-/* ── Mobile: lighter route transitions (Round 6.2) ── */
 @media (max-width: 767px) {
   .route-transition:not(.route-transition--home) {
     animation-duration: 300ms;

@@ -106,6 +106,19 @@
 .intake-rack__group:hover {
   border-color: var(--console-border-hover);
   background: var(--console-surface-soft);
+  transform: translateY(-2px);
+}
+
+.console-rack__unit:active,
+.certification-rack__unit:active,
+.field-record__item:active,
+.tool-rack__unit:active,
+.project-quick-view__card:active,
+.media-rack__slot:active,
+.intake-rack__group:active {
+  transform: translateY(0) scale(var(--motion-scale-press, 0.98));
+  transition-duration: var(--motion-press, 80ms);
+  transition-timing-function: var(--motion-ease-press, ease-out);
 }
 
 .console-rack__index,
@@ -445,6 +458,11 @@
   transform: none;
   color: var(--console-text);
   border-color: transparent;
+}
+
+.btn--link:active:not(:disabled):not(.btn--disabled):not(.btn--loading) {
+  transform: scale(var(--motion-scale-press, 0.98));
+  opacity: 0.88;
 }
 
 /* ── Case hero uses console opacity tokens ── */

@@ -9,21 +9,116 @@ import AdminUnsavedGuard from "../../components/admin/AdminUnsavedGuard";
 import {
   AdminField,
   AdminFieldGroup,
+  AdminInput,
   AdminSaveBar,
   AdminTextarea,
 } from "../../components/admin/AdminForm";
+import { AdminBilingualInput } from "../../components/admin/AdminBilingualField";
 import { commonActionText } from "../../lib/adminUi";
+import { HOME_WORKFLOW_STEPS, SOUND_ISSUES } from "../../lib/homeContent";
 
 function getInitialSettings(content) {
-  return JSON.parse(JSON.stringify(content?.siteSettings ?? {}));
+  const settings = JSON.parse(JSON.stringify(content?.siteSettings ?? {}));
+  if (!Array.isArray(settings.processSteps) || !settings.processSteps.length) {
+    settings.processSteps = JSON.parse(JSON.stringify(HOME_WORKFLOW_STEPS));
+  }
+  if (!Array.isArray(settings.soundIssues) || !settings.soundIssues.length) {
+    settings.soundIssues = JSON.parse(JSON.stringify(SOUND_ISSUES));
+  }
+  return settings;
 }
 
-function jsonField(value, fallback) {
-  try {
-    return JSON.stringify(value ?? fallback, null, 2);
-  } catch {
-    return JSON.stringify(fallback, null, 2);
-  }
+function StepListEditor({ items, onChange, emptyLabel }) {
+  const list = Array.isArray(items) ? items : [];
+
+  const updateItem = (index, patch) => {
+    const next = list.map((item, i) => (i === index ? { ...item, ...patch } : item));
+    onChange(next);
+  };
+
+  const move = (index, dir) => {
+    const target = index + dir;
+    if (target < 0 || target >= list.length) return;
+    const next = [...list];
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next.map((item, i) => ({ ...item, order: i + 1 })));
+  };
+
+  const remove = (index) => {
+    onChange(list.filter((_, i) => i !== index).map((item, i) => ({ ...item, order: i + 1 })));
+  };
+
+  const add = () => {
+    onChange([
+      ...list,
+      {
+        order: list.length + 1,
+        title: { cn: "", en: "" },
+        description: { cn: "", en: "" },
+      },
+    ]);
+  };
+
+  return (
+    <div className="admin-routing-list">
+      {list.length === 0 && <p className="admin-mixing-empty">{emptyLabel}</p>}
+      {list.map((item, index) => (
+        <div key={item.order ?? index} className="admin-mixing-track">
+          <div className="admin-mixing-track__head">
+            <span className="admin-mixing-track__index">#{index + 1}</span>
+            <div className="admin-mixing-track__actions">
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost admin-btn--sm"
+                onClick={() => move(index, -1)}
+                disabled={index === 0}
+              >
+                {commonActionText.moveUp}
+              </button>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost admin-btn--sm"
+                onClick={() => move(index, 1)}
+                disabled={index === list.length - 1}
+              >
+                {commonActionText.moveDown}
+              </button>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost admin-btn--sm"
+                onClick={() => remove(index)}
+              >
+                {commonActionText.delete}
+              </button>
+            </div>
+          </div>
+          <AdminField label="排序 order">
+            <AdminInput
+              type="number"
+              className="admin-mono"
+              value={item.order ?? index + 1}
+              onChange={(e) => updateItem(index, { order: Number(e.target.value) || index + 1 })}
+            />
+          </AdminField>
+          <AdminBilingualInput
+            label="标题"
+            value={item.title}
+            onChange={(v) => updateItem(index, { title: v })}
+          />
+          <AdminBilingualInput
+            label="说明"
+            value={item.description}
+            onChange={(v) => updateItem(index, { description: v })}
+            multiline
+            rows={3}
+          />
+        </div>
+      ))}
+      <button type="button" className="admin-btn admin-btn--secondary" onClick={add}>
+        {commonActionText.add}
+      </button>
+    </div>
+  );
 }
 
 export default function AdminSiteModulesPage() {
@@ -37,6 +132,15 @@ export default function AdminSiteModulesPage() {
   );
 
   const [localSaving, setLocalSaving] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  const jsonField = (value, fallback) => {
+    try {
+      return JSON.stringify(value ?? fallback, null, 2);
+    } catch {
+      return JSON.stringify(fallback, null, 2);
+    }
+  };
 
   const updateJson = (key, raw, fallback) => {
     try {
@@ -79,11 +183,11 @@ export default function AdminSiteModulesPage() {
   return (
     <>
       <AdminTopbar
-        eyebrow="站点模块"
-        title="前台模块内容"
-        description="合作流程 · 声音问题 · 预约引导 · 联系清单"
+        eyebrow="06"
+        title="合作流程 / 声音诊断"
+        description="首页步骤与诊断卡片 · 预约选项 · 联系清单"
         actions={
-          <Link to="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost admin-btn--sm admin-mono">
+          <Link to="/#process" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost admin-btn--sm admin-mono">
             预览首页 ↗
           </Link>
         }
@@ -92,77 +196,64 @@ export default function AdminSiteModulesPage() {
 
       <AdminFieldGroup
         eyebrow="合作流程"
-        title="首页合作流程 (processSteps)"
-        description="已在 JSON 中配置时，首页 Workflow 区块优先读取此处。留空数组则使用前端默认流程。"
+        title="流程步骤 (processSteps)"
+        description="对应首页「合作流程」列表。区块标题请到「首页文案」编辑。"
       >
-        <AdminField label="processSteps JSON" hint="order · title {cn,en} · description {cn,en}">
-          <AdminTextarea
-            rows={14}
-            className="admin-mono"
-            value={displayJson("processSteps", [])}
-            onChange={(e) => updateJson("processSteps", e.target.value, [])}
-          />
-        </AdminField>
+        <StepListEditor
+          items={settings.processSteps}
+          onChange={(processSteps) => update({ processSteps })}
+          emptyLabel="暂无步骤，点击下方添加。"
+        />
       </AdminFieldGroup>
 
       <AdminFieldGroup
         eyebrow="声音诊断"
-        title="首页声音问题 (soundIssues)"
-        description="首页 Sound Check 区块；可选，留空则使用前端默认。"
+        title="声音问题卡片 (soundIssues)"
+        description="对应首页「现场声音问题诊断」。区块标题请到「首页文案」编辑。"
       >
-        <AdminField label="soundIssues JSON" hint="order · title {cn,en} · description {cn,en}">
-          <AdminTextarea
-            rows={12}
-            className="admin-mono"
-            value={displayJson("soundIssues", [])}
-            onChange={(e) => updateJson("soundIssues", e.target.value, [])}
-          />
-        </AdminField>
+        <StepListEditor
+          items={settings.soundIssues}
+          onChange={(soundIssues) => update({ soundIssues })}
+          emptyLabel="暂无卡片，点击下方添加。"
+        />
       </AdminFieldGroup>
 
-      <AdminFieldGroup
-        eyebrow="预约"
-        title="预约声音问题选项 (bookingIssues)"
-        description="预约 Step 03 选项；结构与 bookingContent 中 id/cn/en/recommended 一致。"
-      >
-        <AdminField label="bookingIssues JSON">
-          <AdminTextarea
-            rows={12}
-            className="admin-mono"
-            value={displayJson("bookingIssues", [])}
-            onChange={(e) => updateJson("bookingIssues", e.target.value, [])}
-          />
-        </AdminField>
-      </AdminFieldGroup>
-
-      <AdminFieldGroup
-        eyebrow="预约引导"
-        title="预约工程师辅助面板 (bookingGuide)"
-        description="可选。steps 数组，每项含 task {cn,en} 与 checklist {cn,en[]}。"
-      >
-        <AdminField label="bookingGuide JSON">
-          <AdminTextarea
-            rows={10}
-            className="admin-mono"
-            value={displayJson("bookingGuide", {})}
-            onChange={(e) => updateJson("bookingGuide", e.target.value, {})}
-          />
-        </AdminField>
-      </AdminFieldGroup>
-
-      <AdminFieldGroup
-        eyebrow="联系页"
-        title="项目资料清单 (contactChecklist)"
-        description="联系页 Project Material Checklist；每项 { cn, en }。"
-      >
-        <AdminField label="contactChecklist JSON">
-          <AdminTextarea
-            rows={10}
-            className="admin-mono"
-            value={displayJson("contactChecklist", [])}
-            onChange={(e) => updateJson("contactChecklist", e.target.value, [])}
-          />
-        </AdminField>
+      <AdminFieldGroup eyebrow="高级" title="预约 / 联系 JSON（可选）">
+        <button
+          type="button"
+          className="admin-btn admin-btn--ghost admin-btn--sm"
+          onClick={() => setShowAdvanced((v) => !v)}
+        >
+          {showAdvanced ? "收起高级 JSON" : "展开高级 JSON"}
+        </button>
+        {showAdvanced && (
+          <>
+            <AdminField label="bookingIssues JSON">
+              <AdminTextarea
+                rows={10}
+                className="admin-mono"
+                value={displayJson("bookingIssues", [])}
+                onChange={(e) => updateJson("bookingIssues", e.target.value, [])}
+              />
+            </AdminField>
+            <AdminField label="bookingGuide JSON">
+              <AdminTextarea
+                rows={8}
+                className="admin-mono"
+                value={displayJson("bookingGuide", {})}
+                onChange={(e) => updateJson("bookingGuide", e.target.value, {})}
+              />
+            </AdminField>
+            <AdminField label="contactChecklist JSON">
+              <AdminTextarea
+                rows={8}
+                className="admin-mono"
+                value={displayJson("contactChecklist", [])}
+                onChange={(e) => updateJson("contactChecklist", e.target.value, [])}
+              />
+            </AdminField>
+          </>
+        )}
       </AdminFieldGroup>
 
       <AdminSaveBar
@@ -170,7 +261,7 @@ export default function AdminSiteModulesPage() {
         dirty={dirty}
         onSave={handleSave}
         onReset={reset}
-        saveLabel="保存站点模块"
+        saveLabel="保存模块"
       />
     </>
   );

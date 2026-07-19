@@ -2,11 +2,11 @@ import { randomUUID } from "./id.js";
 import { createDefaultMixingAudioModules, normalizeMixingAudioModules } from "./mixingAudio.js";
 
 export const CASE_CATEGORIES = [
-  ["livehouse-system-tuning", "Livehouse 系统调试"],
-  ["tour-system-engineering", "演出系统工程"],
-  ["event-sound-reinforcement", "活动扩声"],
-  ["mixing-post-production", "混音后期"],
-  ["recording-editing", "录音编辑"],
+  ["livehouse-system-tuning", "现场调音"],
+  ["tour-system-engineering", "系统工程"],
+  ["event-sound-reinforcement", "现场调音（活动扩声）"],
+  ["mixing-post-production", "多轨混音"],
+  ["recording-editing", "贴唱混音"],
   ["acoustic-simulation", "声学模拟"],
 ];
 

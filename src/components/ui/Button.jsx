@@ -13,6 +13,8 @@ export default function Button({
   const classes = [
     "btn",
     "signal-button",
+    "feel-lift",
+    "feel-punch",
     `btn--${variant}`,
     loading && "btn--loading",
     isDisabled && !loading && "btn--disabled",

@@ -20,6 +20,8 @@ export const ALLOWED_SECTION_KEYS = new Set([
   "seo",
   "tutorialSection",
   "siteSettings",
+  "homeSections",
+  "featuredVideos",
 ]);
 
 export function validateSiteContent(body) {

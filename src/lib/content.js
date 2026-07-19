@@ -57,15 +57,121 @@ export function t(field, lang = "cn") {
   return field[lang] ?? field.cn ?? field.en ?? "";
 }
 
+/** Flat CMS → display label (card / detail / admin list). */
+const CMS_CATEGORY_LABELS = {
+  "tour-system-engineering": { cn: "系统工程", en: "System Engineering" },
+  "livehouse-system-tuning": { cn: "现场调音", en: "Live Mixing" },
+  "event-sound-reinforcement": { cn: "现场调音", en: "Live Mixing" },
+  "mixing-post-production": { cn: "多轨混音", en: "Multitrack Mixing" },
+  "recording-editing": { cn: "贴唱混音", en: "Vocal Mixing" },
+  "acoustic-simulation": { cn: "声学模拟", en: "Acoustic Simulation" },
+};
+
+/**
+ * Unified two-plate / four-branch taxonomy (home + /cases).
+ * Acoustic simulation is only under「全部」, not inside either plate.
+ */
+export const CASE_PLATES = [
+  {
+    id: "live",
+    label: { cn: "现场 / 系统", en: "Live / System" },
+    homeTitle: { cn: "现场 / 系统类案例", en: "Live & System Works" },
+    homeEyebrow: { cn: "LIVE / SYSTEM", en: "LIVE / SYSTEM" },
+    homeSubtitle: {
+      cn: "系统工程与现场调音代表项目。板块内切换小分支查看。",
+      en: "System engineering and live mixing — switch branches inside this plate.",
+    },
+    defaultBranchId: "live-tuning",
+    branches: [
+      {
+        id: "system-engineering",
+        label: { cn: "系统工程", en: "System Engineering" },
+        cmsCategories: ["tour-system-engineering"],
+      },
+      {
+        id: "live-tuning",
+        label: { cn: "现场调音", en: "Live Mixing" },
+        cmsCategories: ["livehouse-system-tuning", "event-sound-reinforcement"],
+      },
+    ],
+  },
+  {
+    id: "mixing",
+    label: { cn: "后期 / 混音", en: "Post / Mixing" },
+    homeTitle: { cn: "后期 / 混音类案例", en: "Post-Production Mixing" },
+    homeEyebrow: { cn: "MIXING WORKS", en: "MIXING WORKS" },
+    homeSubtitle: {
+      cn: "多轨混音与贴唱混音代表作品。板块内切换小分支查看。",
+      en: "Multitrack and vocal mixing — switch branches inside this plate.",
+    },
+    defaultBranchId: "multitrack-mixing",
+    branches: [
+      {
+        id: "multitrack-mixing",
+        label: { cn: "多轨混音", en: "Multitrack Mixing" },
+        cmsCategories: ["mixing-post-production"],
+      },
+      {
+        id: "vocal-mixing",
+        label: { cn: "贴唱混音", en: "Vocal Mixing" },
+        cmsCategories: ["recording-editing"],
+      },
+    ],
+  },
+];
+
+/** @deprecated Prefer CASE_PLATES; kept for any legacy imports. */
 export const CATEGORY_FILTERS = [
   { id: "all", cms: null, label: { cn: "全部", en: "All" } },
-  { id: "livehouse", cms: "livehouse-system-tuning", label: { cn: "Livehouse", en: "Livehouse" } },
-  { id: "system", cms: "tour-system-engineering", label: { cn: "系统工程", en: "System" } },
-  { id: "corporate-event", cms: "event-sound-reinforcement", label: { cn: "活动扩声", en: "Events" } },
-  { id: "mixing", cms: "mixing-post-production", label: { cn: "混音后期", en: "Mixing" } },
-  { id: "recording", cms: "recording-editing", label: { cn: "录音编辑", en: "Recording" } },
-  { id: "acoustic-simulation", cms: "acoustic-simulation", label: { cn: "声学模拟", en: "Acoustic" } },
+  {
+    id: "system-engineering",
+    cms: "tour-system-engineering",
+    label: { cn: "系统工程", en: "System Engineering" },
+  },
+  {
+    id: "live-tuning",
+    cms: "livehouse-system-tuning",
+    label: { cn: "现场调音", en: "Live Mixing" },
+  },
+  {
+    id: "multitrack-mixing",
+    cms: "mixing-post-production",
+    label: { cn: "多轨混音", en: "Multitrack Mixing" },
+  },
+  {
+    id: "vocal-mixing",
+    cms: "recording-editing",
+    label: { cn: "贴唱混音", en: "Vocal Mixing" },
+  },
+  {
+    id: "acoustic-simulation",
+    cms: "acoustic-simulation",
+    label: { cn: "声学模拟", en: "Acoustic" },
+  },
 ];
+
+export function getCasePlate(plateId) {
+  return CASE_PLATES.find((p) => p.id === plateId) ?? null;
+}
+
+export function getCaseBranch(branchId) {
+  for (const plate of CASE_PLATES) {
+    const branch = plate.branches.find((b) => b.id === branchId);
+    if (branch) return { plate, branch };
+  }
+  return null;
+}
+
+export function getPlateCmsCategories(plateId) {
+  const plate = getCasePlate(plateId);
+  if (!plate) return [];
+  return plate.branches.flatMap((b) => b.cmsCategories);
+}
+
+export function getBranchCmsCategories(branchId) {
+  const found = getCaseBranch(branchId);
+  return found?.branch.cmsCategories ?? [];
+}
 
 const COVER_MAP = {
   "echo-live-yunfu": "/cases/echo-live-yunfu/gallery/gallery-01.jpg",
@@ -282,14 +388,31 @@ function buildManualSlides(content, hero) {
     .sort((a, b) => slideSortKey(a) - slideSortKey(b));
 }
 
-export function getCases(content, { featured, categoryId, visible = true } = {}) {
+export function getCases(
+  content,
+  { featured, categoryId, plateId, branchId, visible = true } = {}
+) {
   let list = [...(content.cases ?? [])];
   if (visible) list = list.filter((c) => c.visible !== false);
   if (featured) list = list.filter((c) => c.featured || c.isFeatured);
-  if (categoryId && categoryId !== "all") {
-    const filter = CATEGORY_FILTERS.find((f) => f.id === categoryId);
-    if (filter?.cms) list = list.filter((c) => c.category === filter.cms);
+
+  if (branchId) {
+    const cmsSet = new Set(getBranchCmsCategories(branchId));
+    if (cmsSet.size) list = list.filter((c) => cmsSet.has(c.category));
+  } else if (plateId && plateId !== "all") {
+    const cmsSet = new Set(getPlateCmsCategories(plateId));
+    if (cmsSet.size) list = list.filter((c) => cmsSet.has(c.category));
+  } else if (categoryId && categoryId !== "all") {
+    const found = getCaseBranch(categoryId);
+    if (found) {
+      const cmsSet = new Set(found.branch.cmsCategories);
+      list = list.filter((c) => cmsSet.has(c.category));
+    } else {
+      const filter = CATEGORY_FILTERS.find((f) => f.id === categoryId);
+      if (filter?.cms) list = list.filter((c) => c.category === filter.cms);
+    }
   }
+
   return list.sort((a, b) => {
     const diff = caseSortKey(a) - caseSortKey(b);
     if (diff !== 0) return diff;
@@ -297,39 +420,38 @@ export function getCases(content, { featured, categoryId, visible = true } = {})
   });
 }
 
-const HOME_LIVE_CATEGORIES = new Set([
-  "livehouse-system-tuning",
-  "tour-system-engineering",
-  "event-sound-reinforcement",
-]);
-
-const HOME_MIXING_CATEGORIES = new Set([
-  "mixing-post-production",
-  "recording-editing",
-]);
-
 function isHomeFeatured(caseItem) {
   return Boolean(caseItem?.featured || caseItem?.isFeatured);
 }
 
-/**
- * Homepage Live block — field / tour / event works.
- * Excludes mixing, recording, and acoustic-simulation via category allowlist.
- * Does not mutate featured flags; acoustic stays on /cases when featured.
- */
-export function getHomeLiveCases(content) {
-  return getCases(content, { visible: true }).filter(
-    (c) => HOME_LIVE_CATEGORIES.has(c.category) && isHomeFeatured(c)
-  );
+/** Homepage plate cases filtered by branch (featured only). */
+export function getHomePlateCases(content, plateId, branchId) {
+  const plate = getCasePlate(plateId);
+  if (!plate) return [];
+  const resolvedBranch =
+    branchId && plate.branches.some((b) => b.id === branchId)
+      ? branchId
+      : plate.defaultBranchId;
+  return getCases(content, {
+    visible: true,
+    branchId: resolvedBranch,
+  }).filter(isHomeFeatured);
 }
 
 /**
- * Homepage Mixing block — post-production / mixing works only.
+ * Homepage Live block — all live/system featured (no branch filter).
+ * @deprecated Prefer getHomePlateCases(content, "live", branchId)
+ */
+export function getHomeLiveCases(content) {
+  return getCases(content, { visible: true, plateId: "live" }).filter(isHomeFeatured);
+}
+
+/**
+ * Homepage Mixing block — all mixing featured (no branch filter).
+ * @deprecated Prefer getHomePlateCases(content, "mixing", branchId)
  */
 export function getHomeMixingCases(content) {
-  return getCases(content, { visible: true }).filter(
-    (c) => HOME_MIXING_CATEGORIES.has(c.category) && isHomeFeatured(c)
-  );
+  return getCases(content, { visible: true, plateId: "mixing" }).filter(isHomeFeatured);
 }
 
 export function getCaseProjectNumber(content, caseItem) {
@@ -468,6 +590,8 @@ export function getCaseBySlug(content, slug) {
 }
 
 export function getCategoryLabel(categoryCms, lang) {
+  const mapped = CMS_CATEGORY_LABELS[categoryCms];
+  if (mapped) return t(mapped, lang);
   const f = CATEGORY_FILTERS.find((x) => x.cms === categoryCms);
   return f ? t(f.label, lang) : categoryCms;
 }
@@ -489,14 +613,17 @@ export function isDouyinSelfLink(url) {
 
 /**
  * Manual featured video cards for homepage (no scraping).
- * Missing field / empty array → [].
+ * Show when enabled and has jump URL and/or media (cover / preview video).
  */
 export function getFeaturedVideos(content) {
   const list = Array.isArray(content?.featuredVideos) ? content.featuredVideos : [];
   return list
     .filter((item) => {
       if (!item || item.enabled === false) return false;
-      return Boolean(String(item.url || "").trim());
+      const hasUrl = Boolean(String(item.url || "").trim());
+      const hasImage = Boolean(String(item.coverImage || "").trim());
+      const hasVideo = Boolean(String(item.previewVideo || "").trim());
+      return hasUrl || hasImage || hasVideo;
     })
     .slice()
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -638,9 +765,19 @@ export function getUiText(key, lang = "cn") {
 export function getCategoryCounts(content) {
   const all = getCases(content);
   const counts = { all: all.length };
-  for (const f of CATEGORY_FILTERS) {
-    if (f.id === "all") continue;
-    counts[f.id] = all.filter((c) => c.category === f.cms).length;
+
+  for (const plate of CASE_PLATES) {
+    const plateCms = new Set(getPlateCmsCategories(plate.id));
+    counts[`plate:${plate.id}`] = all.filter((c) => plateCms.has(c.category)).length;
+    for (const branch of plate.branches) {
+      const branchCms = new Set(branch.cmsCategories);
+      counts[branch.id] = all.filter((c) => branchCms.has(c.category)).length;
+    }
   }
+
+  counts["acoustic-simulation"] = all.filter(
+    (c) => c.category === "acoustic-simulation"
+  ).length;
+
   return counts;
 }

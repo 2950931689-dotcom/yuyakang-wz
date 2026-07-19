@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useContent } from "../context/ContentContext";
 import { useLanguage } from "../context/LanguageContext";
 import { t } from "../lib/content";
+import { originFromEvent } from "../lib/motion";
 import ContactConsole from "../components/contact/ContactConsole";
 import AuxChannels from "../components/contact/AuxChannels";
 import CommunicationPatchBay from "../components/contact/CommunicationPatchBay";
@@ -16,6 +17,16 @@ export default function ContactPage() {
   const { content, loading } = useContent();
   const { lang } = useLanguage();
   const [qrOpen, setQrOpen] = useState(false);
+  const [qrOrigin, setQrOrigin] = useState(null);
+
+  const openQr = useCallback((event) => {
+    setQrOrigin(originFromEvent(event));
+    setQrOpen(true);
+  }, []);
+
+  const closeQr = useCallback(() => {
+    setQrOpen(false);
+  }, []);
 
   if (loading || !content) return <LoadingState />;
 
@@ -31,21 +42,26 @@ export default function ContactPage() {
           lang={lang}
           t={t}
           ci={ci}
-          onOpenQr={() => setQrOpen(true)}
+          onOpenQr={openQr}
         />
         <WeChatSignalCard
           content={content}
           lang={lang}
           t={t}
           ci={ci}
-          onOpenQr={() => setQrOpen(true)}
+          onOpenQr={openQr}
         />
         <CommonTools content={content} lang={lang} />
         <ProjectMaterialChecklist />
         <ContactOutputCta lang={lang} bookLabel={t(ci.bookNow, lang)} />
       </div>
 
-      <WechatQrModal open={qrOpen} onClose={() => setQrOpen(false)} content={content} />
+      <WechatQrModal
+        open={qrOpen}
+        onClose={closeQr}
+        content={content}
+        originRect={qrOrigin}
+      />
     </div>
   );
 }
