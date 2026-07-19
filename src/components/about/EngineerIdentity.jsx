@@ -7,14 +7,13 @@ import {
 
 export default function EngineerIdentity({ content, profile, lang }) {
   const identity = getProfileIdentity(content ?? { profile }, lang);
-  const { nameCn, nameEn, title, location, status, field, engineerId } = identity;
+  const { nameCn, nameEn, title, status, field, engineerId } = identity;
   const introParagraphs = getAboutIntroParagraphs(profile, lang);
   const identityTags = ABOUT_IDENTITY_TAGS[lang] || ABOUT_IDENTITY_TAGS.cn;
 
   const params = [
     { key: "ID", value: engineerId },
     { key: "STATUS", value: status },
-    { key: "LOCATION", value: String(location || "").toUpperCase() },
     { key: "ROLE", value: profile?.roleCode || "SYSTEM ENGINEER" },
     { key: "FIELD", value: field },
   ];

@@ -1,11 +1,9 @@
 import SectionTitle from "../ui/SectionTitle";
-import { ROUTING_DESC, ROUTING_INTRO, ROUTING_PARAMS, getRoutingLocation } from "../../lib/contactContent";
+import { ROUTING_DESC, ROUTING_INTRO, ROUTING_PARAMS } from "../../lib/contactContent";
 
 export default function ContactRoutingHero({ content, lang, t }) {
-  const location = getRoutingLocation(content, lang, t);
   const params = [
     { key: "STATUS", value: ROUTING_PARAMS.status[lang] || ROUTING_PARAMS.status.en },
-    { key: "LOCATION", value: location },
     { key: "RESPONSE", value: ROUTING_PARAMS.response[lang] || ROUTING_PARAMS.response.en },
     { key: "PROJECT INTAKE", value: ROUTING_PARAMS.intake[lang] || ROUTING_PARAMS.intake.en },
   ];

@@ -5,7 +5,7 @@ import {
   getServiceArea,
   getSiteLocation,
 } from "../../lib/content";
-import { ROUTING_DESC, ROUTING_INTRO, ROUTING_PARAMS, getRoutingLocation } from "../../lib/contactContent";
+import { ROUTING_DESC, ROUTING_INTRO, ROUTING_PARAMS } from "../../lib/contactContent";
 import Button from "../ui/Button";
 
 export default function ContactConsole({ content, lang, t }) {
@@ -13,12 +13,11 @@ export default function ContactConsole({ content, lang, t }) {
   const display = getLocationDisplay(content);
   const location = getSiteLocation(content);
   const serviceArea = getServiceArea(content);
-  const routingLocation = getRoutingLocation(content, lang, t);
   const siteName = content.siteSettings?.siteName?.en || "YU YAKANG AUDIO";
+  const showSiteCity = display.showOnContact === true;
 
   const params = [
     { key: "STATUS", value: ROUTING_PARAMS.status[lang] || ROUTING_PARAMS.status.en, dot: true },
-    { key: "LOCATION", value: routingLocation },
     { key: "RESPONSE", value: ROUTING_PARAMS.response[lang] || ROUTING_PARAMS.response.en },
     { key: "PROJECT INTAKE", value: ROUTING_PARAMS.intake[lang] || ROUTING_PARAMS.intake.en },
   ];
@@ -38,7 +37,7 @@ export default function ContactConsole({ content, lang, t }) {
           <h2 className="contact-console__name">{t(profile.name, lang)}</h2>
           <p className="contact-console__role">{t(profile.title, lang)}</p>
 
-          {display.showOnContact && (
+          {showSiteCity && (
             <dl className="contact-console__meta">
               <div className="contact-console__meta-row">
                 <dt>{lang === "cn" ? "服务城市" : "Base City"}</dt>

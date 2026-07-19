@@ -587,9 +587,9 @@ const DEFAULT_SERVICE_AREA = {
 };
 
 const DEFAULT_LOCATION_DISPLAY = {
-  showOnHome: true,
-  showOnContact: true,
-  showOnFooter: true,
+  showOnHome: false,
+  showOnContact: false,
+  showOnFooter: false,
 };
 
 export function getSiteLocation(content) {

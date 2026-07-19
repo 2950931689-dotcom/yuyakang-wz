@@ -21,7 +21,7 @@ export default function Footer() {
         </div>
         <div className="footer__copy">
           © {new Date().getFullYear()} {t(content.profile.name, lang)}
-          {display.showOnFooter && location ? ` · ${t(location, lang)}` : ""}
+          {display.showOnFooter === true && location ? ` · ${t(location, lang)}` : ""}
         </div>
       </div>
     </footer>

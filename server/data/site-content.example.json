@@ -484,9 +484,9 @@
     "en": "Based in Nanchang, available for livehouse, system tuning, corporate events and mixing projects."
   },
   "display": {
-    "showOnHome": true,
-    "showOnContact": true,
-    "showOnFooter": true
+    "showOnHome": false,
+    "showOnContact": false,
+    "showOnFooter": false
   },
   "certificates": [
     {

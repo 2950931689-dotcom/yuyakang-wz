@@ -55,11 +55,11 @@ const DEFAULTS = {
 
   display: {
 
-    showOnHome: true,
+    showOnHome: false,
 
-    showOnContact: true,
+    showOnContact: false,
 
-    showOnFooter: true,
+    showOnFooter: false,
 
   },
 
@@ -294,7 +294,7 @@ export default function AdminLocationPage() {
 
             id="display-home"
 
-            checked={display.showOnHome !== false}
+            checked={display.showOnHome === true}
 
             onChange={(e) => setDisplay((prev) => ({ ...prev, showOnHome: e.target.checked }))}
 
@@ -306,7 +306,7 @@ export default function AdminLocationPage() {
 
             id="display-contact"
 
-            checked={display.showOnContact !== false}
+            checked={display.showOnContact === true}
 
             onChange={(e) => setDisplay((prev) => ({ ...prev, showOnContact: e.target.checked }))}
 
@@ -318,7 +318,7 @@ export default function AdminLocationPage() {
 
             id="display-footer"
 
-            checked={display.showOnFooter !== false}
+            checked={display.showOnFooter === true}
 
             onChange={(e) => setDisplay((prev) => ({ ...prev, showOnFooter: e.target.checked }))}
 

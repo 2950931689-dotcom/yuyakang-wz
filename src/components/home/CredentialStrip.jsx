@@ -20,7 +20,7 @@ export default function CredentialStrip() {
     { num: services.length, label: lang === "cn" ? "服务方向" : "Services" },
   ];
 
-  if (display.showOnHome) {
+  if (display.showOnHome === true) {
     items.push({
       num: "NC",
       label: lang === "cn" ? "常驻地" : "Based in",
