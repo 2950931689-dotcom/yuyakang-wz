@@ -3556,7 +3556,7 @@
 
 @media (min-width: 900px) {
   .workflow-cue {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: var(--space-md);
     position: relative;
   }
@@ -3661,7 +3661,7 @@
 
 @media (min-width: 1024px) {
   .sound-check__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -3671,6 +3671,7 @@
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   transition: border-color var(--dur-card) var(--ease-out);
+  min-width: 0;
 }
 
 .sound-check__card:hover {
@@ -3690,12 +3691,14 @@
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
+  overflow-wrap: anywhere;
 }
 
 .sound-check__desc {
   font-size: 12px;
   color: var(--color-text-secondary);
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 /* —— Case detail ambient hero —— */

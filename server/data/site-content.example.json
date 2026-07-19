@@ -16,60 +16,150 @@
     "contactEmail": "",
     "contactPhone": "",
     "defaultLanguage": "cn",
-    "processSteps": [
+        "processSteps": [
       {
         "order": 1,
         "title": {
-          "cn": "提交需求",
-          "en": "Submit Inquiry"
+          "cn": "沟通需求",
+          "en": "Discuss Needs"
         },
         "description": {
-          "cn": "通过预约表单或微信说明项目类型、时间与场地情况。",
-          "en": "Share project type, schedule, and venue details via form or WeChat."
+          "cn": "了解项目类型、时间安排、场地或混音目标，确认合作范围。",
+          "en": "Clarify project type, schedule, venue or mix goals, and scope of work."
         }
       },
       {
         "order": 2,
         "title": {
-          "cn": "沟通场地 / 素材",
-          "en": "Discuss Venue / Materials"
+          "cn": "判断现场 / 素材情况",
+          "en": "Assess Site / Materials"
         },
         "description": {
-          "cn": "确认现场条件、设备清单或混音素材与参考方向。",
-          "en": "Confirm venue conditions, gear list, or mix references and source files."
+          "cn": "评估现场条件、设备清单，或混音素材与参考方向。",
+          "en": "Review venue conditions and gear, or mix stems and references."
         }
       },
       {
         "order": 3,
         "title": {
-          "cn": "确认方案",
-          "en": "Confirm Plan"
+          "cn": "制定声音方案",
+          "en": "Define Sound Plan"
         },
         "description": {
-          "cn": "明确服务内容、时间安排与交付标准。",
-          "en": "Align on scope, timeline, and deliverables."
+          "cn": "明确系统调试、现场调音或后期混音的执行重点与交付标准。",
+          "en": "Define priorities for system tuning, live mixing or post-production, and deliverables."
         }
       },
       {
         "order": 4,
         "title": {
-          "cn": "执行调音 / 混音",
-          "en": "Execute On-site / Mix"
+          "cn": "执行调试 / 混音制作",
+          "en": "Tune / Mix"
         },
         "description": {
-          "cn": "现场系统调试、演出混音或后期制作执行。",
-          "en": "On-site tuning, live mixing, or post-production execution."
+          "cn": "现场系统调试、演出混音，或录音后期编辑与混音制作。",
+          "en": "On-site system tuning and live mixing, or editing and mix production."
         }
       },
       {
         "order": 5,
         "title": {
           "cn": "交付与复盘",
-          "en": "Delivery & Review"
+          "en": "Deliver & Review"
         },
         "description": {
-          "cn": "交付成果，复盘现场问题与后续优化建议。",
-          "en": "Deliver results and review outcomes with improvement notes."
+          "cn": "交付成果，整理问题记录，并给出后续优化建议。",
+          "en": "Deliver results, document issues, and share follow-up suggestions."
+        }
+      }
+    ],
+    "soundIssues": [
+      {
+        "order": 1,
+        "title": {
+          "cn": "人声不清",
+          "en": "Unclear Vocals"
+        },
+        "description": {
+          "cn": "可能与频段遮蔽、话筒增益、主扩覆盖或房间反射有关。",
+          "en": "Often linked to masking, mic gain, PA coverage or room reflections."
+        }
+      },
+      {
+        "order": 2,
+        "title": {
+          "cn": "现场啸叫",
+          "en": "Feedback"
+        },
+        "description": {
+          "cn": "可能与话筒位置、监听摆位、增益结构或房间反射有关。",
+          "en": "Mic placement, monitor aim, gain structure or reflections may contribute."
+        }
+      },
+      {
+        "order": 3,
+        "title": {
+          "cn": "低频发轰",
+          "en": "Boomy Low End"
+        },
+        "description": {
+          "cn": "可能与房间驻波、超低摆位、相位耦合或 EQ 策略有关。",
+          "en": "Room modes, sub placement, phase coupling or EQ strategy are common factors."
+        }
+      },
+      {
+        "order": 4,
+        "title": {
+          "cn": "声音刺耳",
+          "en": "Harsh Sound"
+        },
+        "description": {
+          "cn": "可能与高频过量、失真、压缩过猛或音箱指向有关。",
+          "en": "Excess highs, distortion, over-compression or speaker aim may be involved."
+        }
+      },
+      {
+        "order": 5,
+        "title": {
+          "cn": "覆盖不均匀",
+          "en": "Uneven Coverage"
+        },
+        "description": {
+          "cn": "可能与音箱角度、高度、延时补声或系统设计有关。",
+          "en": "Speaker aim, height, delay fills or system design often play a role."
+        }
+      },
+      {
+        "order": 6,
+        "title": {
+          "cn": "舞台监听混乱",
+          "en": "Monitor Chaos"
+        },
+        "description": {
+          "cn": "可能与返听混音、舞台声压、话筒串扰或监听路由有关。",
+          "en": "Monitor mix, stage SPL, mic bleed or monitor routing may be unclear."
+        }
+      },
+      {
+        "order": 7,
+        "title": {
+          "cn": "设备连接复杂",
+          "en": "Complex Routing"
+        },
+        "description": {
+          "cn": "可能与信号链路规划、接口标准、多设备并联或标记不清有关。",
+          "en": "Signal-path planning, connectors, multi-device patching or unclear labeling."
+        }
+      },
+      {
+        "order": 8,
+        "title": {
+          "cn": "增益结构不稳定",
+          "en": "Unstable Gain Structure"
+        },
+        "description": {
+          "cn": "可能与前级电平、台面推子、处理器压限或系统校准有关。",
+          "en": "Preamps, console faders, processor limiting or system calibration may drift."
         }
       }
     ]

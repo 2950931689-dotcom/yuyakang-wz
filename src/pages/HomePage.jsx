@@ -11,9 +11,9 @@ import SectionTitle from "../components/ui/SectionTitle";
 import { useLanguage } from "../context/LanguageContext";
 
 /**
- * Round 7.6 homepage DOM order (PC visual = source order):
- * Hero → 01 profile+certs → live cases → mixing cases
- * → 04 social video → workflow → sound check → services → conversion CTA
+ * Round 7.7 homepage DOM order (PC visual = source order):
+ * Hero → 01 profile+certs → live → mixing → 04 social video
+ * → 05 workflow → 06 sound check → services → conversion CTA
  *
  * Mobile visual order is controlled by CSS flex order in mobile.css.
  */

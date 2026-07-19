@@ -9,23 +9,27 @@ export default function WorkflowSection() {
   const { lang } = useLanguage();
   const steps = getHomeWorkflow(content);
 
+  if (!steps.length) return null;
+
   return (
     <div className="workflow-section">
       <SectionTitle
-        sectionIndex={4}
+        sectionIndex={5}
         eyebrow="WORKFLOW"
         title={lang === "cn" ? "合作流程" : "Workflow"}
         subtitle={
           lang === "cn"
-            ? "从需求对接到现场调试与交付复盘的标准协作路径。"
-            : "Standard path from briefing through on-site tuning to delivery review."
+            ? "从沟通需求到现场调试 / 混音制作，再到交付复盘的协作路径。"
+            : "From briefing through on-site tuning or mix production to delivery review."
         }
       />
       <ol className="workflow-cue">
         {steps.map((step, index) => (
-          <li key={step.order} className="workflow-cue__item">
+          <li key={step.order ?? index} className="workflow-cue__item">
             <div className="workflow-cue__num-col">
-              <span className="workflow-cue__num">{String(step.order).padStart(2, "0")}</span>
+              <span className="workflow-cue__num">
+                {String(step.order ?? index + 1).padStart(2, "0")}
+              </span>
               {index < steps.length - 1 && (
                 <span className="workflow-cue__line" aria-hidden="true" />
               )}

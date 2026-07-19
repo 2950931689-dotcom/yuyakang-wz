@@ -142,34 +142,42 @@ export function getServiceProblems(service, lang = "cn") {
 export const HOME_WORKFLOW_STEPS = [
   {
     order: 1,
-    title: { cn: "需求沟通", en: "Briefing" },
+    title: { cn: "沟通需求", en: "Discuss Needs" },
     description: {
-      cn: "了解场地、演出类型、设备条件、预算与时间。",
-      en: "Understand venue, show format, gear, budget and timeline.",
+      cn: "了解项目类型、时间安排、场地或混音目标，确认合作范围。",
+      en: "Clarify project type, schedule, venue or mix goals, and scope of work.",
     },
   },
   {
     order: 2,
-    title: { cn: "系统评估", en: "System Assessment" },
+    title: { cn: "判断现场 / 素材情况", en: "Assess Site / Materials" },
     description: {
-      cn: "分析覆盖、声压、低频、延时、返听与信号链路。",
-      en: "Analyze coverage, SPL, low end, delay, monitors and signal path.",
+      cn: "评估现场条件、设备清单，或混音素材与参考方向。",
+      en: "Review venue conditions and gear, or mix stems and references.",
     },
   },
   {
     order: 3,
-    title: { cn: "现场调试", en: "On-Site Tuning" },
+    title: { cn: "制定声音方案", en: "Define Sound Plan" },
     description: {
-      cn: "完成增益、EQ、延时、相位、压限与系统校准。",
-      en: "Gain staging, EQ, delay, phase, limiting and system calibration.",
+      cn: "明确系统调试、现场调音或后期混音的执行重点与交付标准。",
+      en: "Define priorities for system tuning, live mixing or post-production, and deliverables.",
     },
   },
   {
     order: 4,
-    title: { cn: "交付复盘", en: "Delivery & Review" },
+    title: { cn: "执行调试 / 混音制作", en: "Tune / Mix" },
     description: {
-      cn: "提供项目记录、问题总结与后续优化建议。",
-      en: "Project notes, issue summary and follow-up recommendations.",
+      cn: "现场系统调试、演出混音，或录音后期编辑与混音制作。",
+      en: "On-site system tuning and live mixing, or editing and mix production.",
+    },
+  },
+  {
+    order: 5,
+    title: { cn: "交付与复盘", en: "Deliver & Review" },
+    description: {
+      cn: "交付成果，整理问题记录，并给出后续优化建议。",
+      en: "Deliver results, document issues, and share follow-up suggestions.",
     },
   },
 ];
@@ -177,50 +185,66 @@ export const HOME_WORKFLOW_STEPS = [
 export const SOUND_ISSUES = [
   {
     order: 1,
-    title: { cn: "人声听不清", en: "Vocals Not Clear" },
+    title: { cn: "人声不清", en: "Unclear Vocals" },
     description: {
-      cn: "可能与频段遮蔽、话筒增益、系统覆盖和现场反射有关。",
-      en: "Often linked to masking, mic gain, coverage gaps and room reflections.",
+      cn: "可能与频段遮蔽、话筒增益、主扩覆盖或房间反射有关。",
+      en: "Often linked to masking, mic gain, PA coverage or room reflections.",
     },
   },
   {
     order: 2,
-    title: { cn: "低频轰头", en: "Overwhelming Low End" },
+    title: { cn: "现场啸叫", en: "Feedback" },
     description: {
-      cn: "可能与房间驻波、超低摆位、相位耦合和 EQ 策略有关。",
-      en: "Room modes, sub placement, phase coupling and EQ strategy may contribute.",
+      cn: "可能与话筒位置、监听摆位、增益结构或房间反射有关。",
+      en: "Mic placement, monitor aim, gain structure or reflections may contribute.",
     },
   },
   {
     order: 3,
-    title: { cn: "返听不稳定", en: "Unstable Monitors" },
+    title: { cn: "低频发轰", en: "Boomy Low End" },
     description: {
-      cn: "可能与舞台声压、返听覆盖、话筒指向和监听混音有关。",
-      en: "Stage SPL, monitor coverage, mic direction and monitor mix are common factors.",
+      cn: "可能与房间驻波、超低摆位、相位耦合或 EQ 策略有关。",
+      en: "Room modes, sub placement, phase coupling or EQ strategy are common factors.",
     },
   },
   {
     order: 4,
-    title: { cn: "覆盖不均匀", en: "Uneven Coverage" },
+    title: { cn: "声音刺耳", en: "Harsh Sound" },
     description: {
-      cn: "可能与音箱角度、高度、延时补声和系统设计有关。",
-      en: "Speaker aim, height, delay fills and system design often play a role.",
+      cn: "可能与高频过量、失真、压缩过猛或音箱指向有关。",
+      en: "Excess highs, distortion, over-compression or speaker aim may be involved.",
     },
   },
   {
     order: 5,
-    title: { cn: "啸叫频繁", en: "Frequent Feedback" },
+    title: { cn: "覆盖不均匀", en: "Uneven Coverage" },
     description: {
-      cn: "可能与话筒位置、增益结构、监听系统和房间反射有关。",
-      en: "Mic placement, gain structure, monitoring and reflections are typical causes.",
+      cn: "可能与音箱角度、高度、延时补声或系统设计有关。",
+      en: "Speaker aim, height, delay fills or system design often play a role.",
     },
   },
   {
     order: 6,
-    title: { cn: "系统延时不准", en: "Delay Misalignment" },
+    title: { cn: "舞台监听混乱", en: "Monitor Chaos" },
     description: {
-      cn: "可能与主扩、补声、超低和监听之间的时间关系有关。",
-      en: "Timing between mains, fills, subs and monitors may be out of sync.",
+      cn: "可能与返听混音、舞台声压、话筒串扰或监听路由有关。",
+      en: "Monitor mix, stage SPL, mic bleed or monitor routing may be unclear.",
+    },
+  },
+  {
+    order: 7,
+    title: { cn: "设备连接复杂", en: "Complex Routing" },
+    description: {
+      cn: "可能与信号链路规划、接口标准、多设备并联或标记不清有关。",
+      en: "Signal-path planning, connectors, multi-device patching or unclear labeling.",
+    },
+  },
+  {
+    order: 8,
+    title: { cn: "增益结构不稳定", en: "Unstable Gain Structure" },
+    description: {
+      cn: "可能与前级电平、台面推子、处理器压限或系统校准有关。",
+      en: "Preamps, console faders, processor limiting or system calibration may drift.",
     },
   },
 ];
