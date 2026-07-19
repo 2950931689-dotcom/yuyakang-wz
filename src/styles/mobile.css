@@ -998,31 +998,23 @@
     margin-top: var(--space-xl);
   }
 
-  /* Case detail: story-first on phone */
+  /* Case detail: keep data → media → intro → CTA (no hidden defer blocks) */
   .case-file {
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
   }
 
-  .case-file__section--mobile-defer {
-    display: none;
+  .case-file__prose {
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
-  .case-file__section--mobile-priority {
-    order: -5;
-  }
-
-  .case-file__section--mobile-priority .media-rack__head {
-    display: none;
-  }
-
-  .case-file__section--mobile-muted-head .case-file__section-head {
-    display: none;
-  }
-
-  .case-file__section--mobile-muted-head .case-file__prose {
-    margin-top: 0;
+  .media-rack__video,
+  .media-rack__slot-body,
+  .case-video-trigger {
+    max-width: 100%;
+    min-width: 0;
   }
 
   .case-file__cta {
