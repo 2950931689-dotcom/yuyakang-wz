@@ -1460,35 +1460,19 @@ html[data-theme="light"] .admin-layout {
   gap: 6px;
 }
 
-/* Mixing audio admin panel */
-.admin-mixing-track {
+.admin-mixing-empty {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--color-text-muted, #888);
+}
+
+.admin-mixing-hint {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-.admin-mixing-track__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.admin-mixing-track__index {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
-}
-
-.admin-mixing-track__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-text-secondary, #aaa);
 }

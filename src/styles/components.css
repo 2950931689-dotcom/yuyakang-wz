@@ -3727,6 +3727,16 @@
   margin-bottom: var(--space-md);
 }
 
+.mixing-audio-section__group-code {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
 .mixing-audio-section__group-title {
   margin: 0 0 6px;
   font-size: 1rem;
@@ -3738,6 +3748,13 @@
   font-size: 13px;
   line-height: 1.6;
   color: var(--color-text-secondary);
+}
+
+.mixing-audio-section__empty {
+  margin: 0;
+  padding: 16px 0 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
 }
 
 .mixing-audio-section__tracks {
@@ -3752,7 +3769,7 @@
 .mixing-audio-player {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   padding: 12px;
   border: 1px solid var(--color-line);
@@ -3777,7 +3794,7 @@
   align-items: center;
   gap: 6px;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
   background: transparent;
@@ -3828,18 +3845,60 @@
   white-space: nowrap;
 }
 
-.mixing-audio-player__seek-wrap {
-  display: block;
+.mixing-audio-player__timeline {
+  position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
   min-width: 0;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
 }
 
-.mixing-audio-player__seek {
+.mixing-audio-player__timeline:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-line-strong);
+  border-radius: 4px;
+}
+
+.mixing-audio-player__timeline[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.mixing-audio-player__timeline-track {
+  position: relative;
   width: 100%;
-  height: 4px;
-  margin: 0;
-  accent-color: var(--color-text-primary, #fff);
-  cursor: pointer;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.mixing-audio-player__timeline-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-text-primary, #fff);
+  pointer-events: none;
+}
+
+.mixing-audio-player__timeline-thumb {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  border: 1px solid var(--color-line-strong);
+  background: var(--color-text-primary, #fff);
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.95;
 }
 
 .mixing-audio-player__error {

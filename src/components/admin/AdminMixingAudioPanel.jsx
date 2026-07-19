@@ -1,6 +1,7 @@
 import {
   createDefaultMixingAudioModules,
   createEmptyMixingTrack,
+  isMixingAudioCase,
   normalizeMixingAudioModules,
 } from "../../lib/mixingAudio";
 import {
@@ -49,11 +50,11 @@ function TrackEditor({ track, index, total, onChange, onRemove, onMove }) {
         checked={track.enabled !== false}
         onChange={(e) => onChange({ enabled: e.target.checked })}
       />
-      <AdminField label="音频名称">
+      <AdminField label="音频名称（可修改）">
         <AdminInput
           value={track.name ?? ""}
           onChange={(e) => onChange({ name: e.target.value })}
-          placeholder="例如：贴唱作品 A"
+          placeholder="例如：贴唱作品 A / 分轨 Demo"
         />
       </AdminField>
       <AdminField label="说明（可选）">
@@ -64,11 +65,11 @@ function TrackEditor({ track, index, total, onChange, onRemove, onMove }) {
         />
       </AdminField>
       <AdminMediaField
-        label="音频文件 / URL"
+        label="上传音频文件 / 或填写 URL"
         value={track.audioUrl ?? ""}
         onChange={(v) => onChange({ audioUrl: v })}
         accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/ogg"
-        hint="上传后自动填入 URL，也可手动填写 /audio/... 或 /uploads/..."
+        hint="支持 mp3 / wav / aac / ogg 等，单文件建议 ≤ 30MB。上传后自动填入 URL，也可手填 /audio/... 或 /uploads/..."
       />
     </div>
   );
@@ -87,7 +88,7 @@ function GroupEditor({ groupKey, group, label, onGroupChange }) {
       ...tracks,
       createEmptyMixingTrack(tracks.length + 1, groupKey === "vocalTune" ? "vocal" : "multi"),
     ];
-    onGroupChange({ ...group, tracks: next });
+    onGroupChange({ ...group, tracks: next }, { autoEnable: true });
   };
 
   const removeTrack = (index) => {
@@ -110,7 +111,11 @@ function GroupEditor({ groupKey, group, label, onGroupChange }) {
   };
 
   return (
-    <AdminFieldGroup eyebrow={label} title={`${label}音频列表`}>
+    <AdminFieldGroup
+      eyebrow={label}
+      title={`${label}模块`}
+      description={`在此${label}模块中新增、删除、改名并上传音频。前台对应「${label}」区块。`}
+    >
       <AdminBilingualInput
         label="模块标题"
         value={group?.title ?? { cn: "", en: "" }}
@@ -123,6 +128,9 @@ function GroupEditor({ groupKey, group, label, onGroupChange }) {
         multiline
         rows={2}
       />
+      {tracks.length === 0 ? (
+        <p className="admin-mixing-empty">暂无音频，点击下方按钮新增。</p>
+      ) : null}
       {tracks.map((track, index) => (
         <TrackEditor
           key={track.id || index}
@@ -135,33 +143,45 @@ function GroupEditor({ groupKey, group, label, onGroupChange }) {
         />
       ))}
       <button type="button" className="admin-btn admin-btn--secondary" onClick={addTrack}>
-        新增{label}音频
+        + 新增{label}音频
       </button>
     </AdminFieldGroup>
   );
 }
 
-/** Admin panel for caseItem.mixingAudioModules */
+/** Admin panel for caseItem.mixingAudioModules — 贴唱 / 分轨 */
 export default function AdminMixingAudioPanel({ caseItem, onChange }) {
   const modules = normalizeMixingAudioModules(
     caseItem.mixingAudioModules ?? createDefaultMixingAudioModules()
   );
+  const isMixing = isMixingAudioCase(caseItem);
 
-  const updateModules = (patch) => {
-    onChange({
-      mixingAudioModules: normalizeMixingAudioModules({ ...modules, ...patch }),
-    });
+  const updateModules = (patch, options = {}) => {
+    const next = normalizeMixingAudioModules({ ...modules, ...patch });
+    if (options.autoEnable && next.enabled !== true) {
+      next.enabled = true;
+    }
+    onChange({ mixingAudioModules: next });
   };
 
   return (
     <div className="admin-mixing-audio">
       <AdminFieldGroup
-        eyebrow="MIXING AUDIO"
-        title="混音案例音频模块"
-        description="仅对混音后期 / 录音编辑类案例在前台显示。贴唱与分轨可分别管理多条音频。"
+        eyebrow="MIXING MODULES"
+        title="贴唱 / 分轨音频"
+        description={
+          isMixing
+            ? "混音类案例详情页不再显示「项目详细信息」与「项目媒体机架」，只展示本页的贴唱与分轨模块。请开启开关并上传音频。"
+            : "当前案例分类不是混音后期 / 录音编辑：前台不会显示贴唱 / 分轨。可先切换分类，或在此预填内容。"
+        }
       >
+        {!isMixing ? (
+          <p className="admin-mixing-hint">
+            建议分类选择「混音后期」或「录音编辑」后，前台才会用贴唱 / 分轨替换项目详情与媒体机架。
+          </p>
+        ) : null}
         <AdminToggle
-          label="开启混音音频模块"
+          label="开启贴唱 / 分轨前台展示"
           checked={modules.enabled === true}
           onChange={(e) => updateModules({ enabled: e.target.checked })}
         />
@@ -171,13 +191,13 @@ export default function AdminMixingAudioPanel({ caseItem, onChange }) {
         groupKey="vocalTune"
         group={modules.vocalTune}
         label="贴唱"
-        onGroupChange={(vocalTune) => updateModules({ vocalTune })}
+        onGroupChange={(vocalTune, options) => updateModules({ vocalTune }, options)}
       />
       <GroupEditor
         groupKey="multitrack"
         group={modules.multitrack}
         label="分轨"
-        onGroupChange={(multitrack) => updateModules({ multitrack })}
+        onGroupChange={(multitrack, options) => updateModules({ multitrack }, options)}
       />
     </div>
   );

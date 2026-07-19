@@ -9,7 +9,10 @@ import MixingAudioSection from "./MixingAudioSection";
 import ProjectConsole from "./ProjectConsole";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
-import { getVisibleMixingAudioModules } from "../../lib/mixingAudio";
+import {
+  getMixingDetailModules,
+  isMixingAudioCase,
+} from "../../lib/mixingAudio";
 
 /**
  * Build a single「项目介绍」body from case narrative fields.
@@ -174,28 +177,36 @@ function MediaRack({ caseItem, content, lang }) {
 }
 
 /**
- * Simplified case detail body:
- * Project data → Media rack → Mixing audio (mixing cases only) → Introduction → CTA.
+ * Case detail body:
+ * - Live / other: Project data → Media rack → Introduction → CTA
+ * - Mixing: 贴唱 / 分轨 only → Introduction → CTA (no project data / media rack)
  */
 export default function CaseProjectFile({ caseItem, content, lang }) {
   const introduction = getCaseIntroductionText(caseItem, lang);
-  const mixingModules = getVisibleMixingAudioModules(caseItem);
+  const isMixing = isMixingAudioCase(caseItem);
+  const mixingModules = isMixing ? getMixingDetailModules(caseItem) : null;
 
   return (
     <article className="case-file fade-in">
-      <section className="case-file__section case-file__section--data">
-        <header className="case-file__section-head">
-          <span className="case-file__section-code">PROJECT DATA</span>
-          <h2 className="case-file__section-title">
-            {lang === "cn" ? "项目详细信息" : "Project Data"}
-          </h2>
-        </header>
-        <ProjectConsole caseItem={caseItem} content={content} lang={lang} />
-      </section>
+      {!isMixing && (
+        <>
+          <section className="case-file__section case-file__section--data">
+            <header className="case-file__section-head">
+              <span className="case-file__section-code">PROJECT DATA</span>
+              <h2 className="case-file__section-title">
+                {lang === "cn" ? "项目详细信息" : "Project Data"}
+              </h2>
+            </header>
+            <ProjectConsole caseItem={caseItem} content={content} lang={lang} />
+          </section>
 
-      <MediaRack caseItem={caseItem} content={content} lang={lang} />
+          <MediaRack caseItem={caseItem} content={content} lang={lang} />
+        </>
+      )}
 
-      {mixingModules && <MixingAudioSection modules={mixingModules} lang={lang} />}
+      {isMixing && mixingModules && (
+        <MixingAudioSection modules={mixingModules} lang={lang} />
+      )}
 
       <IntroductionSection text={introduction} lang={lang} />
 

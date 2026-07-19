@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 
 function formatTime(seconds) {
@@ -10,7 +10,7 @@ function formatTime(seconds) {
 }
 
 /**
- * Thin custom audio player — no third-party libs.
+ * Mixing audio player: combined play/pause + thin draggable timeline.
  * Parent coordinates exclusive playback via activeTrackId / onActivate.
  */
 export default function MixingAudioPlayer({
@@ -20,6 +20,7 @@ export default function MixingAudioPlayer({
   onActivate,
 }) {
   const audioRef = useRef(null);
+  const railRef = useRef(null);
   const seekingRef = useRef(false);
   const labelId = useId();
   const [playing, setPlaying] = useState(false);
@@ -93,6 +94,57 @@ export default function MixingAudioPlayer({
     }
   }, [isActive]);
 
+  const seekTo = useCallback(
+    (value) => {
+      const el = audioRef.current;
+      if (!el || !Number.isFinite(duration) || duration <= 0) return;
+      const next = Math.min(Math.max(Number(value) || 0, 0), duration);
+      el.currentTime = next;
+      setCurrent(next);
+    },
+    [duration]
+  );
+
+  const ratioFromClientX = useCallback(
+    (clientX) => {
+      const rail = railRef.current;
+      if (!rail || !Number.isFinite(duration) || duration <= 0) return 0;
+      const rect = rail.getBoundingClientRect();
+      if (rect.width <= 0) return 0;
+      const ratio = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+      return ratio * duration;
+    },
+    [duration]
+  );
+
+  const onRailPointerDown = (e) => {
+    if (!ready || error || duration <= 0) return;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    seekingRef.current = true;
+    onActivate?.(track.id);
+    const next = ratioFromClientX(e.clientX);
+    setCurrent(next);
+    seekTo(next);
+  };
+
+  const onRailPointerMove = (e) => {
+    if (!seekingRef.current) return;
+    const next = ratioFromClientX(e.clientX);
+    setCurrent(next);
+  };
+
+  const onRailPointerUp = (e) => {
+    if (!seekingRef.current) return;
+    seekingRef.current = false;
+    const next = ratioFromClientX(e.clientX);
+    seekTo(next);
+    try {
+      e.currentTarget.releasePointerCapture?.(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+  };
+
   const toggle = async () => {
     const el = audioRef.current;
     if (!el || error || !src) return;
@@ -109,16 +161,8 @@ export default function MixingAudioPlayer({
     }
   };
 
-  const seekTo = (value) => {
-    const el = audioRef.current;
-    if (!el || !Number.isFinite(duration) || duration <= 0) return;
-    const next = Math.min(Math.max(Number(value) || 0, 0), duration);
-    el.currentTime = next;
-    setCurrent(next);
-  };
-
   const max = Number.isFinite(duration) && duration > 0 ? duration : 0;
-  const progress = max > 0 ? current : 0;
+  const pct = max > 0 ? Math.min(Math.max((current / max) * 100, 0), 100) : 0;
 
   return (
     <div
@@ -134,6 +178,15 @@ export default function MixingAudioPlayer({
           disabled={!src || error}
           aria-labelledby={labelId}
           aria-pressed={playing}
+          aria-label={
+            playing
+              ? lang === "cn"
+                ? "暂停"
+                : "Pause"
+              : lang === "cn"
+                ? "播放"
+                : "Play"
+          }
         >
           {playing ? <Pause size={16} strokeWidth={1.75} /> : <Play size={16} strokeWidth={1.75} />}
           <span className="mixing-audio-player__toggle-label">
@@ -166,33 +219,51 @@ export default function MixingAudioPlayer({
           {lang === "cn" ? "音频暂不可用" : "Audio unavailable"}
         </p>
       ) : (
-        <label className="mixing-audio-player__seek-wrap">
-          <span className="sr-only">
-            {lang === "cn" ? "音频进度" : "Seek"}
-          </span>
-          <input
-            type="range"
-            className="mixing-audio-player__seek"
-            min={0}
-            max={max || 0}
-            step={0.01}
-            value={progress}
-            disabled={!ready || max <= 0}
-            aria-label={lang === "cn" ? `${name} 进度` : `${name} seek`}
-            onPointerDown={() => {
-              seekingRef.current = true;
-            }}
-            onPointerUp={(e) => {
-              seekingRef.current = false;
-              seekTo(e.currentTarget.value);
-            }}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              setCurrent(v);
-              if (!seekingRef.current) seekTo(v);
-            }}
+        <div
+          ref={railRef}
+          className="mixing-audio-player__timeline"
+          role="slider"
+          tabIndex={ready && max > 0 ? 0 : -1}
+          aria-valuemin={0}
+          aria-valuemax={Math.round(max) || 0}
+          aria-valuenow={Math.round(current) || 0}
+          aria-valuetext={`${formatTime(current)} / ${formatTime(duration)}`}
+          aria-label={lang === "cn" ? `${name} 进度` : `${name} seek`}
+          aria-disabled={!ready || max <= 0}
+          onPointerDown={onRailPointerDown}
+          onPointerMove={onRailPointerMove}
+          onPointerUp={onRailPointerUp}
+          onPointerCancel={onRailPointerUp}
+          onKeyDown={(e) => {
+            if (!ready || max <= 0) return;
+            const step = Math.max(max * 0.02, 1);
+            if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+              e.preventDefault();
+              seekTo(current - step);
+            } else if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+              e.preventDefault();
+              seekTo(current + step);
+            } else if (e.key === "Home") {
+              e.preventDefault();
+              seekTo(0);
+            } else if (e.key === "End") {
+              e.preventDefault();
+              seekTo(max);
+            }
+          }}
+        >
+          <div className="mixing-audio-player__timeline-track" aria-hidden="true">
+            <div
+              className="mixing-audio-player__timeline-fill"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <div
+            className="mixing-audio-player__timeline-thumb"
+            style={{ left: `${pct}%` }}
+            aria-hidden="true"
           />
-        </label>
+        </div>
       )}
     </div>
   );

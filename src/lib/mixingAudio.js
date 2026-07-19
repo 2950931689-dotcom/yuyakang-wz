@@ -92,7 +92,7 @@ function visibleTracks(group) {
 }
 
 /**
- * Resolve modules for public case detail.
+ * Resolve modules for public case detail (strict).
  * Requires mixing category + enabled + at least one playable track.
  */
 export function getVisibleMixingAudioModules(caseItem) {
@@ -108,5 +108,28 @@ export function getVisibleMixingAudioModules(caseItem) {
     ...modules,
     vocalTune: { ...modules.vocalTune, tracks: vocalTracks },
     multitrack: { ...modules.multitrack, tracks: multiTracks },
+  };
+}
+
+/**
+ * Mixing case detail layout: always return 贴唱 + 分轨 shells.
+ * Tracks are filtered to playable ones; empty groups still render.
+ * If modules.enabled is false, still return shells (empty) so the page
+ * structure stays「贴唱 / 分轨」without falling back to media rack.
+ */
+export function getMixingDetailModules(caseItem) {
+  if (!isMixingAudioCase(caseItem)) return null;
+  const modules = normalizeMixingAudioModules(caseItem.mixingAudioModules);
+  const showTracks = modules.enabled === true;
+  return {
+    ...modules,
+    vocalTune: {
+      ...modules.vocalTune,
+      tracks: showTracks ? visibleTracks(modules.vocalTune) : [],
+    },
+    multitrack: {
+      ...modules.multitrack,
+      tracks: showTracks ? visibleTracks(modules.multitrack) : [],
+    },
   };
 }

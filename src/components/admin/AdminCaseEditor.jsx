@@ -34,9 +34,9 @@ const TABS = [
 
   ["copy", "项目文案"],
 
-  ["media", "项目媒体"],
+  ["mixing-audio", "贴唱 / 分轨"],
 
-  ["mixing-audio", "混音音频"],
+  ["media", "项目媒体"],
 
   ["hero", "首页展示"],
 
@@ -366,6 +366,16 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
       {tab === "media" && (
 
         <AdminFieldGroup eyebrow="项目媒体" title="案例图片与音视频">
+
+          {["mixing-post-production", "recording-editing"].includes(caseItem.category) ? (
+
+            <p className="admin-mixing-hint">
+
+              混音类案例详情页不再展示「项目媒体机架」。试听请到「贴唱 / 分轨」标签上传。此处封面 / 视频仍可用于列表卡片与 SEO。
+
+            </p>
+
+          ) : null}
 
           <AdminMediaField label="封面图" value={caseItem.coverUrl ?? caseItem.coverImage ?? ""} onChange={(v) => update({ coverUrl: v, coverImage: v })} />
 
