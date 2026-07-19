@@ -363,8 +363,8 @@
         "caseSlug": "wild-live-shenzhen",
         "enabled": true,
         "title": {
-          "cn": "深圳 Wild Live",
-          "en": "Wild Live · Shenzhen"
+          "cn": "深圳南山 Wild Live",
+          "en": "Wild Live · Shenzhen Nanshan"
         },
         "video": "/cases/wild-live-shenzhen/video.mp4",
         "poster": "/cases/wild-live-shenzhen/gallery/gallery-01.webp",
@@ -622,40 +622,40 @@
         "en": "Nanshan, Shenzhen"
       },
       "role": {
-        "cn": "音响系统搭建与调试",
-        "en": "Sound System Engineering"
+        "cn": "场地音响系统改造与现场调音",
+        "en": "Venue System Upgrade & Live Sound"
       },
       "title": {
         "cn": "深圳南山 Wild Live",
-        "en": "Wild Live · Shenzhen"
+        "en": "Wild Live · Shenzhen Nanshan"
       },
       "summary": {
-        "cn": "约 200 平方米 Live 场地的音响系统搭建与调试，采用 dBsource 音响、处理器与功放，围绕覆盖、低频控制和经济实用性进行设计。",
-        "en": "Sound system design and tuning for a ~200㎡ live venue using dBsource loudspeakers, processing and amplification."
+        "cn": "小型 Live 场地音响系统改造与现场调音，重点优化覆盖、低频控制与 PA / Monitor 工作流。",
+        "en": "Compact live-venue PA upgrade and live mixing, focused on coverage, LF control and PA / Monitor workflow."
       },
       "background": {
-        "cn": "深圳南山 Wild Live 为小型音乐演出空间，需要在有限预算内实现可靠扩声。",
-        "en": "Wild Live Shenzhen is a compact live venue requiring reliable reinforcement within practical budget."
+        "cn": "深圳市南山区 Wild Live 场地音响系统改造与现场调音案例分享\n\n本次案例为深圳市南山区 Wild Live 的场地音响系统改造优化、系统调试以及现场乐队调音项目。该场地面积约 200 平方米左右，原系统使用的是 EV 音响，且未配置专业音频处理器。为了提升场地整体扩声表现、覆盖均匀度以及系统可控性，本次对主扩、返听以及系统处理部分进行了重新规划与升级。\n\n本次改造中，主扩与返听系统均更换为 dBsource 双 6.5 寸小尺寸点声源音箱，并新增一台 dBsource UNIT48 处理器，系统架构为 4 进 8 出。整体配置包括主扩 2 只、前补 2 只、后补 2 只、返听 2 只，通过处理器对不同区域进行独立管理和优化。\n\n在音箱系统设计中，很多问题都应该尽量在前级规划阶段解决，而不是等到后期调试时再依靠 EQ 或动态处理进行被动修正。因此，在前期方案设计时，我们根据场地面积、空间结构以及 Live 演出需求，对可能出现的声学问题进行了预估。",
+        "en": "Wild Live (Nanshan, Shenzhen) — venue PA upgrade and live band mixing.\n\nThis project covered system redesign, measurement-based tuning and live band mixing for Wild Live in Nanshan, Shenzhen. The room is about 200㎡. The previous system used EV loudspeakers without a dedicated loudspeaker processor. To improve coverage uniformity, system control and overall reinforcement quality, mains, monitors and processing were re-planned and upgraded.\n\nMains and monitors were replaced with dBsource dual 6.5\" compact point-source loudspeakers, with a new dBsource UNIT48 processor in a 4-in / 8-out architecture: 2 mains, 2 front fills, 2 rear fills and 2 stage monitors, each zone managed independently.\n\nMany loudspeaker-system problems should be solved in planning rather than corrected later with EQ and dynamics. Early design therefore estimated acoustic risks based on room size, layout and live-performance needs."
       },
       "services": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "系统改造 / 测量调试 / 现场乐队调音",
+        "en": "System upgrade / Measurement and tuning / Live band mixing"
       },
       "equipment": {
-        "cn": "dBsource 双 6.5 寸点声源音箱、前补、后补、返听、4 进 8 出处理器、Behringer WING RACK、double patch、声学模拟、测量调试。",
-        "en": "dBsource dual 6.5\" point-source, fills, monitors, 4×8 processor, WING RACK, double patch, simulation, measurement."
+        "cn": "dBsource 双 6.5 寸点声源音箱（主扩 2 / 前补 2 / 后补 2 / 返听 2）、dBsource UNIT48 处理器（4 进 8 出）、Behringer WING RACK、Double Patch、声学模拟、系统测量调试。",
+        "en": "dBsource dual 6.5\" point-source (2 mains / 2 front fills / 2 rear fills / 2 monitors), dBsource UNIT48 (4x8), Behringer WING RACK, Double Patch, acoustic simulation, measurement-based tuning."
       },
       "challenge": {
-        "cn": "场地面积约 200 平方米，低频驻波和低频反射是主要声学问题。过大尺寸或低频能量过强的系统容易造成低频堆积和听感浑浊。",
-        "en": "At ~200㎡, room modes and LF reflections were the main acoustic challenges; oversized LF systems would cause buildup and muddiness."
+        "cn": "对于 200 平方米左右的小型 Live 空间来说，低频驻波和低频反射往往是比较明显的声学困扰。如果系统本身低频能量过多，很容易造成声音浑浊、局部轰鸣、低频拖尾以及乐器层次不清晰等问题。因此，本次系统选择了小尺寸点声源音箱作为主要扩声方案，在满足声压和覆盖需求的同时，尽量减少不必要的低频能量激发，让整个场地的声音更加干净、清晰、可控。\n\n小尺寸点声源音箱的优势在于覆盖灵活、声音集中、调试效率高，也更适合这类面积不大、声学条件相对复杂的 Live 场地。相比单纯追求大尺寸和大声压，这种方案更注重实际听感、系统稳定性以及场地适配度，同时也是一个兼顾效果与成本的经济型改造方案。",
+        "en": "In a ~200㎡ live room, LF standing waves and reflections are common. Excess low-frequency energy easily causes muddiness, boom, LF hang and unclear instrument layers. Compact point-source loudspeakers were chosen to meet level and coverage needs while limiting unnecessary LF excitation, keeping the room cleaner and more controllable.\n\nCompact point-source systems offer flexible coverage, focused imaging and efficient tuning for smaller, acoustically complex live rooms. Rather than chasing cabinet size and raw SPL alone, this approach prioritizes listening quality, stability, venue fit and a practical cost-performance balance."
       },
       "solution": {
-        "cn": "选择双 6.5 寸点声源音箱作为主扩方案，配置主扩、前补、后补、返听及 4 进 8 出处理器。前期通过声学模拟规划摆位；调音台使用 Behringer WING RACK，采用 PA 与 Monitor 一体化及 double patch 独立控制。",
-        "en": "Dual 6.5\" point-source mains with front/rear fills, monitors and 4×8 processor. Acoustic simulation guided placement. Behringer WING RACK with double-patch PA/monitor routing."
+        "cn": "在前期规划阶段，我们结合声学模拟和现场空间结构，对音箱数量、摆位、覆盖角度以及补声区域进行了提前计算和安排。通过主扩、前补、后补之间的合理配合，让观众区不同位置都能获得相对均匀的声音覆盖，减少前排过大、后区不足或局部声音脱节的问题。\n\n在系统搭建与测量调试过程中，测量话筒尽量升高摆放，减少地面反射对测量结果造成的干扰，从而提升测量数据的准确性和参考价值。随后通过处理器对主扩、前补、后补、返听等不同输出进行独立管理，包括分频、均衡、延时、限幅以及各区域之间的能量比例调整。\n\n本次调音台使用的是 Behringer WING RACK，系统采用 PA 与 Monitor 一体化的工作方式。通过 Double Patch 的方式，对观众区扩声、舞台乐手监听、歌手监听以及对讲系统进行更加独立、精细的控制，让同一套调音系统可以同时满足前场扩声与舞台监听的需求。\n\n在现场乐队调音部分，重点围绕人声清晰度、乐器层次、低频控制和舞台监听稳定性进行处理。Live 场地的调音不能只追求单个通道好听，更重要的是让鼓、贝斯、吉他、键盘、人声之间形成合理的比例关系，让观众区听到的声音既有能量，也保持清晰度和音乐性。",
+        "en": "Planning combined acoustic simulation with the room layout to set loudspeaker count, placement, coverage angles and fill zones. Coordinated mains, front fills and rear fills improved audience coverage uniformity and reduced front-heavy / rear-weak or disconnected zones.\n\nDuring install and measurement, mics were raised to reduce floor-reflection contamination. The processor then managed mains, fills and monitors independently — crossover, EQ, delay, limiting and zone energy balance.\n\nThe console was a Behringer WING RACK with an integrated PA / Monitor workflow. Double Patch enabled finer independent control of FOH, band monitors, vocal monitors and talkback on one system.\n\nLive band mixing focused on vocal clarity, instrument layering, LF control and stable stage monitoring — balancing drums, bass, guitars, keys and vocals so the audience hears energy with clarity and musicality."
       },
       "result": {
-        "cn": "方案从场地声学、覆盖均匀度、低频控制、系统成本和调试效率综合考虑，实现了更适合该场地实际使用需求的扩声系统。",
-        "en": "The solution balanced acoustics, coverage, LF control, cost and workflow for practical daily use."
+        "cn": "整体来看，本次 Wild Live 的系统改造并不是简单更换设备，而是从场地声学、系统架构、覆盖方式、低频控制、处理器管理、PA 与 Monitor 工作流以及现场乐队调音等多个角度进行综合优化。\n\n一个好的 Live 场地系统，核心不是单纯追求更大的声压，而是要让声音在不同位置都足够稳定、清晰、均匀，并且能够适应不同类型的演出需求。设备只是基础，系统设计、测量调试和现场判断，才是最终决定听感的重要环节。",
+        "en": "Overall, this Wild Live upgrade was not a simple gear swap. It combined room acoustics, system architecture, coverage strategy, LF control, processor management, PA / Monitor workflow and live band mixing.\n\nA strong live-venue system is not defined by maximum SPL alone, but by stable, clear and even sound across the room for varied shows. Equipment is the foundation; design, measurement and on-site judgment shape the final listening experience."
       },
       "clientFeedback": {
         "cn": "",
@@ -672,26 +672,66 @@
       "externalVideoUrl": null,
       "seo": {
         "title": {
-          "cn": "深圳 Wild Live | YU YAKANG AUDIO",
-          "en": "Wild Live Shenzhen | YU YAKANG AUDIO"
+          "cn": "深圳南山 Wild Live 场地音响系统改造与现场调音 | YU YAKANG AUDIO",
+          "en": "Wild Live Shenzhen — Venue PA Upgrade and Live Mixing | YU YAKANG AUDIO"
         },
         "description": {
-          "cn": "【待补充】",
-          "en": "[TODO]"
+          "cn": "小型 Live 场地音响系统改造与现场调音，重点优化覆盖、低频控制与 PA / Monitor 工作流。",
+          "en": "Compact live-venue PA upgrade and live mixing focused on coverage, LF control and PA / Monitor workflow."
         },
         "keywords": {
           "cn": [
-            "Livehouse",
-            "深圳",
-            "调音"
+            "Live 场地",
+            "系统改造",
+            "现场调音",
+            "系统测量",
+            "PA / Monitor",
+            "Behringer WING RACK",
+            "Double Patch",
+            "dBsource UNIT48",
+            "点声源音箱",
+            "低频控制",
+            "覆盖优化",
+            "返听系统"
           ],
           "en": [
-            "livehouse",
-            "shenzhen",
-            "live sound"
+            "live venue",
+            "system upgrade",
+            "live mixing",
+            "measurement",
+            "PA / Monitor",
+            "Behringer WING RACK",
+            "Double Patch",
+            "dBsource UNIT48",
+            "point source",
+            "LF control",
+            "coverage",
+            "monitors"
           ]
         }
-      }
+      },
+      "toolsUsed": [
+        "dBsource UNIT48",
+        "Behringer WING RACK",
+        "Double Patch",
+        "点声源音箱",
+        "系统测量",
+        "PA / Monitor"
+      ],
+      "tags": [
+        {
+          "cn": "LIVE SYSTEM TUNING",
+          "en": "LIVE SYSTEM TUNING"
+        },
+        {
+          "cn": "FIELD SOUND REINFORCEMENT",
+          "en": "FIELD SOUND REINFORCEMENT"
+        },
+        {
+          "cn": "PA / MONITOR WORKFLOW",
+          "en": "PA / MONITOR WORKFLOW"
+        }
+      ]
     },
     {
       "id": "case-maca-live-guangning",
