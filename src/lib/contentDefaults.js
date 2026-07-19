@@ -50,6 +50,7 @@ export function normalizeContent(raw) {
     cases: asArray(source.cases ?? mockData.cases),
     services: asArray(source.services ?? mockData.services),
     certificates: asArray(source.certificates ?? mockData.certificates),
+    featuredVideos: asArray(source.featuredVideos ?? mockData.featuredVideos),
     socialLinks: {
       ...asObject(mockData.socialLinks),
       ...asObject(source.socialLinks),

@@ -476,8 +476,30 @@ export function getDouyinUrl(socialLinks) {
   return socialLinks?.douyinUrl || socialLinks?.douyinUrlDraft || "";
 }
 
+/** Formal Douyin homepage only — ignores draft / self links. */
+export function getOfficialDouyinUrl(socialLinks) {
+  const url = String(socialLinks?.douyinUrl || "").trim();
+  if (!url || isDouyinSelfLink(url)) return "";
+  return url;
+}
+
 export function isDouyinSelfLink(url) {
   return url?.includes("/user/self") ?? false;
+}
+
+/**
+ * Manual featured video cards for homepage (no scraping).
+ * Missing field / empty array → [].
+ */
+export function getFeaturedVideos(content) {
+  const list = Array.isArray(content?.featuredVideos) ? content.featuredVideos : [];
+  return list
+    .filter((item) => {
+      if (!item || item.enabled === false) return false;
+      return Boolean(String(item.url || "").trim());
+    })
+    .slice()
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
 export function getWechatQr(content) {
