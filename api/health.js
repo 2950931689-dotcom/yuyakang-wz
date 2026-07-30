@@ -1,8 +1,15 @@
 import {
-  checkTableReadable,
+  buildDiagnostics,
+  checkTableStatus,
   createSupabaseAdmin,
   getSupabaseConfigError,
+  probeSupabaseConnection,
+  sanitizeConnectionError,
+  validateServiceRoleKey,
+  validateSupabaseUrl,
 } from './_lib/supabaseServer.js';
+
+const TABLE_NAMES = ['site_content', 'media_assets', 'bookings'];
 
 function basePayload() {
   return {
@@ -12,22 +19,23 @@ function basePayload() {
   };
 }
 
-function sanitizeErrorMessage(error) {
-  if (error?.code === 'NOT_CONFIGURED') {
-    return 'Supabase not configured';
+function errorResponse(res, status, payload) {
+  return res.status(status).json(payload);
+}
+
+async function inspectTables(supabase) {
+  const tables = {};
+  const tableErrors = {};
+
+  for (const tableName of TABLE_NAMES) {
+    const result = await checkTableStatus(supabase, tableName);
+    tables[tableName] = result.readable;
+    if (result.error) {
+      tableErrors[tableName] = result.error;
+    }
   }
 
-  const message = String(error?.message || 'Supabase connection failed');
-
-  if (message.toLowerCase().includes('fetch failed')) {
-    return 'Unable to reach Supabase';
-  }
-
-  if (message.toLowerCase().includes('invalid api key')) {
-    return 'Invalid Supabase credentials';
-  }
-
-  return message.slice(0, 200);
+  return { tables, tableErrors };
 }
 
 export default async function handler(req, res) {
@@ -37,44 +45,100 @@ export default async function handler(req, res) {
   }
 
   const base = basePayload();
-  const configError = getSupabaseConfigError();
+  const diagnostics = buildDiagnostics();
 
+  const configError = getSupabaseConfigError();
   if (configError) {
-    return res.status(503).json({
+    return errorResponse(res, 503, {
       ok: false,
       ...base,
       supabase: 'not_configured',
       missing: configError.missing,
+      diagnostics,
+    });
+  }
+
+  const urlCheck = validateSupabaseUrl(process.env.SUPABASE_URL);
+  if (!urlCheck.ok) {
+    if (urlCheck.code === 'MISSING') {
+      return errorResponse(res, 503, {
+        ok: false,
+        ...base,
+        supabase: 'not_configured',
+        missing: urlCheck.missing,
+        diagnostics,
+      });
+    }
+
+    return errorResponse(res, 503, {
+      ok: false,
+      ...base,
+      supabase: 'invalid_url',
+      error: urlCheck.error,
+      diagnostics,
+    });
+  }
+
+  const keyCheck = validateServiceRoleKey(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  if (!keyCheck.ok) {
+    if (keyCheck.code === 'MISSING') {
+      return errorResponse(res, 503, {
+        ok: false,
+        ...base,
+        supabase: 'not_configured',
+        missing: keyCheck.missing,
+        diagnostics,
+      });
+    }
+
+    return errorResponse(res, 503, {
+      ok: false,
+      ...base,
+      supabase: 'invalid_key_shape',
+      error: keyCheck.error,
+      diagnostics,
     });
   }
 
   try {
     const supabase = createSupabaseAdmin();
+    const probe = await probeSupabaseConnection(supabase);
 
-    const tables = {
-      site_content: await checkTableReadable(supabase, 'site_content'),
-      media_assets: await checkTableReadable(supabase, 'media_assets'),
-      bookings: false,
-    };
-
-    try {
-      tables.bookings = await checkTableReadable(supabase, 'bookings');
-    } catch {
-      tables.bookings = false;
+    if (!probe.connected) {
+      const { errorName, errorMessage } = sanitizeConnectionError(probe.probeError);
+      return errorResponse(res, 503, {
+        ok: false,
+        ...base,
+        supabase: 'error',
+        errorName,
+        errorMessage,
+        diagnostics,
+      });
     }
 
-    return res.status(200).json({
+    const { tables, tableErrors } = await inspectTables(supabase);
+    const payload = {
       ok: true,
       ...base,
       supabase: 'connected',
       tables,
-    });
+      diagnostics,
+    };
+
+    if (Object.keys(tableErrors).length > 0) {
+      payload.tableErrors = tableErrors;
+    }
+
+    return res.status(200).json(payload);
   } catch (error) {
-    return res.status(503).json({
+    const { errorName, errorMessage } = sanitizeConnectionError(error);
+    return errorResponse(res, 503, {
       ok: false,
       ...base,
       supabase: 'error',
-      error: sanitizeErrorMessage(error),
+      errorName,
+      errorMessage,
+      diagnostics,
     });
   }
 }

@@ -65,7 +65,23 @@ ADMIN_SESSION_SECRET=...
 
 **仅支持 `GET`**，其他方法返回 `405`。
 
+所有响应均含 `diagnostics`（安全元数据，**不含密钥**）：
+
+| 字段 | 说明 |
+|------|------|
+| `hasSupabaseUrl` | 是否配置了 URL |
+| `hasServiceRoleKey` | 是否配置了 service role key |
+| `supabaseHost` | URL 的 hostname（如 `xxx.supabase.co`） |
+| `urlLooksValid` | URL 能否被解析 |
+| `urlProtocol` | 如 `https:` |
+| `urlHasPath` | URL 是否带多余 path（应为 `false`） |
+| `serviceRoleKeyLooksLikeJwt` | key 是否符合 JWT 三段式 |
+| `serviceRoleKeyLength` | key 字符长度（非内容） |
+| `nodeEnv` | `process.env.NODE_ENV` 或 `null` |
+
 ### 成功（Supabase 可连接）
+
+HTTP `200`
 
 ```json
 {
@@ -76,45 +92,57 @@ ADMIN_SESSION_SECRET=...
   "tables": {
     "site_content": true,
     "media_assets": true,
-    "bookings": true
+    "bookings": false
   },
+  "tableErrors": {
+    "bookings": "Table not found"
+  },
+  "diagnostics": { "...": "见上表" },
   "timestamp": "2026-07-30T12:00:00.000Z"
 }
 ```
 
-`tables.*` 为 `false` 表示表不存在或不可读；**`bookings` 为 `false` 不会导致 `ok: false`**。
+- `tables.*` 为 `false` 表示表不存在或不可读；**表缺失仍返回 `supabase: "connected"`**。
+- **`bookings` 为 `false` 不导致 `ok: false`**。
+- `tableErrors` 仅在存在表级问题时出现。
 
 ### 环境变量缺失
 
-HTTP `503`
+HTTP `503` — `supabase: "not_configured"`
 
 ```json
 {
-  "ok": false,
-  "mode": "vercel-supabase",
-  "runtime": "vercel-function",
-  "supabase": "not_configured",
-  "missing": ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"],
-  "timestamp": "..."
+  "missing": ["SUPABASE_URL"]
 }
 ```
 
-### Supabase 连接失败
+或 `["SUPABASE_SERVICE_ROLE_KEY"]`，或两者兼有。
+
+### URL / Key 格式错误
 
 HTTP `503`
 
+| `supabase` | `error` 示例 |
+|------------|--------------|
+| `invalid_url` | `Invalid SUPABASE_URL` |
+| `invalid_url` | `SUPABASE_URL must start with https://` |
+| `invalid_url` | `SUPABASE_URL host does not look like a Supabase project host` |
+| `invalid_key_shape` | `SUPABASE_SERVICE_ROLE_KEY does not look like a JWT` |
+
+### Supabase 连接失败（网络 / 鉴权）
+
+HTTP `503` — `supabase: "error"`
+
 ```json
 {
-  "ok": false,
-  "mode": "vercel-supabase",
-  "runtime": "vercel-function",
-  "supabase": "error",
-  "error": "简短错误信息",
-  "timestamp": "..."
+  "errorName": "TypeError",
+  "errorMessage": "Network request to Supabase failed"
 }
 ```
 
-不返回密钥、连接串或完整堆栈。
+或 `errorMessage: "Invalid Supabase API key"` 等安全简短信息。
+
+**禁止返回：** 密钥原文、Authorization header、完整 stack、JWT payload。
 
 ---
 
