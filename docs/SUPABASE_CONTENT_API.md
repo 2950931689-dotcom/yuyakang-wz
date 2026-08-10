@@ -1,19 +1,30 @@
-# 8.4 Supabase Content API — GET /api/content
+# 8.4 / 8.5 Supabase Content API
 
 > **YU YAKANG AUDIO**  
 > 前置：8.3 已将内容导入 `site_content`（16 rows）  
-> 本阶段：**Vercel Serverless 读 Supabase 组装 content JSON**；不改前台、不改后台保存、不改上传
+> **8.4**：Vercel Serverless **读** Supabase 组装 content JSON  
+> **8.5**：Vercel Serverless **写** section → Supabase（见 [SUPABASE_CONTENT_WRITE_API.md](./SUPABASE_CONTENT_WRITE_API.md)）
 
 ---
 
-## 1. 本阶段目标
+## 1. 本阶段目标（8.4 GET — 已完成）
 
 实现 `GET /api/content`：
 
 1. 优先从 Supabase `public.site_content` 读取 `key` + `data_json`。
 2. 组装为与旧 Express 相同的**完整 content 对象**（顶层 section 键）。
 3. Supabase 不可用 → 安全 fallback 本地 JSON，避免前台黑屏。
-4. **不**写入 Supabase；**不**改 `src/`（除非极小兼容，本阶段未改）。
+4. **不**写入 Supabase（写入见 8.5）。
+
+### 8.5 PATCH（已完成）
+
+- `PATCH /api/content/section/:key` → Supabase upsert
+- Admin session 保护 + 最小 `api/admin/login|me|logout`
+- 详见 [SUPABASE_CONTENT_WRITE_API.md](./SUPABASE_CONTENT_WRITE_API.md)
+
+### 后续：8.6 上传
+
+- `POST /api/upload` → Supabase Storage（本阶段未做）
 
 ---
 
@@ -148,11 +159,13 @@ https://www.yuyakang.top/api/content?t=1735689600
 
 ---
 
-## 9. 下一阶段：8.5
+## 9. 下一阶段
 
-`PATCH /api/content/section/:key` 写回 Supabase `site_content`，替换 Express 保存路径。
+1. ~~**8.5** — `PATCH /api/content/section/:key` 写 Supabase~~ ✅ 见 [SUPABASE_CONTENT_WRITE_API.md](./SUPABASE_CONTENT_WRITE_API.md)
+2. **8.6** — `/api/upload` → Supabase Storage
+3. **8.7** — `/admin` 同域入口迁移
 
-详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md)。
+详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md) § 8.5–8.7。
 
 ---
 

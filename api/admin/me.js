@@ -1,0 +1,32 @@
+import {
+  getSessionFromRequest,
+  isAuthConfigured,
+} from '../_lib/adminAuth.js';
+
+export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!isAuthConfigured()) {
+    return res.status(503).json({
+      ok: false,
+      authenticated: false,
+      message: '后台认证未配置',
+    });
+  }
+
+  const session = getSessionFromRequest(req);
+  if (!session) {
+    return res.status(401).json({ authenticated: false });
+  }
+
+  return res.status(200).json({
+    authenticated: true,
+    user: { username: session.username },
+  });
+}
