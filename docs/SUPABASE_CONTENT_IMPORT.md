@@ -156,9 +156,9 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 
 ---
 
-## 9. 下一阶段：8.4
+## 9. 下一阶段
 
-实现 Vercel `GET /api/content`（或等价）从 `site_content` 组装 JSON，前台保留 mock fallback。  
-**仅在导入验证通过后再进入 8.4。**
+1. **8.4** — `GET /api/content` 从 Supabase 组装 JSON（见 [SUPABASE_CONTENT_API.md](./SUPABASE_CONTENT_API.md)）
+2. **8.5** — 后台 PATCH 写 Supabase
 
 详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md)。

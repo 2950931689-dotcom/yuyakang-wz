@@ -288,6 +288,9 @@ alter table public.bookings enable row level security;
 5. **确认 `supabase: "connected"` 且 `site_content` 可读后**，进入 **8.3 内容导入**：
    - 文档：[SUPABASE_CONTENT_IMPORT.md](./SUPABASE_CONTENT_IMPORT.md)
    - 脚本：`npm run supabase:import:dry-run` → 确认后再 `--apply`
-6. 导入验证通过后再进入 **8.4**（`/api/content` 读 Supabase）。
+6. 导入验证通过后再进入 **8.4**（`/api/content` 读 Supabase）：
+   - 文档：[SUPABASE_CONTENT_API.md](./SUPABASE_CONTENT_API.md)
+   - 线上：`https://www.yuyakang.top/api/content?t=...`
+7. **8.5**：后台 PATCH 写 Supabase。
 
-详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md) § 8.3–8.4。
+详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md) § 8.3–8.5。
