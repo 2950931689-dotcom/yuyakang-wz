@@ -275,7 +275,7 @@ alter table public.bookings enable row level security;
 
 ---
 
-## 8. 下一步（部署后复测，再决定是否进 8.3）
+## 8. 下一步（部署后复测，再决定是否进 8.3 / 8.4）
 
 1. 将含 diagnostics 的 commit **push 到 master**（需你明确指令；本阶段默认不 push）。
 2. 等待 Vercel 自动部署。
@@ -284,7 +284,10 @@ alter table public.bookings enable row level security;
    - `not_configured` → 补 Vercel 环境变量
    - `invalid_url` / `invalid_key_shape` → 修正 URL 或 service role key 格式（URL 不要带 `/rest/v1/`）
    - `connected` + 某表 `false` → 在 SQL Editor 建表（bookings false 可暂缓）
-   - `error` + `errorMessage` → 查网络 / 密钥 / 项目状态
-5. **确认真实错误后再进入 8.3 内容导入**；本阶段不做导入、不做后台保存/上传迁移。
+   - `error` / `network_error` / `sdk_error` → 查网络 / 密钥 / 项目状态
+5. **确认 `supabase: "connected"` 且 `site_content` 可读后**，进入 **8.3 内容导入**：
+   - 文档：[SUPABASE_CONTENT_IMPORT.md](./SUPABASE_CONTENT_IMPORT.md)
+   - 脚本：`npm run supabase:import:dry-run` → 确认后再 `--apply`
+6. 导入验证通过后再进入 **8.4**（`/api/content` 读 Supabase）。
 
-详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md) § 8.3。
+详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md) § 8.3–8.4。

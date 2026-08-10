@@ -12,7 +12,9 @@
     "build": "vite build",
     "build:web": "vite build",
     "preview": "vite preview",
-    "test:smoke": "node scripts/smoke-test.mjs"
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "supabase:import:dry-run": "node scripts/import-to-supabase.mjs --dry-run",
+    "supabase:import:apply": "node scripts/import-to-supabase.mjs --apply"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.111.0",
