@@ -1,10 +1,12 @@
 import {
+  buildAuthDiagnostics,
   buildSessionSetCookie,
   createSessionToken,
   getAdminUsername,
   isAuthConfigured,
   verifyAdminCredentials,
 } from '../_lib/adminAuth.js';
+import { readJsonRequestBody } from '../_lib/requestBody.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -22,17 +24,28 @@ export default async function handler(req, res) {
     });
   }
 
-  let body = req.body;
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body);
-    } catch {
-      return res.status(400).json({ ok: false, message: 'Invalid request body' });
-    }
+  let body;
+  try {
+    body = await readJsonRequestBody(req);
+  } catch {
+    return res.status(400).json({ ok: false, message: 'Invalid request body' });
   }
 
-  const { username, password } = body ?? {};
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return res.status(400).json({ ok: false, message: 'Invalid request body' });
+  }
+
+  const username = body.username;
+  const password = body.password;
+
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    return res.status(400).json({ ok: false, message: 'Invalid request body' });
+  }
+
   if (!verifyAdminCredentials(username, password)) {
+    const diagnostics = buildAuthDiagnostics(body);
+    res.setHeader('X-Auth-Diag-Body', diagnostics.bodyHasUsername && diagnostics.bodyHasPassword ? 'ok' : 'missing-fields');
+    res.setHeader('X-Auth-Diag-Hash-Format', diagnostics.passwordHashPrefixIsScrypt ? 'scrypt' : 'invalid');
     return res.status(401).json({
       ok: false,
       message: '账号或密码错误',

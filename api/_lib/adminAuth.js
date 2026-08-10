@@ -6,12 +6,66 @@ import {
 
 export const ADMIN_SESSION_COOKIE = 'yy_admin_session';
 
+function trimEnv(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+/**
+ * Normalize scrypt hash from env — trim, strip quotes, repair base64 '+' → space corruption.
+ */
+export function normalizePasswordHash(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+
+  let hash = raw.trim();
+  if (
+    (hash.startsWith('"') && hash.endsWith('"')) ||
+    (hash.startsWith("'") && hash.endsWith("'"))
+  ) {
+    hash = hash.slice(1, -1).trim();
+  }
+
+  const parts = hash.split(':');
+  if (parts.length !== 3 || parts[0] !== 'scrypt') return hash;
+
+  const fixB64 = (segment) => segment.trim().replace(/ /g, '+');
+  return `scrypt:${fixB64(parts[1])}:${fixB64(parts[2])}`;
+}
+
+/**
+ * Safe auth diagnostics — never exposes secrets or hash material.
+ */
+export function buildAuthDiagnostics(body) {
+  const username = process.env.ADMIN_USERNAME || '';
+  const hash = process.env.ADMIN_PASSWORD_HASH || '';
+  const normalizedHash = normalizePasswordHash(hash);
+
+  return {
+    hasAdminUsername: Boolean(trimEnv(username)),
+    adminUsernameLength: trimEnv(username).length,
+    hasPasswordHash: Boolean(normalizedHash),
+    passwordHashPrefixIsScrypt: normalizedHash.startsWith('scrypt:'),
+    passwordHashLength: normalizedHash.length,
+    passwordHashPartsCount: normalizedHash.split(':').length,
+    verifierAlgorithm: 'scrypt-sync-64-bytes',
+    hashHadWhitespace: hash.length !== hash.trim().length,
+    hashHadQuotes:
+      (hash.startsWith('"') && hash.endsWith('"')) ||
+      (hash.startsWith("'") && hash.endsWith("'")),
+    hashHadSpaceInBase64: hash.includes(' '),
+    hashHadPlusInBase64: hash.includes('+'),
+    bodyHasUsername: typeof body?.username === 'string' && body.username.length > 0,
+    bodyHasPassword: typeof body?.password === 'string' && body.password.length > 0,
+    bodyUsernameIsString: typeof body?.username === 'string',
+    bodyPasswordIsString: typeof body?.password === 'string',
+  };
+}
+
 function getConfig() {
   return {
-    sessionSecret: process.env.ADMIN_SESSION_SECRET || 'dev-change-me-in-production',
+    sessionSecret: trimEnv(process.env.ADMIN_SESSION_SECRET) || 'dev-change-me-in-production',
     sessionMaxAge: Number(process.env.ADMIN_SESSION_MAX_AGE) || 86_400_000,
-    adminUsername: process.env.ADMIN_USERNAME || 'admin',
-    adminPasswordHash: process.env.ADMIN_PASSWORD_HASH || '',
+    adminUsername: trimEnv(process.env.ADMIN_USERNAME) || 'admin',
+    adminPasswordHash: normalizePasswordHash(process.env.ADMIN_PASSWORD_HASH || ''),
   };
 }
 
@@ -49,7 +103,8 @@ export function verifyAdminCredentials(username, password) {
   if (typeof username !== 'string' || typeof password !== 'string') return false;
 
   const { adminUsername, adminPasswordHash } = getConfig();
-  const userBuf = Buffer.from(username);
+  const normalizedUsername = username.trim();
+  const userBuf = Buffer.from(normalizedUsername);
   const expectedUserBuf = Buffer.from(adminUsername);
   if (userBuf.length !== expectedUserBuf.length) return false;
   if (!timingSafeEqual(userBuf, expectedUserBuf)) return false;

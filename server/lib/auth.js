@@ -7,12 +7,34 @@ import {
 
 export const ADMIN_SESSION_COOKIE = "yy_admin_session";
 
+function trimEnv(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizePasswordHash(raw) {
+  if (!raw || typeof raw !== "string") return "";
+
+  let hash = raw.trim();
+  if (
+    (hash.startsWith('"') && hash.endsWith('"')) ||
+    (hash.startsWith("'") && hash.endsWith("'"))
+  ) {
+    hash = hash.slice(1, -1).trim();
+  }
+
+  const parts = hash.split(":");
+  if (parts.length !== 3 || parts[0] !== "scrypt") return hash;
+
+  const fixB64 = (segment) => segment.trim().replace(/ /g, "+");
+  return `scrypt:${fixB64(parts[1])}:${fixB64(parts[2])}`;
+}
+
 function getConfig() {
   return {
-    sessionSecret: process.env.ADMIN_SESSION_SECRET || "dev-change-me-in-production",
+    sessionSecret: trimEnv(process.env.ADMIN_SESSION_SECRET) || "dev-change-me-in-production",
     sessionMaxAge: Number(process.env.ADMIN_SESSION_MAX_AGE) || 86_400_000,
-    adminUsername: process.env.ADMIN_USERNAME || "admin",
-    adminPasswordHash: process.env.ADMIN_PASSWORD_HASH || "",
+    adminUsername: trimEnv(process.env.ADMIN_USERNAME) || "admin",
+    adminPasswordHash: normalizePasswordHash(process.env.ADMIN_PASSWORD_HASH || ""),
   };
 }
 
@@ -56,7 +78,8 @@ export function verifyAdminCredentials(username, password) {
   if (typeof username !== "string" || typeof password !== "string") return false;
 
   const { adminUsername, adminPasswordHash } = getConfig();
-  const userBuf = Buffer.from(username);
+  const normalizedUsername = username.trim();
+  const userBuf = Buffer.from(normalizedUsername);
   const expectedUserBuf = Buffer.from(adminUsername);
   if (userBuf.length !== expectedUserBuf.length) return false;
   if (!timingSafeEqual(userBuf, expectedUserBuf)) return false;
