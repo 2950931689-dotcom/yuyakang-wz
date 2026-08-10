@@ -3,8 +3,8 @@ import {
   checkTableStatus,
   createSupabaseAdmin,
   getSupabaseConfigError,
-  probeSupabaseConnection,
-  sanitizeConnectionError,
+  runDirectFetchCheck,
+  runSdkCheck,
   validateServiceRoleKey,
   validateSupabaseUrl,
 } from './_lib/supabaseServer.js';
@@ -28,10 +28,18 @@ async function inspectTables(supabase) {
   const tableErrors = {};
 
   for (const tableName of TABLE_NAMES) {
-    const result = await checkTableStatus(supabase, tableName);
-    tables[tableName] = result.readable;
-    if (result.error) {
-      tableErrors[tableName] = result.error;
+    try {
+      const result = await checkTableStatus(supabase, tableName);
+      tables[tableName] = result.readable;
+      if (result.error) {
+        tableErrors[tableName] = result.error;
+      }
+    } catch (error) {
+      tables[tableName] = false;
+      tableErrors[tableName] =
+        error?.message?.includes('does not exist')
+          ? 'relation does not exist'
+          : 'Query failed';
     }
   }
 
@@ -100,45 +108,97 @@ export default async function handler(req, res) {
     });
   }
 
+  const supabaseUrl = process.env.SUPABASE_URL.trim();
+
+  // 1) Network-only probe — never sends Authorization / apikey / service role.
+  const directFetchCheck = await runDirectFetchCheck(supabaseUrl);
+
+  // 2) SDK probe — independent of direct fetch.
+  let sdkCheck = {
+    attempted: false,
+    success: false,
+    errorName: null,
+    errorMessage: null,
+    causeName: null,
+    causeCode: null,
+    causeMessage: null,
+  };
+  let tables = null;
+  let tableErrors = null;
+
   try {
     const supabase = createSupabaseAdmin();
-    const probe = await probeSupabaseConnection(supabase);
+    sdkCheck = await runSdkCheck(supabase);
 
-    if (!probe.connected) {
-      const { errorName, errorMessage } = sanitizeConnectionError(probe.probeError);
-      return errorResponse(res, 503, {
-        ok: false,
-        ...base,
-        supabase: 'error',
-        errorName,
-        errorMessage,
-        diagnostics,
-      });
+    // Table checks stay independent; missing tables ≠ unreachable.
+    if (sdkCheck.success) {
+      const inspected = await inspectTables(supabase);
+      tables = inspected.tables;
+      tableErrors = inspected.tableErrors;
+    } else {
+      // Still attempt per-table reads when possible for clearer tableErrors.
+      try {
+        const inspected = await inspectTables(supabase);
+        tables = inspected.tables;
+        tableErrors = inspected.tableErrors;
+      } catch {
+        /* ignore — SDK already failed */
+      }
     }
-
-    const { tables, tableErrors } = await inspectTables(supabase);
-    const payload = {
-      ok: true,
-      ...base,
-      supabase: 'connected',
-      tables,
-      diagnostics,
-    };
-
-    if (Object.keys(tableErrors).length > 0) {
-      payload.tableErrors = tableErrors;
-    }
-
-    return res.status(200).json(payload);
   } catch (error) {
-    const { errorName, errorMessage } = sanitizeConnectionError(error);
+    sdkCheck = {
+      attempted: true,
+      success: false,
+      errorName: error?.name || 'Error',
+      errorMessage: 'fetch failed',
+      causeName: error?.cause?.name || null,
+      causeCode: error?.cause?.code ? String(error.cause.code) : null,
+      causeMessage: error?.cause?.message
+        ? String(error.cause.message).slice(0, 120)
+        : null,
+    };
+  }
+
+  if (!directFetchCheck.reachable) {
     return errorResponse(res, 503, {
       ok: false,
       ...base,
-      supabase: 'error',
-      errorName,
-      errorMessage,
+      supabase: 'network_error',
+      directFetchCheck,
+      sdkCheck,
       diagnostics,
     });
   }
+
+  if (!sdkCheck.success) {
+    const payload = {
+      ok: false,
+      ...base,
+      supabase: 'sdk_error',
+      directFetchCheck,
+      sdkCheck,
+      diagnostics,
+    };
+    if (tables) payload.tables = tables;
+    if (tableErrors && Object.keys(tableErrors).length > 0) {
+      payload.tableErrors = tableErrors;
+    }
+    return errorResponse(res, 503, payload);
+  }
+
+  const payload = {
+    ok: true,
+    ...base,
+    supabase: 'connected',
+    directFetchCheck,
+    sdkCheck,
+    tables,
+    diagnostics,
+  };
+
+  if (tableErrors && Object.keys(tableErrors).length > 0) {
+    payload.tableErrors = tableErrors;
+  }
+
+  return res.status(200).json(payload);
 }

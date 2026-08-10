@@ -212,6 +212,165 @@ export function sanitizeConnectionError(error) {
 }
 
 /**
+ * Extract Node/undici error.cause fields safely (no stacks, no secrets).
+ */
+export function extractErrorCause(error) {
+  const cause = error?.cause;
+  if (!cause || typeof cause !== 'object') {
+    return {
+      causeName: null,
+      causeCode: null,
+      causeMessage: null,
+    };
+  }
+
+  return {
+    causeName: typeof cause.name === 'string' ? cause.name : null,
+    causeCode:
+      typeof cause.code === 'string' || typeof cause.code === 'number'
+        ? String(cause.code)
+        : null,
+    causeMessage: cause.message
+      ? redactSecrets(String(cause.message)).slice(0, 120)
+      : null,
+  };
+}
+
+function safeShortMessage(text) {
+  return redactSecrets(String(text || '')).slice(0, 120);
+}
+
+/**
+ * Network-only probe: GET `${SUPABASE_URL}/rest/v1/` with NO Authorization / apikey.
+ * A 401 JSON body like "No API key found in request" means the host is reachable.
+ */
+export async function runDirectFetchCheck(supabaseUrl) {
+  const path = '/rest/v1/';
+  let urlHost = null;
+
+  try {
+    urlHost = new URL(supabaseUrl).hostname;
+  } catch {
+    return {
+      attempted: true,
+      urlHost: null,
+      path,
+      status: null,
+      ok: false,
+      reachable: false,
+      contentType: null,
+      shortMessage: 'Invalid SUPABASE_URL',
+      errorName: 'TypeError',
+      errorMessage: 'Invalid URL',
+      causeName: null,
+      causeCode: null,
+      causeMessage: null,
+    };
+  }
+
+  const target = `${supabaseUrl.replace(/\/$/, '')}${path}`;
+
+  try {
+    const response = await fetch(target, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      redirect: 'manual',
+    });
+
+    const contentType = response.headers.get('content-type') || null;
+    let shortMessage = null;
+    try {
+      const text = await response.text();
+      shortMessage = safeShortMessage(text);
+      try {
+        const json = JSON.parse(text);
+        if (json && typeof json.message === 'string') {
+          shortMessage = safeShortMessage(json.message);
+        } else if (json && typeof json.error === 'string') {
+          shortMessage = safeShortMessage(json.error);
+        }
+      } catch {
+        /* keep truncated text */
+      }
+    } catch {
+      shortMessage = null;
+    }
+
+    return {
+      attempted: true,
+      urlHost,
+      path,
+      status: response.status,
+      ok: response.ok,
+      reachable: true,
+      contentType,
+      shortMessage,
+      errorName: null,
+      errorMessage: null,
+      causeName: null,
+      causeCode: null,
+      causeMessage: null,
+    };
+  } catch (error) {
+    const { errorName, errorMessage } = sanitizeConnectionError(error);
+    const cause = extractErrorCause(error);
+    return {
+      attempted: true,
+      urlHost,
+      path,
+      status: null,
+      ok: false,
+      reachable: false,
+      contentType: null,
+      shortMessage: null,
+      errorName,
+      errorMessage,
+      ...cause,
+    };
+  }
+}
+
+/**
+ * SDK probe result for health — separate from directFetchCheck.
+ */
+export async function runSdkCheck(supabase) {
+  try {
+    const probe = await probeSupabaseConnection(supabase);
+    if (probe.connected) {
+      return {
+        attempted: true,
+        success: true,
+        errorName: null,
+        errorMessage: null,
+        causeName: null,
+        causeCode: null,
+        causeMessage: null,
+      };
+    }
+
+    const { errorName, errorMessage } = sanitizeConnectionError(probe.probeError);
+    const cause = extractErrorCause(probe.probeError);
+    return {
+      attempted: true,
+      success: false,
+      errorName,
+      errorMessage,
+      ...cause,
+    };
+  } catch (error) {
+    const { errorName, errorMessage } = sanitizeConnectionError(error);
+    const cause = extractErrorCause(error);
+    return {
+      attempted: true,
+      success: false,
+      errorName,
+      errorMessage,
+      ...cause,
+    };
+  }
+}
+
+/**
  * Per-table probe — never throws; returns readable flag and optional error text.
  */
 export async function checkTableStatus(supabase, tableName) {

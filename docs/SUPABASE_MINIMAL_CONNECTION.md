@@ -79,7 +79,7 @@ ADMIN_SESSION_SECRET=...
 | `serviceRoleKeyLength` | key 字符长度（非内容） |
 | `nodeEnv` | `process.env.NODE_ENV` 或 `null` |
 
-### 成功（Supabase 可连接）
+### 成功（Supabase SDK 可连接）
 
 HTTP `200`
 
@@ -89,13 +89,22 @@ HTTP `200`
   "mode": "vercel-supabase",
   "runtime": "vercel-function",
   "supabase": "connected",
+  "directFetchCheck": {
+    "attempted": true,
+    "urlHost": "xxx.supabase.co",
+    "path": "/rest/v1/",
+    "status": 401,
+    "reachable": true,
+    "shortMessage": "No API key found in request"
+  },
+  "sdkCheck": { "attempted": true, "success": true },
   "tables": {
     "site_content": true,
     "media_assets": true,
     "bookings": false
   },
   "tableErrors": {
-    "bookings": "Table not found"
+    "bookings": "relation does not exist"
   },
   "diagnostics": { "...": "见上表" },
   "timestamp": "2026-07-30T12:00:00.000Z"
@@ -105,6 +114,21 @@ HTTP `200`
 - `tables.*` 为 `false` 表示表不存在或不可读；**表缺失仍返回 `supabase: "connected"`**。
 - **`bookings` 为 `false` 不导致 `ok: false`**。
 - `tableErrors` 仅在存在表级问题时出现。
+
+### 网络诊断：`directFetchCheck`（无 key）
+
+- 直接 `GET ${SUPABASE_URL}/rest/v1/`，**不带** Authorization / apikey / service role。
+- 用于判断 **Vercel Function 能否连到 Supabase host**。
+- 常见可达结果：`status: 401`，`reachable: true`，`shortMessage: "No API key found in request"`（与浏览器打开 Data API 一致）。
+- `shortMessage` 最多约 120 字符，已脱敏；**不返回完整响应体**。
+- 若 `reachable: false` → `supabase: "network_error"`。
+
+### SDK 诊断：`sdkCheck`
+
+- 使用 service role 的 Supabase JS client 做只读探测。
+- 与 `directFetchCheck` **相互独立**：SDK 失败不影响 directFetch 结果。
+- 若 host 可达但 SDK 失败 → `supabase: "sdk_error"`，同时返回两者。
+- 可含安全的 `causeName` / `causeCode` / `causeMessage`（如 `ECONNRESET`），不含 stack。
 
 ### 环境变量缺失
 
@@ -138,24 +162,28 @@ HTTP `200` — `supabase: "connected"`，`ok: true`
 
 - `tables.site_content` / `media_assets` / `bookings` 各自独立为 `true`/`false`
 - 缺失表写入 `tableErrors`，例如 `"relation does not exist"` 或 `"permission denied"`
-- **不要把表缺失当成 Unable to reach Supabase**
+- **不要把表缺失当成 fetch failed / network_error**
 - **`bookings: false` 不阻塞本阶段**（仍可 `ok: true`）
 
-### Supabase 连接失败（网络等）
+### 网络失败 / SDK 失败
 
-HTTP `503` — `supabase: "error"`
+| `supabase` | 含义 | HTTP |
+|------------|------|------|
+| `network_error` | `directFetchCheck.reachable === false` | 503 |
+| `sdk_error` | host 可达，但 SDK 查询失败 | 503 |
 
 ```json
 {
-  "errorName": "TypeError",
-  "errorMessage": "fetch failed"
+  "ok": false,
+  "supabase": "sdk_error",
+  "directFetchCheck": { "reachable": true, "status": 401 },
+  "sdkCheck": { "success": false, "errorMessage": "fetch failed" }
 }
 ```
 
-或 `errorMessage: "Invalid Supabase API key"` 等安全简短信息。
+**禁止返回：** 密钥原文、密钥前后缀、Authorization / apikey header、完整 env、完整 stack、JWT payload、完整响应体。
 
-**禁止返回：** 密钥原文、密钥前后缀、Authorization / apikey header、完整 env、完整 stack、JWT payload。
-
+**只有 `supabase: "connected"`（且核心表就绪）后才进入 8.3 内容导入。**
 ---
 
 ## 5. 数据表检查方式
