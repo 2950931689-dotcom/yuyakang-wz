@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 const REQUIRED_ENV = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
-const JWT_PATTERN = /^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+/** Basic JWT shape only — never decode payload. */
+const JWT_PATTERN = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+const MIN_JWT_LENGTH = 80;
 
 /**
  * Returns { missing: string[] } when Supabase env is incomplete, otherwise null.
@@ -13,8 +15,17 @@ export function getSupabaseConfigError() {
   return { missing };
 }
 
+function looksLikeJwt(key) {
+  if (typeof key !== 'string') return false;
+  const trimmed = key.trim();
+  if (trimmed.length < MIN_JWT_LENGTH) return false;
+  const dots = (trimmed.match(/\./g) || []).length;
+  if (dots !== 2) return false;
+  return JWT_PATTERN.test(trimmed);
+}
+
 /**
- * Safe diagnostics — never includes key material or full URLs with secrets.
+ * Safe diagnostics — never includes key material, prefixes/suffixes, or full secrets.
  */
 export function buildDiagnostics() {
   const url = process.env.SUPABASE_URL?.trim() || '';
@@ -30,8 +41,12 @@ export function buildDiagnostics() {
       const parsed = new URL(url);
       supabaseHost = parsed.hostname;
       urlProtocol = parsed.protocol;
-      urlHasPath = parsed.pathname !== '/' && parsed.pathname !== '';
-      urlLooksValid = true;
+      urlHasPath = Boolean(
+        (parsed.pathname && parsed.pathname !== '/') || parsed.search || parsed.hash
+      );
+      const hostOk = parsed.hostname.endsWith('.supabase.co');
+      const protocolOk = parsed.protocol === 'https:';
+      urlLooksValid = protocolOk && hostOk && !urlHasPath;
     } catch {
       urlLooksValid = false;
     }
@@ -44,7 +59,7 @@ export function buildDiagnostics() {
     urlLooksValid,
     urlProtocol,
     urlHasPath,
-    serviceRoleKeyLooksLikeJwt: JWT_PATTERN.test(key),
+    serviceRoleKeyLooksLikeJwt: looksLikeJwt(key),
     serviceRoleKeyLength: key.length,
     nodeEnv: process.env.NODE_ENV || null,
   };
@@ -79,6 +94,17 @@ export function validateSupabaseUrl(urlRaw) {
     };
   }
 
+  const hasPath = Boolean(
+    (parsed.pathname && parsed.pathname !== '/') || parsed.search || parsed.hash
+  );
+  if (hasPath) {
+    return {
+      ok: false,
+      code: 'INVALID_URL',
+      error: 'SUPABASE_URL should not include a path',
+    };
+  }
+
   return { ok: true, parsed };
 }
 
@@ -88,7 +114,7 @@ export function validateServiceRoleKey(keyRaw) {
     return { ok: false, code: 'MISSING', missing: ['SUPABASE_SERVICE_ROLE_KEY'] };
   }
 
-  if (!JWT_PATTERN.test(key)) {
+  if (!looksLikeJwt(key)) {
     return {
       ok: false,
       code: 'INVALID_KEY_SHAPE',
@@ -139,8 +165,9 @@ function isMissingTableError(error) {
 
 function redactSecrets(text) {
   return String(text || '')
-    .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[redacted]')
+    .replace(/[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[redacted]')
     .replace(/Bearer\s+\S+/gi, 'Bearer [redacted]')
+    .replace(/apikey["']?\s*[:=]\s*["']?[^"'\\\s]+/gi, 'apikey=[redacted]')
     .slice(0, 200);
 }
 
@@ -150,14 +177,15 @@ function redactSecrets(text) {
 export function sanitizeTableError(error) {
   if (!error) return null;
   if (isMissingTableError(error)) {
-    return 'Table not found';
+    return 'relation does not exist';
   }
 
   const message = redactSecrets(error.message);
-  if (message.toLowerCase().includes('permission denied')) {
-    return 'Permission denied';
+  const lower = message.toLowerCase();
+  if (lower.includes('permission denied') || lower.includes('row-level security')) {
+    return 'permission denied';
   }
-  if (message.toLowerCase().includes('invalid api key')) {
+  if (lower.includes('invalid api key') || lower.includes('jwt')) {
     return 'Invalid API key';
   }
 
@@ -166,15 +194,18 @@ export function sanitizeTableError(error) {
 
 /**
  * Safe connection-level error fields for health responses.
+ * Never returns stacks, Authorization, or key material.
  */
 export function sanitizeConnectionError(error) {
   const errorName = error?.name || 'Error';
   let errorMessage = redactSecrets(error?.message || 'Supabase connection failed');
 
   if (errorMessage.toLowerCase().includes('fetch failed')) {
-    errorMessage = 'Network request to Supabase failed';
+    errorMessage = 'fetch failed';
   } else if (errorMessage.toLowerCase().includes('invalid api key')) {
     errorMessage = 'Invalid Supabase API key';
+  } else if (errorMessage.toLowerCase().includes('unable to reach')) {
+    errorMessage = 'Unable to reach Supabase endpoint';
   }
 
   return { errorName, errorMessage };
@@ -184,24 +215,34 @@ export function sanitizeConnectionError(error) {
  * Per-table probe — never throws; returns readable flag and optional error text.
  */
 export async function checkTableStatus(supabase, tableName) {
-  const { error } = await supabase
-    .from(tableName)
-    .select('*', { head: true, count: 'exact', limit: 1 });
+  try {
+    const { error } = await supabase
+      .from(tableName)
+      .select('*', { head: true, count: 'exact' })
+      .limit(1);
 
-  if (!error) {
-    return { readable: true, error: null, isMissing: false };
+    if (!error) {
+      return { readable: true, error: null, isMissing: false };
+    }
+
+    if (isMissingTableError(error)) {
+      return { readable: false, error: sanitizeTableError(error), isMissing: true };
+    }
+
+    return {
+      readable: false,
+      error: sanitizeTableError(error),
+      isMissing: false,
+      isConnectionIssue: true,
+    };
+  } catch (error) {
+    return {
+      readable: false,
+      error: sanitizeTableError(error) || 'Query failed',
+      isMissing: false,
+      isConnectionIssue: true,
+    };
   }
-
-  if (isMissingTableError(error)) {
-    return { readable: false, error: sanitizeTableError(error), isMissing: true };
-  }
-
-  return {
-    readable: false,
-    error: sanitizeTableError(error),
-    isMissing: false,
-    isConnectionIssue: true,
-  };
 }
 
 /**
@@ -209,17 +250,34 @@ export async function checkTableStatus(supabase, tableName) {
  * Missing table still counts as reachable Supabase REST API.
  */
 export async function probeSupabaseConnection(supabase) {
-  const { error } = await supabase
-    .from('site_content')
-    .select('*', { head: true, limit: 1 });
+  try {
+    const { error } = await supabase
+      .from('site_content')
+      .select('*', { head: true })
+      .limit(1);
 
-  if (!error) {
-    return { connected: true, probeError: null };
+    if (!error) {
+      return { connected: true, probeError: null };
+    }
+
+    if (isMissingTableError(error)) {
+      return { connected: true, probeError: null };
+    }
+
+    // Auth / permission errors still mean Supabase REST responded.
+    const msg = (error.message || '').toLowerCase();
+    if (
+      msg.includes('permission denied') ||
+      msg.includes('row-level security') ||
+      msg.includes('invalid api key') ||
+      error.code === '42501' ||
+      error.code === 'PGRST301'
+    ) {
+      return { connected: true, probeError: null };
+    }
+
+    return { connected: false, probeError: error };
+  } catch (error) {
+    return { connected: false, probeError: error };
   }
-
-  if (isMissingTableError(error)) {
-    return { connected: true, probeError: null };
-  }
-
-  return { connected: false, probeError: error };
 }

@@ -122,27 +122,39 @@ HTTP `503` — `supabase: "not_configured"`
 
 HTTP `503`
 
-| `supabase` | `error` 示例 |
-|------------|--------------|
-| `invalid_url` | `Invalid SUPABASE_URL` |
-| `invalid_url` | `SUPABASE_URL must start with https://` |
-| `invalid_url` | `SUPABASE_URL host does not look like a Supabase project host` |
-| `invalid_key_shape` | `SUPABASE_SERVICE_ROLE_KEY does not look like a JWT` |
+| `supabase` | `error` 示例 | 如何判断 |
+|------------|--------------|----------|
+| `invalid_url` | `Invalid SUPABASE_URL` | URL 无法解析 |
+| `invalid_url` | `SUPABASE_URL must start with https://` | 协议不是 https |
+| `invalid_url` | `SUPABASE_URL host does not look like a Supabase project host` | host 不以 `.supabase.co` 结尾 |
+| `invalid_url` | `SUPABASE_URL should not include a path` | 含 `/rest/v1/` 等 path / query / hash |
+| `invalid_key_shape` | `SUPABASE_SERVICE_ROLE_KEY does not look like a JWT` | 非字符串、长度过短、或不是两段点号的 JWT 形状（**不 decode payload**） |
 
-### Supabase 连接失败（网络 / 鉴权）
+对应 `diagnostics`：path 错误时 `urlHasPath: true` 且 `urlLooksValid: false`。
+
+### Supabase 已连接但表缺失
+
+HTTP `200` — `supabase: "connected"`，`ok: true`
+
+- `tables.site_content` / `media_assets` / `bookings` 各自独立为 `true`/`false`
+- 缺失表写入 `tableErrors`，例如 `"relation does not exist"` 或 `"permission denied"`
+- **不要把表缺失当成 Unable to reach Supabase**
+- **`bookings: false` 不阻塞本阶段**（仍可 `ok: true`）
+
+### Supabase 连接失败（网络等）
 
 HTTP `503` — `supabase: "error"`
 
 ```json
 {
   "errorName": "TypeError",
-  "errorMessage": "Network request to Supabase failed"
+  "errorMessage": "fetch failed"
 }
 ```
 
 或 `errorMessage: "Invalid Supabase API key"` 等安全简短信息。
 
-**禁止返回：** 密钥原文、Authorization header、完整 stack、JWT payload。
+**禁止返回：** 密钥原文、密钥前后缀、Authorization / apikey header、完整 env、完整 stack、JWT payload。
 
 ---
 
@@ -235,11 +247,16 @@ alter table public.bookings enable row level security;
 
 ---
 
-## 8. 下一阶段：8.3 内容数据导入
+## 8. 下一步（部署后复测，再决定是否进 8.3）
 
-1. 确认 `site_content`、`media_assets` 表就绪；若 `bookings` 为 `false`，先执行上文 bookings SQL。
-2. 编写 `scripts/import-to-supabase.mjs`，将 `server/data/site-content.json`（或 example/mock）导入 `site_content`。
-3. 实现 `GET /api/content` serverless，读 Supabase 组装 JSON，保留 mock fallback。
-4. **仍不**改前台组件结构。
+1. 将含 diagnostics 的 commit **push 到 master**（需你明确指令；本阶段默认不 push）。
+2. 等待 Vercel 自动部署。
+3. 重新打开 `https://www.yuyakang.top/api/health`。
+4. 根据返回判断：
+   - `not_configured` → 补 Vercel 环境变量
+   - `invalid_url` / `invalid_key_shape` → 修正 URL 或 service role key 格式（URL 不要带 `/rest/v1/`）
+   - `connected` + 某表 `false` → 在 SQL Editor 建表（bookings false 可暂缓）
+   - `error` + `errorMessage` → 查网络 / 密钥 / 项目状态
+5. **确认真实错误后再进入 8.3 内容导入**；本阶段不做导入、不做后台保存/上传迁移。
 
 详见 [FREE_BACKEND_MIGRATION_ROADMAP.md](./FREE_BACKEND_MIGRATION_ROADMAP.md) § 8.3。
