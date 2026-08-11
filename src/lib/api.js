@@ -71,6 +71,40 @@ async function parseResponse(res, { admin = false } = {}) {
 }
 
 const REQUEST_TIMEOUT_MS = 10_000;
+const UPLOAD_SIGN_TIMEOUT_MS = 30_000;
+const UPLOAD_COMPLETE_TIMEOUT_MS = 30_000;
+/** Large video uploads — storage PUT bypasses Vercel body limit. */
+const UPLOAD_STORAGE_TIMEOUT_MS = 30 * 60 * 1000;
+
+async function uploadToSignedStorage(signedUrl, file) {
+  const form = new FormData();
+  form.append("cacheControl", "3600");
+  form.append("", file);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), UPLOAD_STORAGE_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(signedUrl, {
+      method: "PUT",
+      body: form,
+      headers: { "x-upsert": "false" },
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      throw new ApiError("Storage upload failed", res.status);
+    }
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    if (err.name === "AbortError") {
+      throw new ApiError("Storage upload timed out", 408);
+    }
+    throw new ApiError("Storage upload failed", 502);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 async function request(path, options = {}, { admin = false, timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
   const headers = { ...(options.headers ?? {}) };
@@ -183,17 +217,52 @@ export async function updateBooking(id, patch) {
 }
 
 export async function uploadFile(file) {
-  const form = new FormData();
-  form.append("file", file);
+  if (!file) {
+    throw new ApiError("No file selected", 400);
+  }
 
-  const url = API_URL ? `${API_URL}/api/upload` : "/api/upload";
-  const res = await fetch(url, {
-    method: "POST",
-    body: form,
-    credentials: "include",
-  });
+  const mimeType = file.type || "application/octet-stream";
 
-  return parseResponse(res, { admin: true });
+  const sign = await request(
+    "/api/upload/sign",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        filename: file.name,
+        mimeType,
+        size: file.size,
+        context: "cms",
+      }),
+    },
+    { admin: true, timeoutMs: UPLOAD_SIGN_TIMEOUT_MS }
+  );
+
+  if (!sign?.ok || !sign.bucket || !sign.path || !sign.token) {
+    throw new ApiError(sign?.error || "Failed to get upload signature", 500, sign);
+  }
+
+  const signedUrl = sign.signedUrl;
+  if (!signedUrl) {
+    throw new ApiError("Failed to get upload signature", 500, sign);
+  }
+
+  await uploadToSignedStorage(signedUrl, file);
+
+  return request(
+    "/api/upload/complete",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        bucket: sign.bucket,
+        path: sign.path,
+        filename: file.name,
+        mimeType,
+        size: file.size,
+        type: sign.file?.type,
+      }),
+    },
+    { admin: true, timeoutMs: UPLOAD_COMPLETE_TIMEOUT_MS }
+  );
 }
 
 export async function getMedia() {
