@@ -1,4 +1,5 @@
 import {
+  createHash,
   createHmac,
   scryptSync,
   timingSafeEqual,
@@ -31,6 +32,12 @@ export function normalizePasswordHash(raw) {
   return `scrypt:${fixB64(parts[1])}:${fixB64(parts[2])}`;
 }
 
+/** SHA-256 fingerprint of normalized hash — first 12 hex chars only. */
+export function hashFingerprint(normalizedHash) {
+  if (!normalizedHash || typeof normalizedHash !== 'string') return '';
+  return createHash('sha256').update(normalizedHash, 'utf8').digest('hex').slice(0, 12);
+}
+
 /**
  * Safe auth diagnostics — never exposes secrets or hash material.
  */
@@ -46,6 +53,7 @@ export function buildAuthDiagnostics(body) {
     passwordHashPrefixIsScrypt: normalizedHash.startsWith('scrypt:'),
     passwordHashLength: normalizedHash.length,
     passwordHashPartsCount: normalizedHash.split(':').length,
+    hashFingerprint: hashFingerprint(normalizedHash),
     verifierAlgorithm: 'scrypt-sync-64-bytes',
     hashHadWhitespace: hash.length !== hash.trim().length,
     hashHadQuotes:
@@ -58,6 +66,45 @@ export function buildAuthDiagnostics(body) {
     bodyUsernameIsString: typeof body?.username === 'string',
     bodyPasswordIsString: typeof body?.password === 'string',
   };
+}
+
+/**
+ * Login failure diagnostics for response headers — no secrets in values.
+ */
+export function buildLoginFailureDiagnostics(body) {
+  const base = buildAuthDiagnostics(body);
+  const envUsername = trimEnv(process.env.ADMIN_USERNAME) || 'admin';
+  const requestUsername = typeof body?.username === 'string' ? body.username.trim() : '';
+
+  let usernameMatch = false;
+  if (requestUsername) {
+    const requestBuf = Buffer.from(requestUsername);
+    const envBuf = Buffer.from(envUsername);
+    usernameMatch =
+      requestBuf.length === envBuf.length && timingSafeEqual(requestBuf, envBuf);
+  }
+
+  return {
+    ...base,
+    envUsernameLength: envUsername.length,
+    usernameMatch,
+  };
+}
+
+export function applyLoginFailureDiagHeaders(res, diagnostics) {
+  res.setHeader(
+    'X-Auth-Diag-Body',
+    diagnostics.bodyHasUsername && diagnostics.bodyHasPassword ? 'ok' : 'missing-fields'
+  );
+  res.setHeader(
+    'X-Auth-Diag-Hash-Format',
+    diagnostics.passwordHashPrefixIsScrypt ? 'scrypt' : 'invalid'
+  );
+  res.setHeader('X-Auth-Diag-Username-Length', String(diagnostics.envUsernameLength));
+  res.setHeader('X-Auth-Diag-Username-Match', diagnostics.usernameMatch ? 'true' : 'false');
+  res.setHeader('X-Auth-Diag-Hash-Length', String(diagnostics.passwordHashLength));
+  res.setHeader('X-Auth-Diag-Hash-Parts', String(diagnostics.passwordHashPartsCount));
+  res.setHeader('X-Auth-Diag-Hash-Fingerprint', diagnostics.hashFingerprint || 'none');
 }
 
 function getConfig() {

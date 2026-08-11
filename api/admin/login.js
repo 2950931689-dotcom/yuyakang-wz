@@ -1,5 +1,6 @@
 import {
-  buildAuthDiagnostics,
+  applyLoginFailureDiagHeaders,
+  buildLoginFailureDiagnostics,
   buildSessionSetCookie,
   createSessionToken,
   getAdminUsername,
@@ -43,9 +44,8 @@ export default async function handler(req, res) {
   }
 
   if (!verifyAdminCredentials(username, password)) {
-    const diagnostics = buildAuthDiagnostics(body);
-    res.setHeader('X-Auth-Diag-Body', diagnostics.bodyHasUsername && diagnostics.bodyHasPassword ? 'ok' : 'missing-fields');
-    res.setHeader('X-Auth-Diag-Hash-Format', diagnostics.passwordHashPrefixIsScrypt ? 'scrypt' : 'invalid');
+    const diagnostics = buildLoginFailureDiagnostics(body);
+    applyLoginFailureDiagHeaders(res, diagnostics);
     return res.status(401).json({
       ok: false,
       message: '账号或密码错误',
