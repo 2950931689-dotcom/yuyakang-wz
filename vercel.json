@@ -9,12 +9,5 @@
       "source": "/((?!api/)(?!.*\\..*).*)",
       "destination": "/index.html"
     }
-  ],
-  "redirects": [
-    {
-      "source": "/admin/:path*",
-      "destination": "https://api.yuyakang.top/admin/:path*",
-      "permanent": false
-    }
   ]
 }

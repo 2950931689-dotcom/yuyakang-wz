@@ -1,23 +1,10 @@
 function resolveApiBase() {
+  // Production (Vercel): same-origin /api/* — ignore VITE_API_URL at build time
+  if (import.meta.env.PROD) {
+    return "";
+  }
+
   const envBase = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
-
-  if (import.meta.env.DEV) {
-    return envBase;
-  }
-
-  if (typeof window === "undefined") {
-    return envBase || "http://localhost:3001";
-  }
-
-  // API 同域（Render api.yuyakang.top）时走相对路径，避免跨域与 cookie 问题
-  if (window.location.pathname.startsWith("/admin")) {
-    return "";
-  }
-
-  if (envBase && window.location.origin === envBase) {
-    return "";
-  }
-
   return envBase;
 }
 
