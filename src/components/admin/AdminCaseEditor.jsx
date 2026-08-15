@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CASE_CATEGORIES, buildCaseVideoEntry } from "../../lib/caseAdmin";
+import { getCaseBodyCnDraft, normalizeCaseBody } from "../../lib/caseCopy";
 
 import {
 
@@ -309,57 +310,53 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
 
 
 
-      {tab === "copy" && (
+      {tab === "copy" && (() => {
+        const storedBody = normalizeCaseBody(caseItem);
+        const cnValue = storedBody.cn || getCaseBodyCnDraft(caseItem);
+        const isLegacyDraft = !storedBody.cn && Boolean(cnValue.trim());
+        const hasBodyCn = Boolean(storedBody.cn.trim());
 
-        <AdminFieldGroup eyebrow="文案" title="项目文案">
+        return (
+          <AdminFieldGroup eyebrow="文案" title="项目文案">
+            <p className="admin-field__hint">
+              将完整中文项目介绍写在这里。保存后会作为案例详情页的主要介绍内容；旧的摘要、背景、挑战、方案、成果字段会继续保留作为历史兼容。
+            </p>
 
-          <AdminBilingualInput label="摘要" value={caseItem.summary} onChange={(v) => update({ summary: v })} multiline rows={6} />
+            <p className="admin-field__hint admin-mono">
+              {hasBodyCn
+                ? "当前案例已使用新版项目文案字段。"
+                : isLegacyDraft
+                  ? "当前内容由旧字段合并生成，保存后将写入 body.cn。"
+                  : "请输入中文项目文案。"}
+            </p>
 
-          <AdminBilingualInput label="背景" value={caseItem.background} onChange={(v) => update({ background: v })} multiline rows={6} />
+            <AdminField label="项目文案 · 中文">
+              <AdminTextarea
+                rows={12}
+                value={cnValue}
+                onChange={(e) => {
+                  const body = normalizeCaseBody(caseItem);
+                  update({ body: { ...body, cn: e.target.value } });
+                }}
+              />
+            </AdminField>
 
-          <AdminBilingualInput label="挑战" value={caseItem.challenge} onChange={(v) => update({ challenge: v })} multiline rows={6} />
-
-          <AdminBilingualInput label="方案" value={caseItem.solution} onChange={(v) => update({ solution: v })} multiline rows={6} />
-
-          <AdminBilingualInput label="成果" value={caseItem.result} onChange={(v) => update({ result: v })} multiline rows={6} />
-
-          <AdminBilingualInput label="服务内容" value={caseItem.services} onChange={(v) => update({ services: v })} multiline rows={6} />
-
-          <AdminBilingualInput label="设备" value={caseItem.equipment} onChange={(v) => update({ equipment: v })} multiline rows={6} />
-
-          <AdminBilingualInput label="客户反馈" value={caseItem.clientFeedback} onChange={(v) => update({ clientFeedback: v })} multiline rows={6} />
-
-          <AdminField label="信号链路 signalFlow JSON" hint="可选。节点数组：id · label · labelCn · desc {cn,en}。留空则使用通用 fallback。">
-
-            <AdminTextarea
-
-              rows={8}
-
-              className="admin-mono"
-
-              value={caseItem._signalFlowRaw ?? JSON.stringify(caseItem.signalFlow ?? [], null, 2)}
-
-              onChange={(e) => {
-
-                try {
-
-                  update({ signalFlow: JSON.parse(e.target.value), _signalFlowRaw: undefined });
-
-                } catch {
-
-                  update({ _signalFlowRaw: e.target.value });
-
-                }
-
-              }}
-
-            />
-
-          </AdminField>
-
-        </AdminFieldGroup>
-
-      )}
+            <div className="admin-field__hint" style={{ marginTop: 12 }}>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost admin-btn--sm is-disabled"
+                disabled
+                title="翻译功能将在 8.8.3 接入"
+              >
+                一键中译英
+              </button>
+              <span className="admin-mono" style={{ marginLeft: 8 }}>
+                翻译功能将在 8.8.3 接入
+              </span>
+            </div>
+          </AdminFieldGroup>
+        );
+      })()}
 
 
 

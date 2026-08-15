@@ -1,5 +1,5 @@
 import { randomUUID } from "./id.js";
-import { normalizeCaseBody } from "./caseCopy.js";
+import { normalizeCaseBody, syncCaseSummaryFromBody } from "./caseCopy.js";
 import { createDefaultMixingAudioModules, normalizeMixingAudioModules } from "./mixingAudio.js";
 
 export const CASE_CATEGORIES = [
@@ -119,6 +119,7 @@ export function normalizeCaseForSave(caseItem) {
   }
 
   c.body = normalizeCaseBody(c);
+  c.summary = syncCaseSummaryFromBody(c);
 
   delete c._signalFlowRaw;
 

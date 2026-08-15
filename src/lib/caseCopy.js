@@ -15,6 +15,34 @@ export function normalizeCaseBody(caseItem) {
   return normalizeBilingualField(caseItem?.body);
 }
 
+/** First paragraph of text, capped at maxLen (append … if truncated). */
+export function extractSummarySnippet(text, maxLen) {
+  const trimmed = typeof text === "string" ? text.trim() : "";
+  if (!trimmed) return "";
+
+  const firstPara = trimmed.split(/\n\n+/)[0]?.trim() || trimmed;
+  if (firstPara.length <= maxLen) return firstPara;
+  return `${firstPara.slice(0, maxLen).trimEnd()}…`;
+}
+
+/** Sync list-card summary from body; preserve summary.en when body.en is empty. */
+export function syncCaseSummaryFromBody(caseItem) {
+  const body = normalizeCaseBody(caseItem);
+  const summary = normalizeBilingualField(caseItem?.summary);
+
+  const next = { cn: summary.cn, en: summary.en };
+
+  if (body.cn) {
+    next.cn = extractSummarySnippet(body.cn, 120);
+  }
+
+  if (body.en) {
+    next.en = extractSummarySnippet(body.en, 180);
+  }
+
+  return next;
+}
+
 function pickLocalized(caseItem, field, lang) {
   const value = t(caseItem?.[field], lang);
   return typeof value === "string" ? value.trim() : "";
