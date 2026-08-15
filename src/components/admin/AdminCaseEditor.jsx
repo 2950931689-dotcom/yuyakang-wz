@@ -100,6 +100,7 @@ function parseImages(str) {
 export default function AdminCaseEditor({ caseItem, onChange }) {
 
   const [tab, setTab] = useState("basic");
+  const [showEnCopy, setShowEnCopy] = useState(false);
 
 
 
@@ -341,19 +342,33 @@ export default function AdminCaseEditor({ caseItem, onChange }) {
               />
             </AdminField>
 
-            <div className="admin-field__hint" style={{ marginTop: 12 }}>
+            <div style={{ marginTop: 12 }}>
               <button
                 type="button"
-                className="admin-btn admin-btn--ghost admin-btn--sm is-disabled"
-                disabled
-                title="翻译功能将在 8.8.3 接入"
+                className="admin-btn admin-btn--ghost admin-btn--sm"
+                onClick={() => setShowEnCopy((open) => !open)}
               >
-                一键中译英
+                {showEnCopy ? "收起英文版本" : "编辑英文版本"}
               </button>
-              <span className="admin-mono" style={{ marginLeft: 8 }}>
-                翻译功能将在 8.8.3 接入
-              </span>
             </div>
+
+            {showEnCopy && (
+              <>
+                <p className="admin-field__hint" style={{ marginTop: 12 }}>
+                  英文版本为手动维护内容。可将英文文案粘贴到这里，保存后会用于英文页面展示。
+                </p>
+                <AdminField label="项目文案 · 英文">
+                  <AdminTextarea
+                    rows={12}
+                    value={storedBody.en}
+                    onChange={(e) => {
+                      const body = normalizeCaseBody(caseItem);
+                      update({ body: { ...body, en: e.target.value } });
+                    }}
+                  />
+                </AdminField>
+              </>
+            )}
           </AdminFieldGroup>
         );
       })()}
