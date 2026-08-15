@@ -1,4 +1,5 @@
 import { randomUUID } from "./id.js";
+import { normalizeCaseBody } from "./caseCopy.js";
 import { createDefaultMixingAudioModules, normalizeMixingAudioModules } from "./mixingAudio.js";
 
 export const CASE_CATEGORIES = [
@@ -33,6 +34,7 @@ export function createEmptyCase(sortOrder = 999) {
     role: { cn: "", en: "" },
     projectDate: "",
     date: "",
+    body: { cn: "", en: "" },
     summary: { cn: "", en: "" },
     background: { cn: "", en: "" },
     challenge: { cn: "", en: "" },
@@ -115,6 +117,8 @@ export function normalizeCaseForSave(caseItem) {
   if (c.mixingAudioModules != null) {
     c.mixingAudioModules = normalizeMixingAudioModules(c.mixingAudioModules);
   }
+
+  c.body = normalizeCaseBody(c);
 
   delete c._signalFlowRaw;
 

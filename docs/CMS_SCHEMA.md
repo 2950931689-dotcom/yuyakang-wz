@@ -155,6 +155,7 @@ site-content.json
 | `location.cn/en` | string | 项目地点 |
 | `role.cn/en` | string | 担任角色 |
 | `title.cn/en` | string | 项目名称 |
+| `body.cn/en` | string | **统一项目介绍**（8.8+ 首选；有值时前台详情优先于下方拆分字段） |
 | `summary.cn/en` | string | 列表摘要 |
 | `background.cn/en` | string | 项目背景 |
 | `services.cn/en` | string | 服务内容 |
@@ -185,6 +186,7 @@ site-content.json
   "role": { "cn": "", "en": "" },
   "projectDate": "2025-06",
   "date": "2025-06",
+  "body": { "cn": "", "en": "" },
   "summary": { "cn": "", "en": "" },
   "background": { "cn": "", "en": "" },
   "challenge": { "cn": "", "en": "" },

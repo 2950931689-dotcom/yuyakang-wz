@@ -13,47 +13,9 @@ import {
   getMixingDetailModules,
   isMixingAudioCase,
 } from "../../lib/mixingAudio";
+import { getCaseIntroductionText } from "../../lib/caseCopy.js";
 
-/**
- * Build a single「项目介绍」body from case narrative fields.
- * Does not rewrite text — only concatenates non-empty unique blocks.
- *
- * Priority:
- * 1. If multiple of summary/background/challenge/solution/result have content → combine (one region).
- * 2. Else challenge.
- * 3. Else summary → background → description → body.
- */
-export function getCaseIntroductionText(caseItem, lang) {
-  const pick = (field) => {
-    const value = t(caseItem?.[field], lang);
-    return typeof value === "string" ? value.trim() : "";
-  };
-
-  const summary = pick("summary");
-  const background = pick("background");
-  const challenge = pick("challenge");
-  const solution = pick("solution");
-  const result = pick("result");
-  const description = pick("description");
-  const body = pick("body");
-
-  const narrative = [summary, background, challenge, solution, result].filter(Boolean);
-  const uniqueCount = new Set(narrative).size;
-
-  if (uniqueCount > 1) {
-    const parts = [];
-    const seen = new Set();
-    for (const block of [summary, background, challenge, solution, result]) {
-      if (!block || seen.has(block)) continue;
-      seen.add(block);
-      parts.push(block);
-    }
-    return parts.join("\n\n");
-  }
-
-  if (challenge) return challenge;
-  return summary || background || description || body || "";
-}
+export { getCaseIntroductionText };
 
 function IntroductionSection({ text, lang }) {
   if (!text?.trim()) return null;
