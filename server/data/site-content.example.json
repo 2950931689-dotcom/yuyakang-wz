@@ -644,7 +644,7 @@
         "en": "System design, installation, tuning, and optimization."
       },
       "description": {
-        "cn": "【待补充】",
+        "cn": "水木年华全国巡回演唱会景德镇站音响系统工程案例，涵盖大型演出扩声系统设计、声学模拟、设备搭建与现场优化调试。",
         "en": "[TODO]"
       },
       "visible": true
@@ -663,7 +663,7 @@
         "en": "Vocal mixing, multitrack mixing, and final delivery."
       },
       "description": {
-        "cn": "【待补充】",
+        "cn": "水木年华全国巡回演唱会｜景德镇站\r\n音响系统工程案例总结\r\n\r\n本次参与水木年华全国巡回演唱会景德镇站的音响系统搭建与调试工作，现场系统采用法国 L-Acoustics 扩声系统，整体配置以高声压级、高一致性覆盖以及稳定可靠的系统传输为核心目标。\r\n\r\n主扩声系统方面，左右主扩音响塔每串配置 12 只 K1 + 3 只 K2，用于保证远距离覆盖能力与前中后区声压的一致性。SIDE 侧向覆盖以及 Delay 延时塔每串均采用 12 只 K2，进一步补足场地两侧及远端听众区域的覆盖，保证观众区整体声像与能量分布更加均匀。\r\n\r\n超低频系统采用 L-Acoustics KS28。在前期系统建立阶段，超低采用全前向的矩阵摆放方式，以获得较完整的低频能量覆盖。后续经过现场听感判断与系统优化，发现舞台区域低频干扰相对明显，因此对超低阵列进行了调整，改为 心型超低阵列（Cardioid Subwoofer Array），有效降低舞台方向的低频回传，减少对乐手监听和舞台拾音环境的影响，同时保持观众区低频能量的稳定输出。\r\n\r\n前补声系统采用 Kara II，用于补充前排观众区域的中高频清晰度与声像完整性。舞台返听部分使用 X15 作为监听音箱，保证舞台表演区域具备清晰、稳定的监听条件。\r\n\r\n控台与信号系统方面，FOH 主扩控台采用 DiGiCo Quantum 7，并搭配 Waves 服务器、Rupert Neve Designs 5045、SSL Fusion、M7 混响等经典且实用的效果硬件，为主扩混音提供了更高的动态控制能力、声音质感以及空间塑造能力。\r\n\r\nMonitor 监听控台采用 DiGiCo Quantum 5，同样搭配了与 FOH 类似的效果硬件配置，例如 5045 等设备，用于提升人声处理、监听清晰度与现场稳定性。FOH 与 Monitor 均配置主备接口箱，信号源由音分系统分配后分别接入接口箱，确保系统链路具备更高的安全冗余。现场控台与接口箱之间采用光纤协议传输，保证了长距离信号传输的稳定性与低延迟表现。\r\n\r\n个人监听系统使用 Roland M-48，为乐手提供更加灵活、独立的监听控制方式，提升舞台表演的舒适度与可控性。\r\n\r\n在项目前期，我们使用 L-Acoustics Soundvision 进行声学模拟，提前完成音箱吊挂高度、覆盖角度、阵列角度以及声压覆盖范围的计算与预估。通过前期模拟与现场实际调试相结合，最终实现了较为均匀的观众区覆盖、稳定的系统声压表现，以及更可控的舞台低频环境。\r\n\r\n本次项目从系统设计、声学模拟、设备搭建、信号链路规划到现场优化调试，都围绕“稳定、清晰、均匀、可控”几个核心目标展开。对于大型巡演项目而言，前期系统设计的准确性与现场调试的判断力同样重要，只有把系统基础打扎实，后续的混音工作才能真正发挥出设备与演出的最佳状态。",
         "en": "[TODO]"
       },
       "visible": true
@@ -710,11 +710,11 @@
         "en": "ECHO Live · Yunfu"
       },
       "summary": {
-        "cn": "与罗维老师共同完成 ECHO.回声 Live 的场地系统工程调试，整体系统围绕 Live 演出场景进行设计、搭建和优化。",
+        "cn": "云浮市 ECHO.回声 Live 场地系统工程调试案例，重点呈现主扩、补声、超低与现场调音系统的综合优化。",
         "en": "Venue system engineering and tuning for ECHO Live Yunfu, designed and optimized for live performance scenarios."
       },
       "background": {
-        "cn": "ECHO.回声 Live 是云浮地区的 Live 音乐空间，需要满足多类型演出的扩声需求。",
+        "cn": "云浮市 ECHO.回声 Live 场地系统调试案例分享\r\n\r\n本次与罗维老师一同完成云浮市 ECHO.回声 Live 的场地系统工程调试。该场地的音响、功放、处理器均采用 dBsource 品牌设备，整体系统围绕 Live 演出场景进行设计、搭建与优化。\r\n\r\n作为一个 Live 音乐空间，系统不仅要满足人声的清晰度和穿透力，也要兼顾乐队演出时的动态表现、低频能量、声压储备以及不同区域的覆盖一致性。因此，在前期系统规划和后期调试过程中，我们重点围绕“覆盖均匀、声像稳定、低频可控、系统衔接自然”这几个方向展开。\r\n\r\n主扩系统采用 dBsource DO115H 点声源音箱，负责观众区的主要声压输出与音乐能量表达。二楼补声区域采用 DO112 与 DO110 进行覆盖补充，一楼补声区域则根据空间结构进行相应补声配置，确保不同楼层、不同听音位置都能获得相对统一的听感，减少前后区声压差异过大、局部覆盖不足或声音脱节的问题。\r\n\r\n超低系统采用 dBsource DO218S，并结合弧形阵列的思路进行布局。通过合理的阵列摆放与系统调试，让低频能量在观众区域内获得更自然的扩散，同时尽量减少局部低频堆积与抵消，让现场低频既有足够的力量感，也保持良好的控制力。\r\n\r\n在系统调试过程中，我们对主扩、补声、超低以及不同区域之间进行了耦合校准、延时对齐和相位检查。通过测量数据与现场听感相结合的方式，逐步调整各组音箱之间的时间关系、能量比例和覆盖衔接，让整套系统在不同听音区域都能保持更自然、更统一的声音表现。\r\n\r\n调音台方面，本次使用的是 Behringer WING Compact，负责现场扩声系统的核心控制。通过合理的输入输出规划、路由分配和系统架构设置，可以更加精细地管理主扩、补声、超低以及舞台监听等不同部分，让现场调音和系统管理具备更高的灵活性与效率。\r\n\r\n这次 ECHO.回声 Live 的系统调试，也再次说明了一个 Live 场地系统的完成度，并不只是取决于设备本身，而是取决于系统设计、音箱摆位、覆盖角度、延时关系、低频控制、增益结构以及实际听感之间的综合平衡。\r\n\r\n一个好的现场声音系统，应该是在不同位置听起来都稳定、清晰、有能量，同时又不会让某一个频段过度突出。设备只是基础，系统调试和现场判断，才是最终决定听感的重要环节。",
         "en": "ECHO Live Yunfu is a live music venue serving diverse performance formats."
       },
       "services": {
@@ -919,11 +919,11 @@
         "en": "Maca Music Living Room · Guangning"
       },
       "summary": {
-        "cn": "Maca 音乐客厅 Live 扩声系统搭建与调试，围绕中小型音乐空间的清晰度、覆盖均匀度、低频控制和长期稳定运营进行系统优化。",
+        "cn": "肇庆广宁 Maca 音乐客厅 Live 系统工程案例，围绕中小型 Live 空间的扩声、低频、监听与系统保护展开。",
         "en": "Live sound system setup and tuning for Maca Music Living Room, optimizing clarity, coverage, low-frequency control and long-term reliability."
       },
       "background": {
-        "cn": "Maca 音乐客厅是以 live 演出、音乐交流和现场氛围为核心的音乐空间。",
+        "cn": "dBsource 助力 Maca 音乐客厅\r\nLive 系统工程案例总结\r\n\r\n本次 dBsource 参与助力 Maca 音乐客厅 的现场扩声系统搭建与调试工作。Maca 音乐客厅坐落于广东省肇庆市广宁县，是一个以 live 演出、音乐交流和现场氛围为核心的音乐空间。\r\n\r\n在当下整体市场环境并不轻松的时期，依然有一群人坚持做现场、坚持玩 R&B、坚持把音乐酒馆做出自己的态度，这件事本身就非常难得。也正是在试音环节，陈总专业且稳定的唱功，让我们对这个场地的音乐氛围有了更直观的感受。\r\n\r\n本次系统配置中，FOH 主扩及补声部分采用 dBsource DO 系列点声源音箱。点声源系统具备自然、直接、凝聚的听感表现，更适合中小型 live 空间的声音覆盖需求。通过合理的摆位与系统调试，让观众在不同区域都能获得更加清晰、贴耳、自然的听感，既保留人声细节，也保证乐器层次。\r\n\r\n低频系统部分采用 DO218S 超低音箱，为现场提供更扎实的低频能量与更强的音乐包围感。对于 R&B、流行以及现场乐队演出而言，稳定而有弹性的低频表现，能够明显提升整场演出的代入感和律动感。\r\n\r\n舞台监听方面，我们选择使用 206M 监听音箱。虽然箱体小巧，但在实际使用中依然能够为歌手提供清晰、直接、稳定的舞台监听声音，帮助表演者更好地掌控演唱状态与现场节奏。\r\n\r\n同时，为了保障系统运行的安全性与稳定性，本次调试过程中对每一路通道都进行了精准限幅设置。通过合理控制动态范围，可以有效避免因误操作、突发大信号或异常输入导致音箱过载甚至损坏，为场地后续长期运营提供更可靠的系统保护。\r\n\r\n对于 live 空间来说，好的音响系统并不是单纯追求声压有多大，而是要在有限空间里做到声音清晰、覆盖均匀、低频可控、听感舒服，并且具备足够的稳定性。Maca 音乐客厅这套系统，正是围绕“好听、耐听、稳定、易用”这几个核心目标完成搭建与优化。\r\n\r\n感谢 Maca 音乐客厅的信任，也期待这个坚持现场音乐的空间，能让更多人听见属于广宁的 live 声音。",
         "en": "Maca Music Living Room is a venue focused on live performances, music community and on-site atmosphere."
       },
       "services": {
@@ -1075,281 +1075,56 @@
       }
     },
     {
-      "id": "case-mix-gulou-v7",
-      "slug": "mix-gulou-v7",
+      "id": "case-fan-jian-datong-live",
+      "slug": "fan-jian-datong-live",
       "order": 5,
       "featured": true,
       "visible": true,
-      "category": "mixing-post-production",
-      "date": "",
-      "location": {
-        "cn": "后期制作",
-        "en": "Post-Production"
-      },
-      "role": {
-        "cn": "混音师",
-        "en": "Mixing Engineer"
-      },
-      "title": {
-        "cn": "《鼓楼》混音案例",
-        "en": "Gulou · Mixing Case"
-      },
-      "summary": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "background": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "services": {
-        "cn": "多轨混音 / 贴唱处理",
-        "en": "Multitrack mixing / vocal production"
-      },
-      "equipment": {
-        "cn": "【待补充：DAW / 插件】",
-        "en": "[TODO]"
-      },
-      "challenge": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "solution": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "result": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "clientFeedback": {
-        "cn": "",
-        "en": ""
-      },
-      "coverUrl": "",
-      "images": [],
+      "category": "livehouse-system-tuning",
+      "date": "2026",
+      "location": {"cn": "山西大同", "en": "Datong, Shanxi"},
+      "role": {"cn": "Live 音乐空间系统工程与现场调音", "en": "Live Venue System Engineering & Live Mixing"},
+      "title": {"cn": "山西大同（梵间）音乐 Live", "en": "Fanjian Music Live · Datong"},
+      "summary": {"cn": "山西大同梵间音乐 Live 场地系统工程与现场调音案例，文案待补充。", "en": "Venue system engineering and live mixing for Fanjian Music Live in Datong."},
+      "background": {"cn": "本项目为山西大同（梵间）音乐 Live 场地系统工程与现场调音案例。项目详细介绍文案待补充。", "en": "A venue system engineering and live mixing project for Fanjian Music Live in Datong. Detailed project copy is pending."},
+      "services": {"cn": "Live 场地系统调试 / 现场调音", "en": "Live venue system tuning / live mixing"},
+      "equipment": {"cn": "现场设备配置待补充", "en": "Equipment details pending"},
+      "challenge": {"cn": "项目现场情况与技术难点待补充。", "en": "Project challenges pending."},
+      "solution": {"cn": "系统方案与调试过程待补充。", "en": "System solution and tuning details pending."},
+      "result": {"cn": "项目效果与现场反馈待补充。", "en": "Project results pending."},
+      "clientFeedback": {"cn": "", "en": ""},
+      "coverUrl": "/cases/fan-jian-datong-live/gallery/gallery-01.jpg",
+      "images": ["/cases/fan-jian-datong-live/gallery/gallery-01.jpg", "/cases/fan-jian-datong-live/gallery/gallery-02.jpg", "/cases/fan-jian-datong-live/gallery/gallery-03.jpg", "/cases/fan-jian-datong-live/gallery/gallery-04.jpg", "/cases/fan-jian-datong-live/gallery/gallery-05.jpg", "/cases/fan-jian-datong-live/gallery/gallery-06.jpg", "/cases/fan-jian-datong-live/gallery/gallery-07.jpg", "/cases/fan-jian-datong-live/gallery/gallery-08.jpg"],
       "videoUrl": null,
-      "audioUrl": "/audio/mix-gulou-v7.mp3",
-      "mixingAudioModules": {
-        "enabled": true,
-        "vocalTune": {
-          "title": {
-            "cn": "贴唱",
-            "en": "Vocal Tune"
-          },
-          "description": {
-            "cn": "展示贴唱混音、修唱、人声处理与整体声音完成度相关音频。",
-            "en": "Vocal-focused mixes, tuning and polish examples."
-          },
-          "tracks": [
-            {
-              "id": "vocal-gulou-01",
-              "name": "《鼓楼》贴唱参考",
-              "description": "案例既有试听音频（上传正式文件后可替换 URL）。",
-              "audioUrl": "/audio/mix-gulou-v7.mp3",
-              "duration": "",
-              "order": 1,
-              "enabled": true
-            }
-          ]
-        },
-        "multitrack": {
-          "title": {
-            "cn": "分轨",
-            "en": "Multitrack"
-          },
-          "description": {
-            "cn": "展示分轨混音、乐器层次、空间关系与整体动态控制相关音频。",
-            "en": "Multitrack mixes — balance, space and dynamics."
-          },
-          "tracks": []
-        }
-      },
+      "audioUrl": null,
       "externalVideoUrl": null,
-      "seo": {
-        "title": {
-          "cn": "《鼓楼》混音 | YU YAKANG AUDIO",
-          "en": "Gulou Mix | YU YAKANG AUDIO"
-        },
-        "description": {
-          "cn": "【待补充】",
-          "en": "[TODO]"
-        },
-        "keywords": {
-          "cn": [
-            "混音",
-            "后期",
-            "贴唱"
-          ],
-          "en": [
-            "mixing",
-            "post-production"
-          ]
-        }
-      }
+      "seo": {"title": {"cn": "山西大同（梵间）音乐 Live | YU YAKANG AUDIO", "en": "Fanjian Music Live Datong | YU YAKANG AUDIO"}, "description": {"cn": "山西大同梵间音乐 Live 场地系统工程与现场调音案例。", "en": "Fanjian Music Live venue system engineering and live mixing case."}, "keywords": {"cn": ["大同", "Livehouse", "系统工程", "现场调音"], "en": ["Datong", "Livehouse", "system engineering", "live mixing"]}}
     },
     {
-      "id": "case-acoustic-simulation-tavern",
-      "slug": "acoustic-simulation-tavern",
+      "id": "case-nanchang-symphony-recording",
+      "slug": "nanchang-symphony-recording",
       "order": 6,
       "featured": true,
       "visible": true,
-      "category": "acoustic-simulation",
-      "date": "",
-      "location": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "role": {
-        "cn": "声学模拟 / 系统设计",
-        "en": "Acoustic Simulation / System Design"
-      },
-      "title": {
-        "cn": "声学模拟·酒馆",
-        "en": "Acoustic Simulation · Tavern"
-      },
-      "summary": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "background": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "services": {
-        "cn": "EASE Focus 声学模拟与扩声方案设计",
-        "en": "EASE Focus simulation and sound system design"
-      },
-      "equipment": {
-        "cn": "EASE Focus",
-        "en": "EASE Focus"
-      },
-      "challenge": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "solution": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "result": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
-      },
-      "clientFeedback": {
-        "cn": "",
-        "en": ""
-      },
-      "coverUrl": "/cases/acoustic-simulation-tavern/cover.webp",
-      "images": [
-        "/cases/acoustic-simulation-tavern/cover.webp"
-      ],
+      "category": "recording-mixing",
+      "date": "2026",
+      "location": {"cn": "江西艺术中心", "en": "Jiangxi Art Center"},
+      "role": {"cn": "交响乐同期录音工程", "en": "Orchestral Recording Engineer"},
+      "title": {"cn": "南昌交响乐团｜交响乐同期录音工程", "en": "Nanchang Symphony Orchestra | Orchestral Recording"},
+      "summary": {"cn": "南昌交响乐团江西艺术中心交响乐同期多轨录音工程，采用 Decca Tree 主拾音、分声部辅助拾音与 MADI / Logic Pro 录音链路。", "en": "Orchestral live recording at Jiangxi Art Center using Decca Tree, spot microphones and multitrack recording."},
+      "background": {"cn":"南昌交响乐团｜交响乐同期录音工程实践\n江西艺术中心 · Decca Tree 主拾音与多轨录音技术\n\n一、项目背景\n\n在江西艺术中心，我曾多次参与南昌交响乐团的录音工作，并保持持续的项目合作。交响乐录音不仅需要捕捉各类乐器的演奏细节，更需要兼顾完整乐团的声像、动态与音乐厅本身的空间特征。本文以其中一次正式音乐会的同期录音为例，记录现场采用的拾音方式、数字录音链路，以及我参与分声部话筒布置与调整过程中的技术实践。\n\n二、Decca Tree 主拾音系统\n\n本次录音采用 Decca Tree 三点主麦布局，使用三只 Telefunken M60 电容话筒，搭配 TK60 心形指向音头，通过舞台上方吊挂的方式进行拾音。左右两只话筒向两侧展开，中间话筒朝向乐团中央；实际位置与间距根据乐团编制及现场布局进行调整。\n\n需要说明的是，传统 Decca Tree 常见配置采用全指向话筒，而本次使用的是心形指向音头，因此更准确地说，这是借鉴 Decca Tree 三点几何布局的现场主拾音方案。其主要任务是获取乐团整体声音，构建立体声声像，同时采集音乐厅自然的空间信息。现场试听中，主麦所呈现的空间感符合预期。\n\n三、分声部辅助拾音\n\n除主麦外，现场使用 Neumann KM184 与 KM185 作为分声部辅助拾音话筒，覆盖弦乐、木管、铜管、打击乐以及部分独奏声部。KM184 为心形指向，KM185 为超心形指向；两者根据乐器所在位置、声部覆盖需求及邻近乐器串音情况进行选择。\n\n我在这次工程中主要参与各声部话筒的布置与调整。布置辅助麦克风时，重点并非让每支话筒尽可能贴近声源，而是在所需细节、声部平衡和串音之间寻找合适的位置与角度。整体拾音思路以主麦提供声场基础，以辅助话筒补充局部乐器的清晰度与后期可调整性，避免让点麦取代整个乐团的自然整体感。\n\n录音阶段未对主麦与辅助话筒进行时间对齐。不同话筒之间客观存在声程差，后续混音仍需结合实际听感检查相位关系与叠加效果，不能简单认为保留时间差就一定更自然。\n\n四、数字多轨录音系统\n\n本次现场采用 Soundcraft Vi4 数字调音台接收与管理话筒信号，经 MADI 数字音频链路及相应转换设备，将多路信号送入 Logic Pro 进行独立音轨录制。录音环节以保留未经均衡和动态处理的原始素材为主要策略，为后续编辑、声部平衡、声像及空间处理保留灵活性。\n\n相较于只记录一组最终立体声信号，多轨录音能够保留不同拾音位置和声部的独立信息，也对输入增益、通道路由和录音过程的稳定性提出了更高要求。本案例不对未经核实的录音通道数、采样率或转换设备型号作具体标注。\n\n五、工程实践总结\n\n交响乐录音的关键，不在于简单增加话筒数量，而在于合理划分主麦与辅助拾音的职责：既尊重音乐厅及乐团的整体声音，又为不同声部保留必要的细节与调整空间。通过在江西艺术中心多次参与南昌交响乐团录音工作，我不断积累对声部布局、话筒指向、串音控制和现场协作的实际认识。这些实践也让我更重视录音方案与现场音乐表现之间的关系。\n\n项目地点：江西艺术中心\n合作对象：南昌交响乐团\n项目类型：交响乐音乐会同期多轨录音\n个人参与：分声部话筒布置与调整、录音工程协作\n主要设备：Telefunken M60（TK60）×3、Neumann KM184 / KM185、Soundcraft Vi4\n录音链路：MADI 数字传输、Logic Pro 多轨录音","en":"This case documents an orchestral concert recording at Jiangxi Art Center, covering Decca Tree main pickup, spot microphones, Soundcraft Vi4, MADI and Logic Pro multitrack recording."},
+      "services": {"cn": "交响乐同期录音 / 多轨录音工程", "en": "Orchestral live recording / multitrack engineering"},
+      "equipment": {"cn": "Telefunken M60（TK60）×3、Neumann KM184 / KM185、Soundcraft Vi4、MADI、Logic Pro", "en": "3x Telefunken M60 (TK60), Neumann KM184 / KM185, Soundcraft Vi4, MADI, Logic Pro"},
+      "challenge": {"cn": "在保留音乐厅空间感与乐团整体声像的同时，兼顾各声部细节和后期调整空间。", "en": "Capture the hall and orchestra as a whole while preserving section detail and mix flexibility."},
+      "solution": {"cn": "以 Decca Tree 三点主拾音建立整体声场，使用 KM184 / KM185 对各声部进行辅助拾音，并通过 Soundcraft Vi4、MADI 与 Logic Pro 完成多轨录音。", "en": "Use a Decca Tree main array, KM184 / KM185 spot microphones, and a Soundcraft Vi4, MADI and Logic Pro multitrack chain."},
+      "result": {"cn": "完成交响乐音乐会同期多轨录音，为后续编辑、声部平衡、声像与空间处理保留灵活性。", "en": "Delivered multitrack concert recordings with flexibility for editing, balance, imaging and spatial processing."},
+      "clientFeedback": {"cn": "", "en": ""},
+      "coverUrl": "/cases/nanchang-symphony-recording/gallery/gallery-05.jpg",
+      "images": ["/cases/nanchang-symphony-recording/gallery/gallery-01.jpg", "/cases/nanchang-symphony-recording/gallery/gallery-02.jpg", "/cases/nanchang-symphony-recording/gallery/gallery-03.jpg", "/cases/nanchang-symphony-recording/gallery/gallery-04.jpg", "/cases/nanchang-symphony-recording/gallery/gallery-05.jpg", "/cases/nanchang-symphony-recording/gallery/gallery-06.jpg"],
       "videoUrl": null,
       "audioUrl": null,
       "externalVideoUrl": null,
-      "seo": {
-        "title": {
-          "cn": "声学模拟·酒馆 | YU YAKANG AUDIO",
-          "en": "Acoustic Simulation Tavern | YU YAKANG AUDIO"
-        },
-        "description": {
-          "cn": "【待补充】",
-          "en": "[TODO]"
-        },
-        "keywords": {
-          "cn": [
-            "声学模拟",
-            "EASE",
-            "系统设计"
-          ],
-          "en": [
-            "acoustic simulation",
-            "EASE Focus"
-          ]
-        }
-      }
-    },
-    {
-      "id": "case-ncnu-graduation",
-      "slug": "ncnu-graduation-gala",
-      "order": 7,
-      "featured": false,
-      "visible": true,
-      "category": "event-sound-reinforcement",
-      "date": "",
-      "location": {
-        "cn": "江西南昌",
-        "en": "Nanchang, Jiangxi"
-      },
-      "role": {
-        "cn": "现场调音师 / FOH Engineer",
-        "en": "FOH Engineer"
-      },
-      "title": {
-        "cn": "南昌师范学院毕业晚会",
-        "en": "NCNU Graduation Gala"
-      },
-      "summary": {
-        "cn": "担任南昌师范学院毕业晚会现场调音师，负责整场晚会扩声调音与现场声音控制。",
-        "en": "FOH engineer for NCNU graduation gala, responsible for live sound reinforcement and on-site audio control."
-      },
-      "background": {
-        "cn": "大型院校毕业晚会，演出形式以管弦乐与综合文艺节目为主。",
-        "en": "A large-scale university graduation gala featuring orchestral and mixed performance formats."
-      },
-      "challenge": {
-        "cn": "Behringer X32 现场输入通道全部插满，对通道管理、增益结构、编组控制和现场应变能力要求较高。管弦乐扩声更注重声部层次、整体动态和自然听感。",
-        "en": "Full X32 channel count demanded rigorous gain structure, grouping and scene management. Orchestral reinforcement required natural dynamics and sectional balance."
-      },
-      "solution": {
-        "cn": "演出前期完成通道命名、DCA 编组、Mute Group 和场景管理。对弦乐、木管、铜管、打击乐等声部进行合理规划，通过增益、声像、EQ 和动态控制保持层次并控制串扰。",
-        "en": "Pre-show channel naming, DCA groups, mute groups and scenes. Sectional planning for strings, woodwinds, brass and percussion with gain, pan, EQ and dynamics."
-      },
-      "result": {
-        "cn": "整场晚会声音更加稳定、清晰、自然，更好地服务演出情绪表达，也强化了大型晚会系统调音与音乐性处理经验。",
-        "en": "The show delivered stable, clear and natural sound that supported the performance narrative and strengthened large-format FOH experience."
-      },
-      "equipment": {
-        "cn": "Behringer X32、DCA 编组、Mute Group、场景管理、EQ、动态控制、管弦乐扩声、现场 FOH。",
-        "en": "Behringer X32, DCA groups, mute groups, scenes, EQ, dynamics, orchestral FOH."
-      },
-      "services": {
-        "cn": "毕业晚会现场扩声调音",
-        "en": "Graduation gala live sound"
-      },
-      "clientFeedback": {
-        "cn": "",
-        "en": ""
-      },
-      "coverUrl": "",
-      "images": [],
-      "videoUrl": null,
-      "audioUrl": null,
-      "externalVideoUrl": null,
-      "seo": {
-        "title": {
-          "cn": "南昌师范学院毕业晚会 | YU YAKANG AUDIO",
-          "en": "NCNU Graduation Gala | YU YAKANG AUDIO"
-        },
-        "description": {
-          "cn": "大型晚会管弦乐扩声与 X32 满通道现场调音案例。",
-          "en": "Large-format orchestral FOH with full X32 channel count."
-        },
-        "keywords": {
-          "cn": [
-            "毕业晚会",
-            "管弦乐",
-            "X32",
-            "现场调音"
-          ],
-          "en": [
-            "graduation gala",
-            "orchestral",
-            "X32",
-            "FOH"
-          ]
-        }
-      }
+      "seo": {"title": {"cn": "南昌交响乐团交响乐同期录音 | YU YAKANG AUDIO", "en": "Nanchang Symphony Orchestra Recording | YU YAKANG AUDIO"}, "description": {"cn": "南昌交响乐团江西艺术中心交响乐同期录音工程案例。", "en": "Orchestral live recording case at Jiangxi Art Center."}, "keywords": {"cn": ["南昌交响乐团", "交响乐录音", "Decca Tree", "多轨录音"], "en": ["Nanchang Symphony Orchestra", "orchestral recording", "Decca Tree", "multitrack"]}}
     }
   ],
   "seo": {

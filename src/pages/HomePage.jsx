@@ -16,7 +16,7 @@ import { t } from "../lib/content";
 
 /**
  * Round 7.7 homepage DOM order (PC visual = source order):
- * Hero → 01 profile+certs → live → mixing → 04 social video
+ * Hero → 01 profile+certs → all works → 04 social video
  * → 05 workflow → 06 sound check → services → conversion CTA
  *
  * Hero stays static; below-fold sections use scroll Reveal (not route stagger).
@@ -41,21 +41,13 @@ export default function HomePage() {
 
         <Reveal
           as="section"
-          className="section container home-section home-section--live-cases"
-          id="live-cases"
+          className="section container home-section home-section--all-cases"
+          id="all-cases"
           delay={40}
         >
-          <FeaturedCases variant="live" sectionIndex={2} />
+          <FeaturedCases variant="all" sectionIndex={2} />
         </Reveal>
 
-        <Reveal
-          as="section"
-          className="section container home-section home-section--mixing-cases"
-          id="mixing-cases"
-          delay={40}
-        >
-          <FeaturedCases variant="mixing" sectionIndex={3} />
-        </Reveal>
 
         <VideoHighlights />
 

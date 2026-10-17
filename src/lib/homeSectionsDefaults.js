@@ -12,11 +12,11 @@ export const DEFAULT_HOME_SECTIONS = {
       en: "Live sound · System engineering · Recording & mixing",
     },
     intro: {
-      cn: "余雅康，dBsource 音响系统工程师，中国录音师协会会员，录音技术专业背景，持有初级录音师、华汇 DiGiCo 高级技术培训与 VOS 音响系统工程师认证。工作覆盖现场扩声、FOH / Monitor / OB 调音、系统测量调试、录音与后期混音，能够从音乐制作、录音到现场扩声系统搭建中理解声音的完整流程。",
+      cn: "dBsource 音响系统工程师，中国录音师协会会员，录音技术专业毕业，持有初级录音师、华汇 DiGiCo 高级技术培训与 VOS 认证音响系统工程师证书。有多场录音、混音、和声编写及音乐平台上线歌曲参考，参与过现场 FOH、Monitor、OB 调音、扩声与演出工作。具备乐理、和声学和吉他演奏基础，理解从前期编写、录音到后期缩混母带的完整音乐制作流程。\n\n录音与混音方面，熟悉 AB、MS、ORTF、Decca Tree 等录音制式，能够根据场景选择录音设备、音频接口和麦克风，并完成前级连接、增益控制与调试，避免爆音、失真和底噪。熟悉 Cubase、Pro Tools、Studio One 等 DAW，具备混音、修唱、修节奏和音频编辑经验，能够使用 Melodyne、Waves、FabFilter、Slate Digital、Ozone、Valhalla、iZotope RX 等工具处理人声与音乐素材。参与过交响乐、合唱、年会、会议和乐队现场的录音与扩声。\n\n音响工程与现场调音方面，熟悉 Smaart、VOS4、VOS Pro 等测量工具，可进行频响、相位耦合和延时对齐；能够使用 EASE Focus、dBcover、AutoAngel 等工具进行声学仿真和系统设计。熟悉处理器调试、压限、延时、EQ、增益结构、数字调音台路由与母线规划，并有 FOH、Monitor、OB 等场景的系统搭建和调音经验。",
       en: "Yu Yakang is a dBsource sound system engineer and a member of the China Recording Engineers Association, with a recording technology background. He holds Junior Recording Engineer, Huahui DiGiCo Advanced Technical Training, and VOS Sound System Engineer certifications. His work covers live reinforcement, FOH / Monitor / OB mixing, system measurement and tuning, recording and post-production mixing — following the full path from music production and tracking through to live sound system delivery.",
     },
     roles: {
-      cn: ["dBsource 音响系统工程师", "现场调音师", "后期混音师", "音响系统工程师"],
+      cn: ["dBsource 音响系统工程师", "现场调音师", "后期混音师", "录音与混音"],
       en: [
         "dBsource Sound System Engineer",
         "Live Sound Engineer",
@@ -27,10 +27,12 @@ export const DEFAULT_HOME_SECTIONS = {
     qualifications: {
       cn: [
         "中国录音师协会会员",
-        "录音技术专业",
+        "录音技术专业毕业",
         "初级录音师证书",
-        "华汇 DiGiCo 高级技术培训",
+        "华汇 DiGiCo 高级技术培训证书",
         "VOS 认证音响系统工程师",
+        "Cubase / Pro Tools / Studio One",
+        "Smaart / VOS 系统测量",
       ],
       en: [
         "China Recording Engineers Association",

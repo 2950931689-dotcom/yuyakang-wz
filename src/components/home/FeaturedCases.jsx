@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useContent } from "../../context/ContentContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { getHomeCasePlateChrome } from "../../lib/cmsBinding";
-import { getHomePlateCases, t } from "../../lib/content";
+import { getCases, getHomePlateCases, t } from "../../lib/content";
 import CaseCard from "../cases/CaseCard";
 import SectionTitle from "../ui/SectionTitle";
 import Button from "../ui/Button";
@@ -12,6 +12,7 @@ import EmptyState from "../ui/EmptyState";
 const VARIANT_TO_PLATE = {
   live: "live",
   mixing: "mixing",
+  all: "all",
 };
 
 /**
@@ -27,12 +28,13 @@ export default function FeaturedCases({
   const { content } = useContent();
   const { lang } = useLanguage();
   const plateId = VARIANT_TO_PLATE[variant] ?? "live";
-  const plate = getHomeCasePlateChrome(content, plateId);
-  const [branchId, setBranchId] = useState(plate.defaultBranchId);
+  const cmsPlate = variant === "all" ? null : getHomeCasePlateChrome(content, plateId);
+  const plate = cmsPlate ?? { homeEyebrow: { cn: "02 / ALL WORKS", en: "02 / ALL WORKS" }, homeTitle: { cn: "全部案例作品", en: "All Case Works" }, homeSubtitle: { cn: "系统工程、现场调音、录音与混音案例统一展示。", en: "System engineering, live sound, recording and mixing works in one collection." }, label: { cn: "全部案例", en: "All Works" }, viewAllLabel: { cn: "查看全部案例", en: "View All Cases" }, branches: [] };
+  const [branchId, setBranchId] = useState(plate.defaultBranchId ?? "");
 
   const cases = useMemo(() => {
     if (!content) return [];
-    return getHomePlateCases(content, plateId, branchId);
+    return variant === "all" ? getCases(content, { visible: true, featured: true }) : getHomePlateCases(content, plateId, branchId);
   }, [content, plateId, branchId]);
 
   if (!content || !plate) return null;
@@ -42,7 +44,7 @@ export default function FeaturedCases({
       ? `暂无「${t(plate.branches.find((b) => b.id === branchId)?.label, lang) || "该分支"}」精选案例`
       : `No featured cases in this branch yet`;
 
-  const viewAllTo = `/cases?plate=${encodeURIComponent(plateId)}&branch=${encodeURIComponent(branchId)}`;
+  const viewAllTo = variant === "all" ? "/cases" : `/cases?plate=${encodeURIComponent(plateId)}&branch=${encodeURIComponent(branchId)}`;
   const viewAllLabel =
     t(plate.viewAllLabel, lang) ||
     (lang === "cn" ? "查看该板块全部案例" : "View All in This Plate");
@@ -56,8 +58,7 @@ export default function FeaturedCases({
         subtitle={t(plate.homeSubtitle, lang)}
       />
 
-      <div
-        className="case-filter case-filter--branches featured-cases__branches"
+      {variant !== "all" && <div className="case-filter case-filter--branches featured-cases__branches"
         role="tablist"
         aria-label={t(plate.label, lang)}
       >
@@ -73,7 +74,7 @@ export default function FeaturedCases({
             <span>{t(branch.label, lang)}</span>
           </button>
         ))}
-      </div>
+      </div>}
 
       {!cases.length ? (
         <EmptyState message={empty} />
