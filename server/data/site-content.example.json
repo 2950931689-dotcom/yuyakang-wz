@@ -1004,32 +1004,32 @@
         "en": "Shui Mu Nian Hua 25th Anniversary Tour · Jingdezhen"
       },
       "summary": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "参与水木年华全国巡回演唱会景德镇站的音响系统搭建与调试，围绕 L-Acoustics 扩声系统完成主扩、侧向、延时、超低频、前补声和舞台返听的系统配置与现场优化。",
+        "en": "System engineering and tuning for the Shui Mu Nian Hua 25th Anniversary Tour in Jingdezhen, covering L-Acoustics PA, delays, subs, fills and monitors."
       },
       "background": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "本次项目采用法国 L-Acoustics 扩声系统，目标是实现高声压级、高一致性覆盖和稳定可靠的信号传输。左右主扩音响塔每串配置 12 只 K1 加 3 只 K2；SIDE 侧向覆盖与 Delay 延时塔每串配置 12 只 K2。超低频使用 KS28，前期采用全前向矩阵摆放，经过现场听感判断后调整为心型超低阵列，以降低舞台方向的低频回传，同时保持观众区低频输出稳定。\n\n前补声使用 Kara II，舞台返听使用 X15。FOH 主扩控台为 DiGiCo Quantum 7，Monitor 监听控台为 DiGiCo Quantum 5，配合 Waves 服务器、Rupert Neve Designs 5045、SSL Fusion、M7 混响等设备。FOH 与 Monitor 均配置主备接口箱，控台与接口箱之间采用光纤协议传输，个人监听系统使用 Roland M-48。项目前期通过 L-Acoustics Soundvision 完成吊挂高度、覆盖角度、阵列角度与声压覆盖范围的模拟，再结合现场搭建与调试进行优化。",
+        "en": "This project used an L-Acoustics system designed for high SPL, consistent coverage and reliable signal transport. Each main tower used 12 K1 and 3 K2, while each side and delay tower used 12 K2. KS28 subs began as a forward-facing matrix and were later optimized as a cardioid array to reduce stage-facing low-frequency return while maintaining audience-area output. Kara II provided front fill and X15 served as monitors. FOH used a DiGiCo Quantum 7 and Monitor used a Quantum 5, with Waves, Rupert Neve Designs 5045, SSL Fusion and M7 reverb hardware. Soundvision modeling was combined with on-site tuning."
       },
       "services": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "系统设计、声学模拟、设备搭建、信号链路规划与现场优化调试。",
+        "en": "System design, acoustic prediction, deployment, signal-path planning and on-site tuning."
       },
       "equipment": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "L-Acoustics K1、K2、KS28、Kara II、X15；DiGiCo Quantum 7 / Quantum 5；Waves 服务器、Rupert Neve Designs 5045、SSL Fusion、M7 混响、Roland M-48、L-Acoustics Soundvision。",
+        "en": "L-Acoustics K1, K2, KS28, Kara II and X15; DiGiCo Quantum 7 and Quantum 5; Waves server, Rupert Neve Designs 5045, SSL Fusion, M7 reverb, Roland M-48 and Soundvision."
       },
       "challenge": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "大型巡演场地需要兼顾远距离覆盖、前中后区声压一致性、两侧与远端区域衔接，以及舞台低频回传对监听和拾音环境的影响。",
+        "en": "The touring venue required consistent front-to-back coverage, coherent side and delay areas, and controlled stage-facing low-frequency energy."
       },
       "solution": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "通过 Soundvision 进行前期模拟，按区域配置 K1、K2、KS28、Kara II 和 X15；现场将 KS28 从全前向矩阵优化为心型阵列，并完成系统电平、延时、相位与覆盖关系调整。FOH 和 Monitor 使用 Quantum 7 / Quantum 5 及主备接口箱，通过光纤协议构建稳定、低延迟的信号链路。",
+        "en": "Use Soundvision for prediction, configure K1, K2, KS28, Kara II and X15 by coverage area, convert the KS28 layout to a cardioid array, and tune levels, delay, phase and coverage. Quantum 7 and Quantum 5 consoles with redundant racks and optical transport provided a stable low-latency signal path."
       },
       "result": {
-        "cn": "【待补充】",
-        "en": "[TODO]"
+        "cn": "最终实现了较为均匀的观众区覆盖、稳定的系统声压表现和更可控的舞台低频环境，为后续演出混音建立了可靠的系统基础。",
+        "en": "The result was even audience-area coverage, stable system SPL and a more controlled stage low-frequency environment, providing a reliable foundation for the show mix."
       },
       "clientFeedback": {
         "cn": "",
@@ -1058,8 +1058,8 @@
           "en": "Shui Mu Nian Hua Jingdezhen | YU YAKANG AUDIO"
         },
         "description": {
-          "cn": "【待补充】",
-          "en": "[TODO]"
+          "cn": "水木年华全国巡回演唱会景德镇站音响系统工程案例，包含 L-Acoustics 系统设计、Soundvision 模拟、现场搭建与调试。",
+          "en": "L-Acoustics system design, Soundvision prediction, deployment and tuning for the Shui Mu Nian Hua Jingdezhen tour stop."
         },
         "keywords": {
           "cn": [
