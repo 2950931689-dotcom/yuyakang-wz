@@ -533,6 +533,81 @@
       "year": "",
       "imageUrl": "/certificates/cert-03.webp",
       "visible": true
+    },
+    {
+      "id": "cert-04",
+      "order": 4,
+      "title": {
+        "cn": "Yamaha 声学工程课程证书",
+        "en": "Yamaha Acoustic Engineering Program"
+      },
+      "issuer": {
+        "cn": "Yamaha / AudioVersity / AVIXA",
+        "en": "Yamaha / AudioVersity / AVIXA"
+      },
+      "year": "2026",
+      "imageUrl": "/certificates/cert-04.webp",
+      "visible": true
+    },
+    {
+      "id": "cert-05",
+      "order": 5,
+      "title": {
+        "cn": "Shure 音频网络培训证书",
+        "en": "Shure Audio Institute Certificate"
+      },
+      "issuer": {
+        "cn": "Shure Audio Institute",
+        "en": "Shure Audio Institute"
+      },
+      "year": "2026",
+      "imageUrl": "/certificates/cert-05.webp",
+      "visible": true
+    },
+    {
+      "id": "cert-06",
+      "order": 6,
+      "title": {
+        "cn": "Dante Level 1 认证",
+        "en": "Dante Level 1 Certification"
+      },
+      "issuer": {
+        "cn": "Dante",
+        "en": "Dante"
+      },
+      "year": "2026",
+      "imageUrl": "/certificates/cert-06.webp",
+      "visible": true
+    },
+    {
+      "id": "cert-07",
+      "order": 7,
+      "title": {
+        "cn": "Dante Level 2 认证",
+        "en": "Dante Level 2 Certification"
+      },
+      "issuer": {
+        "cn": "Dante",
+        "en": "Dante"
+      },
+      "year": "2026",
+      "imageUrl": "/certificates/cert-07.webp",
+      "visible": true
+    },
+    {
+      "id": "cert-08",
+      "order": 8,
+      "title": {
+        "cn": "Dante Level 3 认证",
+        "en": "Dante Level 3 Certification"
+      },
+      "issuer": {
+        "cn": "Dante",
+        "en": "Dante"
+      },
+      "year": "2026",
+      "imageUrl": "/certificates/cert-08.webp",
+      "visible": true
     }
   ],
   "services": [
