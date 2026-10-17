@@ -6,7 +6,7 @@
 export const DEFAULT_HOME_SECTIONS = {
   profile: {
     eyebrow: { cn: "ENGINEER PROFILE", en: "ENGINEER PROFILE" },
-    title: { cn: "介绍", en: "Engineer Profile" },
+    title: { cn: "个人介绍", en: "Engineer Profile" },
     subtitle: {
       cn: "现场调音 · 系统工程 · 录音与后期混音",
       en: "Live sound · System engineering · Recording & mixing",

@@ -14,7 +14,7 @@ import {
 import { AdminBilingualInput, AdminTabs } from "../../components/admin/AdminBilingualField";
 
 const TABS = [
-  ["profile", "介绍"],
+  ["profile", "个人介绍"],
   ["liveCases", "现场案例"],
   ["mixingCases", "混音案例"],
   ["videoHighlights", "社媒文案"],
@@ -162,7 +162,7 @@ export default function AdminHomeSectionsPage() {
       <AdminTabs tabs={TABS} active={tab} onChange={setTab} />
 
       {tab === "profile" && (
-        <AdminFieldGroup eyebrow="01" title="介绍" description="首页 #profile 区块">
+        <AdminFieldGroup eyebrow="01" title="个人介绍" description="首页 #profile 区块">
           <ChromeFields section={section} onChange={patchSection} />
           <AdminBilingualInput
             label="介绍正文"
